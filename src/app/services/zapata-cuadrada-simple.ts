@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 export class zapataCuadradaAislada {
 
 
-  servidor = 'https://back-ing.vercel.app/api';
+  servidor = 'https://backing-iwik.onrender.com';
   constructor(private servicio: HttpClient) { }
   zapataCuadradaSimple(model: any): Observable<any> {
     return this.servicio.post(`${this.servidor}/zapata-cuadrada-aislada`, model);

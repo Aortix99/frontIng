@@ -28,7 +28,7 @@ import {
 })
 export class AuthService {
   private readonly CONFIG: AuthConfig = {
-    apiBaseUrl: 'https://back-ing.vercel.app/api',
+    apiBaseUrl: 'https://backing-iwik.onrender.com',
     tokenKey: 'ing_civil_token',
     refreshTokenKey: 'ing_civil_refresh_token',
     tokenExpirationBuffer: 5 // 5 minutos antes de expirar
