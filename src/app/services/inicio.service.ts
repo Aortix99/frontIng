@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class InicioService {
-  servidor = 'https://backing-iwik.onrender.com';
+  servidor = 'https://backing-iwik.onrender.com/api';
   constructor(private servicio: HttpClient) { }
   calculateZapata(model: any): Observable<any> {
     return this.servicio.post(`${this.servidor}/zapata-combinada`, { model });
