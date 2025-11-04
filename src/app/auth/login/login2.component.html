@@ -1,0 +1,153 @@
+<!-- 
+  Template de Login - Diseño responsivo y accesible
+  Aplica principios UX y accesibilidad:
+  - Formulario semántico con labels apropiados
+  - Estados de carga y error claros
+  - Diseño responsive y moderno
+-->
+
+<div class="login-container">
+  <div class="login-card">
+    <!-- Header -->
+    <div class="login-header">
+      <div class="logo">
+        <h1 class="app-title">Ing Civil</h1>
+        <p class="app-subtitle">Sistema de Cálculos Estructurales</p>
+      </div>
+    </div>
+
+    <!-- Formulario de Login -->
+    <div class="login-form-container">
+      <h2 class="form-title">Iniciar Sesión</h2>
+      
+      <!-- Mensaje de error global -->
+      <div class="error-message" *ngIf="hasError" role="alert">
+        <i class="error-icon">⚠️</i>
+        <span>{{ errorMessage }}</span>
+      </div>
+
+      <!-- Formulario -->
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form" novalidate>
+        
+        <!-- Campo Email -->
+        <div class="form-group">
+          <label for="email" class="form-label">
+            Email <span class="required">*</span>
+          </label>
+          <div class="input-container">
+            <input
+              id="email"
+              type="email"
+              formControlName="email"
+              class="form-input"
+              [class.error]="email?.invalid && email?.touched"
+              placeholder="tu@email.com"
+              autocomplete="email"
+              [disabled]="isLoading"
+            />
+            <i class="input-icon">📧</i>
+          </div>
+          <div class="field-error" *ngIf="email?.invalid && email?.touched">
+            {{ getFieldError('email') }}
+          </div>
+        </div>
+
+        <!-- Campo Contraseña -->
+        <div class="form-group">
+          <label for="password" class="form-label">
+            Contraseña <span class="required">*</span>
+          </label>
+          <div class="input-container">
+            <input
+              id="password"
+              [type]="showPassword ? 'text' : 'password'"
+              formControlName="password"
+              class="form-input"
+              [class.error]="password?.invalid && password?.touched"
+              placeholder="Tu contraseña"
+              autocomplete="current-password"
+              [disabled]="isLoading"
+            />
+            <button
+              type="button"
+              class="password-toggle"
+              (click)="togglePasswordVisibility()"
+              [disabled]="isLoading"
+              [attr.aria-label]="showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+            >
+              <i>{{ showPassword ? '🙈' : '👁️' }}</i>
+            </button>
+          </div>
+          <div class="field-error" *ngIf="password?.invalid && password?.touched">
+            {{ getFieldError('password') }}
+          </div>
+        </div>
+
+        <!-- Recordarme -->
+        <div class="form-group checkbox-group">
+          <label class="checkbox-label">
+            <input
+              type="checkbox"
+              formControlName="rememberMe"
+              class="checkbox"
+              [disabled]="isLoading"
+            />
+            <span class="checkbox-custom"></span>
+            Recordarme
+          </label>
+        </div>
+
+        <!-- Botón de Login -->
+        <button
+          type="submit"
+          class="login-button"
+          [disabled]="loginForm.invalid || isLoading"
+          [class.loading]="isLoading"
+        >
+          <span *ngIf="!isLoading">Iniciar Sesión</span>
+          <span *ngIf="isLoading" class="loading-content">
+            <i class="spinner"></i>
+            Iniciando sesión...
+          </span>
+        </button>
+
+        <!-- Enlaces adicionales -->
+        <div class="form-links">
+          <button
+            type="button"
+            class="link-button"
+            (click)="goToForgotPassword()"
+            [disabled]="isLoading"
+          >
+            ¿Olvidaste tu contraseña?
+          </button>
+        </div>
+
+      </form>
+
+      <!-- Separador -->
+      <div class="divider">
+        <span>¿No tienes cuenta?</span>
+      </div>
+
+      <!-- Botón de Registro -->
+      <!-- <button
+        type="button"
+        class="register-button"
+        (click)="goToRegister()"
+        [disabled]="isLoading"
+      >
+        Crear cuenta nueva
+      </button> -->
+
+    </div>
+
+    <!-- Footer -->
+    <div class="login-footer">
+      <p class="footer-text">
+        © 2025 Ing Civil. Sistema seguro con encriptación SSL.
+      </p>
+    </div>
+
+  </div>
+</div>

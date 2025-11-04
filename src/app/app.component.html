@@ -1,0 +1,28 @@
+<!-- 
+  AppComponent - Componente raíz de la aplicación
+  Incluye navegación responsiva con autenticación
+  Aplica principios de UX/UI modernos
+-->
+<!-- Contenido principal -->
+<main class="main-content">
+  <!-- Loading spinner global -->
+  <div *ngIf="isLoading" class="d-flex justify-content-center p-4">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+  </div>
+
+  <!-- Router outlet para las páginas -->
+  <router-outlet></router-outlet>
+</main>
+
+<!-- Footer (solo si está autenticado) -->
+<footer class="bg-light text-center py-3 mt-auto" *ngIf="authService.isAuthenticated$ | async">
+  <div class="container">
+    <small class="text-muted">
+      © 2025 Sistema de Ingeniería Civil.
+    </small>
+  </div>
+</footer>
+
+

@@ -1,0 +1,20 @@
+<!-- Modal Overlay -->
+<div class="modal-overlay" [class.show]="isOpen" *ngIf="isOpen">
+  <!-- Modal Container con tamaños dinámicos -->
+  <div class="modal-container" [ngClass]="'modal-' + size">
+    
+    <!-- Header de la modal -->
+    <div class="modal-header">
+      <h3 class="modal-title">{{ title }}</h3>
+      <button type="button" class="modal-close-btn" (click)="onClose()">
+        <span>&times;</span>
+      </button>
+    </div>
+    
+    <!-- Contenido proyectado -->
+    <div class="modal-body">
+      <ng-content></ng-content>
+    </div>
+    
+  </div>
+</div>

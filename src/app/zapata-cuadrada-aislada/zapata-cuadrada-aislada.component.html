@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+
+<html lang="en" class="html">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <div class="titulo">
+    <title>ZAPATA CUADRADA SIMPLE</title>
+  </div>
+
+</head>
+
+<body class="body">
+  <!-- Formulario para agregar columnas -->
+  <div class="columna-form-container">
+    <form [formGroup]="informations" (ngSubmit)="calculate()">
+      <!-- Datos normales en dos columnas -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <div class="form-group">
+          <label for="Fc">Fc:</label>
+          <input type="number" id="Fc" formControlName="Fc" class="form-control" step="0.1">
+        </div>
+        <div class="form-group">
+          <label for="Fy">Fy:</label>
+          <input type="number" id="Fy" formControlName="Fy" class="form-control" step="0.1">
+        </div>
+        <div class="form-group">
+          <label for="Pd">Pd:</label>
+          <input type="number" id="Pd" formControlName="Pd" class="form-control" step="0.1">
+        </div>
+        <div class="form-group">
+          <label for="Pl">Pl:</label>
+          <input type="number" id="Pl" formControlName="Pl" class="form-control" step="0.1">
+        </div>
+        <div class="form-group">
+          <label for="Wc">Wc:</label>
+          <input type="number" id="Wc" formControlName="Wc" class="form-control" step="0.1">
+        </div>
+        <div class="form-group">
+          <label for="Cx">Cx:</label>
+          <input type="number" id="Cx" formControlName="Cx" class="form-control" step="0.1">
+        </div>
+        <div class="form-group">
+            <label for="Cy">Cy:</label>
+          <input type="number" id="Cy" formControlName="Cy" class="form-control" step="0.1">
+        </div>
+        <div class="form-group">
+          <label for="Hz">Hz:</label>
+          <input type="number" id="Hz" formControlName="Hz" class="form-control" step="0.1">
+        </div>
+        <div class="form-group">
+          <label for="Ds">Ds:</label>
+          <input type="number" id="Ds" formControlName="Ds" class="form-control" step="0.1">
+        </div>
+        <div class="form-group">
+          <label for="Ws">Ws:</label>
+          <input type="number" id="Ws" formControlName="Ws" class="form-control" step="0.1">
+        </div>
+        <div class="form-group">
+          <label for="Qa">Qa:</label>
+          <input type="number" id="Qa" formControlName="Qa" class="form-control" step="0.1">
+        </div>
+        <div class="form-group">
+          <label for="Rc">Rc:</label>
+          <input type="number" id="Rc" formControlName="Rc" class="form-control" step="0.1">
+        </div>
+        <div class="form-group">
+          <label for="Az">Az:</label>
+          <input type="number" id="Az" formControlName="Az" class="form-control" step="0.1">
+        </div>
+      </div>
+      <button style="margin-top: 20px;" type="submit" [disabled]="informations.invalid" class="btn btn-primary">
+        Calcular
+      </button>
+    </form>
+  </div>
+
+  <!-- Modal Reutilizable -->
+  <app-modal [isOpen]="mostrarModal" [title]="tituloModal" [size]="tamanoModal" (closeModal)="cerrarModal()">
+    <h1>Calculo de la zapata aislada centrica exitoso</h1>
+
+    <h2>Cumple las siguientes validaciones</h2>
+
+    <ul>
+      <li>
+        <h3>Chequeo pedestal:</h3>
+        <ul>
+          <li><strong>Pedestal cumple</strong>: {{response.validate0.Pu}} < {{response.validate0.calculo}} ✓ OK</li>
+        </ul>
+      </li>
+
+      <li>
+        <h3>Chequeo por punzonamiento en dos direcciones:</h3>
+        <ul>
+          <li><strong>Ecuacion 12.2</strong>: {{response.D}} < {{response.d}} ✓ OK</li>
+          <li><strong>Ecuacion 12.3</strong>: {{response.validate2.d}} < {{response.validate2.Hz}} ✓ OK</li>
+          <li><strong>Ecuacion 12.4</strong>: {{response.validate3.d}} < {{response.validate3.Hz}} ✓ OK</li>
+        </ul>
+      </li>
+      
+      <li>
+        <h3>Chequeo por punzonamiento en una direccion:</h3>
+        <ul>
+          <li><strong>Paso 4</strong>: {{response.validate4.d}} < {{response.validate4.Hz}} ✓ OK</li>
+        </ul>
+      </li>
+    </ul>
+
+    <!-- Botones para generar PDF y DXF -->
+    <div style="text-align: center; margin-top: 30px; padding: 20px; border-top: 2px solid #e9ecef;">
+      <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+        <button 
+          type="button" 
+          class="btn btn-success btn-lg"
+          (click)="generatePDFReport()"
+          style="padding: 12px 30px; font-size: 16px; font-weight: bold; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+          📄 Generar Reporte PDF
+        </button>
+        <button 
+          type="button" 
+          class="btn btn-primary btn-lg"
+          (click)="generateDXFFile()"
+          style="padding: 12px 30px; font-size: 16px; font-weight: bold; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+          📐 Generar Archivo DXF
+        </button>
+      </div>
+      <p style="margin-top: 15px; color: #6c757d; font-size: 14px;">
+        Descarga un reporte completo en PDF o un archivo DXF para CAD
+      </p>
+    </div>
+  </app-modal>
+</body>
+
+</html>

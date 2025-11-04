@@ -1,0 +1,145 @@
+<!-- 
+  Template de Login - Diseño responsivo y accesible
+  Aplica principios UX y accesibilidad:
+  - Formulario semántico con validaciones claras
+  - Estados de carga y error visibles
+  - Diseño responsive y moderno
+-->
+
+<div class="login-container">
+  <div class="login-card">
+    <!-- Header -->
+    <div class="login-header">
+      <div class="logo">
+        <h1 class="app-title">Ing Civil</h1>
+        <p class="app-subtitle">Iniciar Sesión</p>
+      </div>
+    </div>
+
+    <!-- Formulario de Login -->
+    <div class="login-form-container">
+      <h2 class="form-title">Accede a tu cuenta</h2>
+      
+      <!-- Mensaje de error global -->
+      <div class="error-message" *ngIf="hasError" role="alert">
+        <i class="error-icon">⚠️</i>
+        <span>{{ errorMessage }}</span>
+      </div>
+
+      <!-- Formulario -->
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form" novalidate>
+        
+        <!-- Campo Email -->
+        <div class="form-group">
+          <label for="email" class="form-label">
+            Correo Electrónico <span class="required">*</span>
+          </label>
+          <div class="input-container">
+            <input
+              id="email"
+              type="email"
+              formControlName="email"
+              class="form-input"
+              [class.error]="email?.invalid && email?.touched"
+              placeholder="juan@ejemplo.com"
+              autocomplete="email"
+              [disabled]="isLoading"
+            />
+            <i class="input-icon">📧</i>
+          </div>
+          <div class="field-error" *ngIf="email?.invalid && email?.touched">
+            {{ getFieldError('email') }}
+          </div>
+        </div>
+
+        <!-- Campo Contraseña -->
+        <div class="form-group">
+          <label for="password" class="form-label">
+            Contraseña <span class="required">*</span>
+          </label>
+          <div class="input-container">
+            <input
+              id="password"
+              [type]="showPassword ? 'text' : 'password'"
+              formControlName="password"
+              class="form-input password-input"
+              [class.error]="password?.invalid && password?.touched"
+              placeholder="Tu contraseña"
+              autocomplete="current-password"
+              [disabled]="isLoading"
+            />
+            <button
+              type="button"
+              class="password-toggle"
+              (click)="togglePasswordVisibility()"
+              [attr.aria-label]="showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+            >
+              <i [class]="showPassword ? 'icon-eye-off' : 'icon-eye'">
+                {{ showPassword ? '🙈' : '👁️' }}
+              </i>
+            </button>
+          </div>
+          <div class="field-error" *ngIf="password?.invalid && password?.touched">
+            {{ getFieldError('password') }}
+          </div>
+        </div>
+
+        <!-- Checkbox Recordarme -->
+        <!-- <div class="form-group checkbox-group">
+          <label class="checkbox-label">
+            <input
+              type="checkbox"
+              formControlName="rememberMe"
+              class="checkbox-input"
+              [disabled]="isLoading"
+            />
+            <span class="checkbox-custom"></span>
+            <span class="checkbox-text">Recordarme</span>
+          </label>
+        </div> -->
+
+        <!-- Botón de Login -->
+        <button
+          type="submit"
+          class="login-button"
+          [disabled]="loginForm.invalid || isLoading"
+          [class.loading]="isLoading"
+        >
+          <span *ngIf="!isLoading">Iniciar Sesión</span>
+          <span *ngIf="isLoading" class="loading-content">
+            <i class="spinner"></i>
+            Iniciando sesión...
+          </span>
+        </button>
+
+      </form>
+
+      <!-- Enlaces adicionales -->
+      <!-- <div class="form-links">
+        <a 
+          href="#" 
+          class="forgot-password-link"
+          (click)="$event.preventDefault(); goToForgotPassword()"
+        >
+          ¿Olvidaste tu contraseña?
+        </a>
+      </div> -->
+
+      <!-- Separador -->
+      <div class="divider">
+        <span>¿No tienes cuenta?: Comunicanos  (57)3044018165</span>
+      </div>
+
+      <!-- Botón de Registro -->
+      <!-- <button
+        type="button"
+        class="register-button"
+        (click)="goToRegister()"
+        [disabled]="isLoading"
+      >
+        Crear Cuenta
+      </button> -->
+
+    </div>
+  </div>
+</div>

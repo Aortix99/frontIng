@@ -1,0 +1,208 @@
+h4{
+  font-size: 50px;
+  padding-top: 5px;
+  margin-left: 1em;
+}
+
+th{
+  width: 500px;
+}
+.Con_Imput{
+display: inline-block;
+position: relative;
+margin-top: 3rem;
+margin-left: 4em;
+
+
+}
+input{
+  border: solid 1px;
+  border-color: black;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  
+}
+
+.header {
+  text-align: center;
+  padding: 2rem 0;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.header h1 {
+  font-size: 2.5rem;
+  color: #2c3e50;
+  font-weight: bold;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 0;
+}
+
+
+.parameter-group h3 {
+  color: #2c3e50;
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+  text-align: center;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: bold;
+  color: #34495e;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.form-control {
+  padding: 0.75rem;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.form-control:focus {
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+  outline: none;
+}
+
+.btn-calculate {
+  padding: 1rem 3rem;
+  font-size: 1.2rem;
+  background: linear-gradient(45deg, #3498db, #2980b9);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+  text-transform: uppercase;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.btn {
+  padding: 0.5rem 2rem;
+  font-size: 1rem;
+  border-radius: 12px;
+  text-transform: uppercase;
+  font-weight: bold;
+  cursor: pointer;
+  
+  border: none;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.btn-primary:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+}
+
+.btn-sm {
+  padding: 0.25rem 1rem;
+  font-size: 0.875rem;
+}
+
+/* Estilos para la lista de columnas */
+.columnas-lista {
+  background: #f6f5f5;
+  padding: 2em;
+  margin: 2em;
+  box-shadow: 5px 5px 10px #e1e0e0;
+  border-radius: 8px;
+  
+}
+
+.columnas-lista h5 {
+  margin-bottom: 1em;
+  color: #333;
+  font-size: 1.2em;
+}
+
+.columna-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1em;
+  margin-bottom: 0.5em;
+  background: white;
+  border-radius: 4px;
+  box-shadow: 2px 2px 5px #e1e0e0;
+}
+
+.columna-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em;
+}
+
+.zapata-diagram-modal h4 {
+  color: #2c3e50;
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 18px;
+  font-weight: bold;
+}
+.zapata-svg-modal {
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+  background: white;
+}
+
+.dimension-label-modal {
+  
+  font-size: 12px;
+  fill: #495057;
+  font-weight: bold;
+}
+
+.dimension-label-modal.main-dimension {
+  font-size: 14px;
+  fill: #2c3e50;
+  font-weight: bold;
+}
+
+.load-label-modal {
+  
+  font-size: 11px;
+  fill: #dc3545;
+  font-weight: bold;
+}
+
+

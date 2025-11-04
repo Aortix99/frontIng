@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+
+<html lang="en" class="html">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <div class="titulo">
+    <title>ZAPATA COMBINADA</title>
+  </div>
+
+</head>
+
+<body class="body">
+  <!-- Formulario para agregar columnas -->
+  <div class="columna-form-container">
+    <form [formGroup]="informations" (ngSubmit)="calculate()">
+      <!-- Datos normales en dos columnas -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <div class="form-group">
+          <label for="Fc">Fc:</label>
+          <input type="number" id="Fc" formControlName="Fc" class="form-control" step="0.1">
+        </div>
+        <div class="form-group">
+          <label for="Fy">Fy:</label>
+          <input type="number" id="Fy" formControlName="Fy" class="form-control" step="0.1">
+        </div>
+        <div class="form-group">
+          <label for="Wc">Wc:</label>
+          <input type="number" id="Wc" formControlName="Wc" class="form-control" step="0.1">
+        </div>
+        <div class="form-group">
+          <label for="Ws">Ws:</label>
+          <input type="number" id="Ws" formControlName="Ws" class="form-control" step="0.1">
+        </div>
+        <div class="form-group">
+          <label for="Qa">Qa:</label>
+          <input type="number" id="Qa" formControlName="Qa" class="form-control" step="0.1">
+        </div>
+        <div class="form-group">
+          <label for="Ds">Ds:</label>
+          <input type="number" id="Ds" formControlName="Ds" class="form-control" step="0.1">
+        </div>
+        <div class="form-group">
+          <label for="Hz">Hz:</label>
+          <input type="number" id="Hz" formControlName="Hz" class="form-control" step="0.1">
+        </div>
+        <div class="form-group">
+          <label for="C">C:</label>
+          <input type="number" id="C" formControlName="C" class="form-control" step="0.1">
+        </div>
+        <div class="form-group">
+          <label for="Lz">Lz:</label>
+          <input type="number" id="Lz" formControlName="Lz" class="form-control" step="0.1">
+        </div>
+      </div>
+
+      <!-- Columnas en dos columnas -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
+        <!-- Columna Externa -->
+        <div>
+          <h3>Columna Externa</h3>
+          <div class="form-group">
+            <label for="PdExt">PdExt:</label>
+            <input type="number" id="PdExt" formControlName="PdExt" class="form-control" step="0.1">
+          </div>
+          <div class="form-group">
+            <label for="PlExt">PlExt:</label>
+            <input type="number" id="PlExt" formControlName="PlExt" class="form-control" step="0.1">
+          </div>
+          <div class="form-group">
+            <label for="CxExt">CxExt:</label>
+            <input type="number" id="CxExt" formControlName="CxExt" class="form-control" step="0.1">
+          </div>
+          <div class="form-group">
+            <label for="CyExt">CyExt:</label>
+            <input type="number" id="CyExt" formControlName="CyExt" class="form-control" step="0.1">
+          </div>
+        </div>
+
+        <!-- Columna Interna -->
+        <div>
+          <h3>Columna Interna</h3>
+          <div class="form-group">
+            <label for="PdInt">PdInt:</label>
+            <input type="number" id="PdInt" formControlName="PdInt" class="form-control" step="0.1">
+          </div>
+          <div class="form-group">
+            <label for="PlInt">PlInt:</label>
+            <input type="number" id="PlInt" formControlName="PlInt" class="form-control" step="0.1">
+          </div>
+          <div class="form-group">
+            <label for="CxInt">CxInt:</label>
+            <input type="number" id="CxInt" formControlName="CxInt" class="form-control" step="0.1">
+          </div>
+          <div class="form-group">
+            <label for="CyInt">CyInt:</label>
+            <input type="number" id="CyInt" formControlName="CyInt" class="form-control" step="0.1">
+          </div>
+        </div>
+      </div>
+
+      <button style="margin-top: 20px;" type="submit" [disabled]="informations.invalid" class="btn btn-primary">
+        Calcular
+      </button>
+    </form>
+  </div>
+
+  <!-- Modal Reutilizable -->
+  <app-modal [isOpen]="mostrarModal" [title]="tituloModal" [size]="tamanoModal" (closeModal)="cerrarModal()">
+
+    <canvas id="MyChart"></canvas>
+
+    <!-- Diagrama de la Zapata -->
+
+    <h5>Detalles:</h5>
+    <ul>
+      <li><strong>Qe: Qe - (Hz)(Wc) - (Ds)(Ws) = </strong> {{response.response.Qe}}</li>
+      <li><strong>Area: (PdInt + PlInt + PdExt + PlExt) / Qe = </strong> {{response.response.A}}</li>
+      <li><strong>Xc.gExt: ((PdInt + PlInt) / 2 ) / PdExt +PlInt + PdInt + PlInt = </strong>
+        {{response.response.Xc_gExt}}
+      </li>
+      <li><strong>Dl: (CyExt/2) +Xc.gExt = </strong> {{response.response.Dl}}</li>
+      <li><strong>L: 2(Dl) = </strong> {{response.response.L}}</li>
+      <li><strong>Qu: (1.2(PdExt + PdInt) + 1.6(PlExt + PlInt))/A = </strong> {{response.response.Qu}}</li>
+      <li><strong>PuExt: 1.2PdExt + 1.6PlExt = </strong> {{response.response.PuExt}}</li>
+      <li><strong>PuInt: 1.2PdInt + 1.6PlInt = </strong> {{response.response.PuInt}}</li>
+      <li><strong>R: PuExt + PuInt = </strong> {{response.response.R}}</li>
+      <li><strong>W: (R / L) = </strong> {{response.response.W}}</li>
+      <li><strong>E: (CxExt) / 2 = </strong> {{response.response.E}}</li>
+      <li><strong>X1: (PuInt * Lz) / R = </strong> {{response.response.X1}}</li>
+      <li><strong>X2: L - X1 = </strong> {{response.response.X2}}</li>
+      <li><strong>I: (E + Lz) - L = </strong> {{response.response.I}}</li>
+    </ul>
+
+    <div class="zapata-diagram-modal">
+      <h4>Esquema de la Zapata Combinada</h4>
+      <div class="diagram-container-modal">
+        <svg viewBox="0 0 600 350" class="zapata-svg-modal">
+          <!-- Zapata principal (rectángulo largo) -->
+          <rect x="80" y="180" width="440" height="60" fill="#f0f0f0" stroke="#333" stroke-width="2" />
+
+          <!-- Columna Externa (izquierda) -->
+          <rect x="100" y="150" width="40" height="40" fill="#d4d4d4" stroke="#333" stroke-width="2" />
+
+          <!-- Columna Interna (derecha) -->
+          <rect x="460" y="150" width="40" height="40" fill="#d4d4d4" stroke="#333" stroke-width="2" />
+
+          <!-- Puntos de carga -->
+          <circle cx="120" cy="140" r="3" fill="#ff0000" />
+          <text x="120" y="130" text-anchor="middle" class="load-label-modal">P ext = {{response.response.PuExt}} </text>
+
+          <circle cx="480" cy="140" r="3" fill="#ff0000" />
+          <text x="480" y="130" text-anchor="middle" class="load-label-modal">P int = {{response.response.PuInt}} </text>
+          
+          <!-- Líneas de dimensión principales -->
+          <!-- W = 2 (ancho) -->
+
+          <text x="300" y="160" text-anchor="middle" class="dimension-label-modal">W = {{response.response.W}} </text>
+
+          <!-- E (línea roja horizontal) -->
+          <line x1="80" y1="250" x2="120" y2="250" stroke="#333" stroke-width="3" />
+          <text x="100" y="265" text-anchor="middle" class="dimension-label-modal">E = {{response.response.E}} </text>
+
+          <!-- Lz (distancia desde centro de columna externa hasta centro de columna interna, sin flechas) -->
+          <line x1="120" y1="300" x2="480" y2="300" stroke="#333" stroke-width="2" />
+          <text x="300" y="315" text-anchor="middle" class="dimension-label-modal">Lz = {{response.response.Lz}} </text>
+
+          <!-- Lx (distancia desde centro de columna externa hasta centro de columna interna, sin flechas) -->
+          <line x1="120" y1="270" x2="300" y2="270" stroke="#333" stroke-width="2" />
+          <text x="200" y="285" text-anchor="middle" class="dimension-label-modal">X1 = {{response.response.X1}} </text>
+
+          <!-- Lx (distancia desde centro de columna externa hasta centro de columna interna, sin flechas) -->
+          <line x1="310" y1="270" x2="480" y2="270" stroke="#333" stroke-width="2" />
+          <text x="390" y="285" text-anchor="middle" class="dimension-label-modal">X2 = {{response.response.X2}} </text>
+
+          <!-- I (línea horizontal en el lado derecho) -->
+          <line x1="480" y1="250" x2="520" y2="250" stroke="#333" stroke-width="3" />
+          <text x="500" y="265" text-anchor="middle" class="dimension-label-modal">I = {{response.response.I}} </text>
+
+          <!-- L total (longitud total) -->
+          <line x1="80" y1="80" x2="520" y2="80" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)" />
+          <line x1="520" y1="80" x2="80" y2="80" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)" />
+          <text x="300" y="70" text-anchor="middle" class="dimension-label-modal main-dimension">L = {{response.response.L}}
+          </text>
+
+          <!-- Líneas verticales para mostrar alineación -->
+          <line x1="80" y1="80" x2="80" y2="240" stroke="#666" stroke-width="1" stroke-dasharray="5,5" />
+          <line x1="520" y1="80" x2="520" y2="240" stroke="#666" stroke-width="1" stroke-dasharray="5,5" />
+
+          <!-- Definición de flechas -->
+          <defs>
+            <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+              <polygon points="0 0, 10 3.5, 0 7" fill="#333" />
+            </marker>
+          </defs>
+        </svg>
+      </div>
+    </div>
+  </app-modal>
+</body>
+
+</html>

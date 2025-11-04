@@ -1,0 +1,362 @@
+h4{
+  font-size: 50px;
+  padding-top: 5px;
+  margin-left: 1em;
+}
+
+.con-table{
+  background: #f6f5f5;
+  padding: 3em;
+  padding-top: 2px;
+  margin: 2em;
+  box-shadow: 10px 10px 10px 10px #e1e0e0;
+}
+th{
+  width: 500px;
+}
+.Con_Imput{
+display: inline-block;
+position: relative;
+margin-top: 3rem;
+margin-left: 4em
+
+}
+input{
+  border: solid 1px;
+  border-color: black;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+}
+.Agregar{
+  border:none;
+  margin-left: 65%;
+  padding: 0.5rem 2rem;
+  font-size: 1rem;
+  border-radius: 12px;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-weight:bold  ;
+  cursor: pointer;
+
+}
+.eliminar{
+  border:none;
+  color: rgb(178, 178, 224);
+  background-color: #f6f5f5;
+  padding: 0.5rem 2rem;
+  font-size: 1rem;
+  border-radius: 12px;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-weight:bold  ;
+  cursor: pointer;
+
+}
+button:hover
+{
+  background-color: rgb(178, 178, 224);
+  color:#f6f5f5; ;
+}
+.edit{
+  margin-left:5px ;
+}
+
+/* Contenedor principal */
+.main-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+.header {
+  text-align: center;
+  padding: 2rem 0;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.header h1 {
+  font-size: 2.5rem;
+  color: #2c3e50;
+  font-weight: bold;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 0;
+}
+
+.content-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  padding: 0 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Sección de entrada de datos */
+.input-section {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  padding: 2rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.parameters-grid {
+  margin-bottom: 2rem;
+}
+
+.parameter-group {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: rgba(248, 249, 250, 0.8);
+  border-radius: 10px;
+  border-left: 4px solid #3498db;
+}
+
+.parameter-group h3 {
+  color: #2c3e50;
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+  text-align: center;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: bold;
+  color: #34495e;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.form-control {
+  padding: 0.75rem;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.form-control:focus {
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+  outline: none;
+}
+
+/* Sección de columnas */
+.columns-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.column-group {
+  padding: 1.5rem;
+  border-radius: 10px;
+  background: rgba(248, 249, 250, 0.8);
+}
+
+.column-group.external {
+  border-left: 4px solid #e74c3c;
+}
+
+.column-group.internal {
+  border-left: 4px solid #27ae60;
+}
+
+.column-group h3 {
+  color: #2c3e50;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.column-group .form-group {
+  margin-bottom: 1rem;
+}
+
+/* Botón de calcular */
+.calculate-section {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.btn-calculate {
+  padding: 1rem 3rem;
+  font-size: 1.2rem;
+  background: linear-gradient(45deg, #3498db, #2980b9);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+  text-transform: uppercase;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.btn-calculate:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+}
+
+.btn-calculate:disabled {
+  background: #95a5a6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn {
+  padding: 0.5rem 2rem;
+  font-size: 1rem;
+  border-radius: 12px;
+  text-transform: uppercase;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.btn-primary:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+}
+
+.btn-sm {
+  padding: 0.25rem 1rem;
+  font-size: 0.875rem;
+}
+
+/* Estilos para la lista de columnas */
+.columnas-lista {
+  background: #f6f5f5;
+  padding: 2em;
+  margin: 2em;
+  box-shadow: 5px 5px 10px #e1e0e0;
+  border-radius: 8px;
+}
+
+.columnas-lista h5 {
+  margin-bottom: 1em;
+  color: #333;
+  font-size: 1.2em;
+}
+
+.columna-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1em;
+  margin-bottom: 0.5em;
+  background: white;
+  border-radius: 4px;
+  box-shadow: 2px 2px 5px #e1e0e0;
+}
+
+.columna-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em;
+}
+
+.columna-info span {
+  font-size: 0.9em;
+  color: #555;
+}
+
+/* Estilos para el gráfico en la modal */
+#MyChart {
+  max-width: 100%;
+  height: 400px;
+  margin: 20px 0;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Estilos para el diagrama en el modal */
+.zapata-diagram-modal {
+  margin: 20px 0;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+}
+
+.zapata-diagram-modal h4 {
+  color: #2c3e50;
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.diagram-container-modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.zapata-svg-modal {
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+  background: white;
+}
+
+.dimension-label-modal {
+  font-size: 12px;
+  fill: #495057;
+  font-weight: bold;
+}
+
+.dimension-label-modal.main-dimension {
+  font-size: 14px;
+  fill: #2c3e50;
+  font-weight: bold;
+}
+
+.load-label-modal {
+  font-size: 11px;
+  fill: #dc3545;
+  font-weight: bold;
+}
+
+
