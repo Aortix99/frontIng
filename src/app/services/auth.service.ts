@@ -28,7 +28,7 @@ import {
 })
 export class AuthService {
   private readonly CONFIG: AuthConfig = {
-    apiBaseUrl: 'https://backing-iwik.onrender.com/api',
+    apiBaseUrl: 'http://localhost:5000/api',
     tokenKey: 'ing_civil_token',
     refreshTokenKey: 'ing_civil_refresh_token',
     tokenExpirationBuffer: 5 // 5 minutos antes de expirar
