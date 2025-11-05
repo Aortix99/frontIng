@@ -326,7 +326,7 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
             <p style="margin: 5px 0;"> Q<sub>u</sub> = 1.2 * ${data.input.Pl} kN + 1.6 * ${data.input.Pd} kN / (${data.response.B})² m² = ${data.response.Qu} kN/m²</p>
             <h4> verificacion de la resistencia a compresion del pedestal </h4>
               <p style="margin: 5px 0; font-weight: bold;"> P<sub>u</sub> Ton ≤ 0.85 * 0.65 * (F<sub>c</sub> MPa)/100 * (C<sub>x</sub>cm * C<sub>y</sub>cm) </p>
-              <p style="margin: 5px 0;"> ${(data.response.Pu / 9.81).toFixed(2)} ≤ 0.85 * 0.65 * (${(data.input.Fc / 145.038).toFixed(2)} MPa) * (${data.input.Cx * 100} cm * ${data.input.Cy * 100} cm) = ${(data.response.Pu / 9.81).toFixed(2)} ≤ ${data.response.validate0.calculo} </p> <span class="success-icon">✓ OK</span>
+              <p style="margin: 5px 0;"> ${(data.response.Pu / 9.81).toFixed(2)} ≤ 0.85 * 0.65 * (${(data.input.Fc / 145.038).toFixed(2)} MPa) * (${data.input.Cx * 100} cm * ${data.input.Cy * 100} cm) = ${(data.response.Pu / 9.81).toFixed(2)} ≤ ${data.response.validate0.calculo} OK</p>
             </div>
           </div>
         </div>
@@ -341,7 +341,7 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
               <p style="margin: 5px 0;"> V<sub>u2</sub> = (${data.response.A} m² - (${data.response.maxCxCy} m + ${data.response.De}m)) * ${data.response.Qu} kN/m²</p> 
               <h4 style="margin: 10px 0 5px 0;"> Ecuación 12.2. Diseño de concreto reforzado McCormac.</h4>
               <p style="margin: 5px 0; font-weight: bold;"> D = V<sub>u2</sub> / (Φ.4.λ.√( F<sub>c</sub> ).B<sub>0</sub>) < d </p>
-              <p style="margin: 5px 0;"> D = ((${data.response.Vu2}Kn * 224.809 lb/kn)/ (0.75 * 4 * 1 * √${data.input.Fc} psi * (${data.response.Bo}m * 39.37 Plg/m))) * 0.0254 m/plg = ${data.response.D} m < ${data.response.d} m</p> <span class="success-icon">✓ OK</span>
+              <p style="margin: 5px 0;"> D = ((${data.response.Vu2}Kn * 224.809 lb/kn)/ (0.75 * 4 * 1 * √${data.input.Fc} psi * (${data.response.Bo}m * 39.37 Plg/m))) * 0.0254 m/plg = ${data.response.D} m < ${data.response.d} m OK</p>
             </div>
           </div>
         </div>
@@ -351,7 +351,7 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
             <h4 style="margin: 10px 0 5px 0;"> Ecuación 12.3. Diseño de concreto reforzado McCormac.</h4>
               <p style="margin: 5px 0; font-weight: bold;"> D = V<sub>u2</sub> / (Φ.(2 + (4/B<sub>C</sub>)).λ.√( F<sub>c</sub> ).B<sub>0</sub>) < d </p>
               <p style="margin: 5px 0;"> D = ((${data.response.Vu2}Kn * 224.809 lb/kn)/ (0.75 * (2 + (4/${data.response.Bc})) * 1 * √${data.input.Fc} psi * (${data.response.Bo}m * 39.37 Plg/m))) * 0.0254 m/plg </p>
-              <p style="margin: 5px 0;"> = ${data.response.validate2.d} m < ${data.response.d} m</p> <span class="success-icon">✓ OK</span>
+              <p style="margin: 5px 0;"> = ${data.response.validate2.d} m < ${data.response.d} m OK</p>
             </div>
           </div>
         </div>
@@ -374,7 +374,7 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
               <p style="margin: 5px 0;">V<sub>u1</sub> = ${data.response.L}m * ${data.response.e}m * ${data.response.Qu}kn/m² = ${data.response.Vu1}Kn/m² </p>
               <p style="margin: 5px 0; font-weight: bold;"> D = V<sub>u1</sub> / (Φ.2.λ.√( F<sub>c</sub> ).B<sub>0</sub>) < d </p>
               <p style="margin: 5px 0;"> D =(${data.response.Vu1}Kn/m² * 224.809 lb/kn / (0.75.2.1.√( ${data.input.Fc} psi )*${data.response.Bo}m * 39.37 Plg/m)) * 0.0254 m/plg </p>
-              <p style="margin: 5px 0;"> = ${data.response.validate4.d} m < ${data.response.d} m</p> <span class="success-icon">✓ OK</span>
+              <p style="margin: 5px 0;"> = ${data.response.validate4.d} m < ${data.response.d} m OK</p>
               </div>
           </div>
         </div>
