@@ -53,9 +53,9 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
       <!DOCTYPE html>
       <html>
       <head>
+
         <meta charset="UTF-8">
         <style>
-
           body {
             font-family: 'Arial', sans-serif;
             margin: 0;
@@ -63,6 +63,72 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
             line-height: 1.6;
             color: #333;
             background-color: #ffffff;
+          }
+
+          .pdf-header {
+            width: 100%;
+            margin-bottom: 20px;
+            margin-top: 20px;
+            border-bottom: 2px solid #2c5aa0;
+            padding-bottom: 10px;
+          }
+
+          .header-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            margin-bottom: 10px;
+          }
+
+          .header-table td {
+            vertical-align: middle;
+            padding: 8px;
+            border: 1px solid #ddd;
+            height: 60px;
+          }
+
+          .logo-cell {
+            width: 15%;
+            background-color: #f8f9fa;
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+            border-right: 1px solid #ddd;
+          }
+
+          .title-cell {
+            width: 70%;
+            text-align: center;
+            background-color: #f8f9fa;
+            border-right: 1px solid #ddd;
+          }
+
+          .info-cell {
+            width: 15%;
+            text-align: center;
+            font-size: 11px;
+            background-color: #f8f9fa;
+          }
+
+          .main-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #2c5aa0;
+            margin: 0;
+            line-height: 1.3;
+          }
+
+          .subtitle {
+            font-size: 12px;
+            color: #666;
+            margin: 5px 0 0 0;
+            line-height: 1.2;
+          }
+
+          .logo-placeholder {
+            color: #999;
+            font-size: 10px;
+            font-style: italic;
           }
           
           .header {
@@ -110,9 +176,18 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
           }
           
           .section-result {
-            margin-top: 23%;
+            margin-top: 4%;
             border-radius: 8px;
             overflow: hidden;
+          }
+          .pdf-header-2 {
+            margin-top: 20%;
+          }
+          .pdf-header-3 {
+            margin-top: 22%;
+          }
+          .pdf-header-4 {
+            margin-top: 33%;
           }
           .section {
             border-radius: 8px;
@@ -228,10 +303,22 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
             </style>
       </head>
       <body>
-        <!-- Header -->
-        <div class="header">
-          <h1>REPORTE DE CÁLCULO ESTRUCTURAL</h1>
-          <h2>Zapata Cuadrada Aislada Céntrica</h2>
+        <div class="pdf-header">
+          <table class="header-table">
+            <tr>
+              <td class="logo-cell">
+                <div class="logo-placeholder">[LOGO]</div>
+              </td>
+              <td class="title-cell">
+                <div class="main-title">${data.metadata.projectName}</div>
+                <div class="subtitle">Reporte de cálculo estructural para zapata centrica</div>
+              </td>
+              <td class="info-cell">
+                <div style="font-weight: bold; margin-bottom: 3px;">FECHA:</div>
+                <div style="font-size: 10px;">${currentDate}</div>
+              </td>
+            </tr>
+          </table>
         </div>
 
         <!-- Input Data Section -->
@@ -244,7 +331,7 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
                 <div class="input-value">${data.input.Fc} MPa</div>
               </div>
               <div class="input-item">
-                <div class="input-label">Resistencia del Acero (Fy)</div>
+                <div class="input-label">Limite de fluencia del Acero (Fy)</div>
                 <div class="input-value">${data.input.Fy} MPa</div>
               </div>
               <div class="input-item">
@@ -295,7 +382,7 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
           </div>
           <img src="data:image/png;base64,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" />
           <!-- Validation Results Section -->
-        <div class="section-result">
+        <div class="section">
         <h4 style="margin-bottom: 10px;">Paso 1: Área requerida.</h4>
           <div style="font-family: 'Times New Roman', serif; line-height: 1.2; margin-bottom: 15px;">
            <strong>Q<sub>e</sub> =  Q<sub>a</sub> - H<sub>z</sub> * W<sub>c</sub> - D<sub>s</sub> * W<sub>s</sub></strong>
@@ -318,12 +405,29 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
             </div>
           </div>
         </div>
-        <div class= "paso2">
+        <div class="pdf-header-2">
+          <table class="header-table">
+            <tr>
+              <td class="logo-cell">
+                <div class="logo-placeholder">[LOGO]</div>
+              </td>
+              <td class="title-cell">
+                <div class="main-title">${data.metadata.projectName}</div>
+                <div class="subtitle">Reporte de cálculo estructural para zapata centrica</div>
+              </td>
+              <td class="info-cell">
+                <div style="font-weight: bold; margin-bottom: 3px;">FECHA:</div>
+                <div style="font-size: 10px;">${currentDate}</div>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class= "section">
           <h4 style="margin-bottom: 10px;">Paso 2: Presion de apoyo para diseño por resistencia.</h4>
           <div style="margin-top: 10px;">
             <div style="font-family: 'Times New Roman', serif; line-height: 1.2;">
-            <p style="margin: 5px 0; font-weight: bold;"> ( Q<sub>u</sub> = 1.2 * P<sub>l</sub> + 1.6 * P<sub>d</sub> )/ (A)²</p>
-            <p style="margin: 5px 0;"> Q<sub>u</sub> = 1.2 * ${data.input.Pl} kN + 1.6 * ${data.input.Pd} kN / (${data.response.B})² m² = ${data.response.Qu} kN/m²</p>
+            <p style="margin: 5px 0; font-weight: bold;"> ( Q<sub>u</sub> = 1.6 * P<sub>l</sub> + 1.2 * P<sub>d</sub> )/ (A)²</p>
+            <p style="margin: 5px 0;"> Q<sub>u</sub> = 1.6 * ${data.input.Pl} kN + 1.2 * ${data.input.Pd} kN / (${data.response.B})² m² = ${data.response.Qu} kN/m²</p>
             <h4> verificacion de la resistencia a compresion del pedestal </h4>
               <p style="margin: 5px 0; font-weight: bold;"> P<sub>u</sub> Ton ≤ 0.85 * 0.65 * (F<sub>c</sub> MPa)/100 * (C<sub>x</sub>cm * C<sub>y</sub>cm) </p>
               <p style="margin: 5px 0;"> ${(data.response.Pu / 9.81).toFixed(2)} ≤ 0.85 * 0.65 * (${(data.input.Fc / 145.038).toFixed(2)} MPa) * (${data.input.Cx * 100} cm * ${data.input.Cy * 100} cm) = ${(data.response.Pu / 9.81).toFixed(2)} ≤ ${data.response.validate0.calculo} OK</p>
@@ -354,6 +458,23 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
               <p style="margin: 5px 0;"> = ${data.response.validate2.d} m < ${data.response.d} m OK</p>
             </div>
           </div>
+        </div>
+        <div class="pdf-header-3">
+          <table class="header-table">
+            <tr>
+              <td class="logo-cell">
+                <div class="logo-placeholder">[LOGO]</div>
+              </td>
+              <td class="title-cell">
+                <div class="main-title">${data.metadata.projectName}</div>
+                <div class="subtitle">Reporte de cálculo estructural para zapata centrica</div>
+              </td>
+              <td class="info-cell">
+                <div style="font-weight: bold; margin-bottom: 3px;">FECHA:</div>
+                <div style="font-size: 10px;">${currentDate}</div>
+              </td>
+            </tr>
+          </table>
         </div>
         <div class= "section">
           <div style="margin-top: 10px;">
@@ -396,6 +517,23 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
               <p style="margin: 5px 0; font-weight: bold;"> Separación entre barras es de = Φ#${data.input.Az}@${data.response.espacioEntreBarrasValidate}</p>
               </div>
           </div>
+        </div>
+        <div class="pdf-header-4">
+          <table class="header-table">
+            <tr>
+              <td class="logo-cell">
+                <div class="logo-placeholder">[LOGO]</div>
+              </td>
+              <td class="title-cell">
+                <div class="main-title">${data.metadata.projectName}</div>
+                <div class="subtitle">Reporte de cálculo estructural para zapata centrica</div>
+              </td>
+              <td class="info-cell">
+                <div style="font-weight: bold; margin-bottom: 3px;">FECHA:</div>
+                <div style="font-size: 10px;">${currentDate}</div>
+              </td>
+            </tr>
+          </table>
         </div>
         <div class="section-result">
           <h3 class="section-header">✅ Verificaciones y Validaciones</h3>
@@ -488,8 +626,8 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
 
   getFileName(data: ZapataCalculationData): string {
     const projectName = data.metadata?.projectName || 'ZapataCuadrada';
-    const timestamp = new Date().toISOString().slice(0, 16).replace(/[:-]/g, '');
-    return `${projectName}_Reporte_ZapataCuadrada_${timestamp}.pdf`;
+    const timestamp = new Date().toISOString().slice(0, 16).replaceAll(/[:-]/g, '');
+    return `${(projectName).trim()}_${timestamp}.pdf`;
   }
 
   getPageOptions(): PDFPageOptions {

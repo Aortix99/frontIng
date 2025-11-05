@@ -61,7 +61,6 @@ export class ZapataCuadradaAisladaComponent implements OnInit {
           });
           return;
         }
-        console.log('datos', datos);
         this.response = datos.response;
         this.mostrarModal = true;
 
@@ -84,12 +83,31 @@ export class ZapataCuadradaAisladaComponent implements OnInit {
    */
   async generatePDFReport(): Promise<void> {
     try {
-      if (!this.response) {
-        Swal.fire({
-          icon: 'warning',
-          title: 'Sin datos',
-          text: 'Primero debe realizar el cálculo antes de generar el reporte.'
-        });
+      // Solicitar el nombre del reporte al usuario
+      const { value: reportName } = await Swal.fire({
+        title: 'Nombre del Reporte',
+        text: 'Ingrese el nombre para su reporte PDF:',
+        input: 'text',
+        inputValue: 'Proyecto Zapata Cuadrada',
+        inputPlaceholder: 'Ej: Proyecto Edificio Central',
+        showCancelButton: true,
+        confirmButtonText: 'Generar PDF',
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#2c5aa0',
+        cancelButtonColor: '#6c757d',
+        inputValidator: (value) => {
+          if (!value || value.trim().length === 0) {
+            return 'Por favor ingrese un nombre para el reporte';
+          }
+          if (value.trim().length < 3) {
+            return 'El nombre debe tener al menos 3 caracteres';
+          }
+          return null;
+        }
+      });
+
+      // Si el usuario cancela, salir de la función
+      if (!reportName) {
         return;
       }
 
@@ -98,7 +116,7 @@ export class ZapataCuadradaAisladaComponent implements OnInit {
         input: this.informations.value,
         response: this.response,
         metadata: {
-          projectName: 'Proyecto Zapata Cuadrada',
+          projectName: reportName,
           engineer: 'Ing. Civil',
           client: 'Cliente',
           date: new Date(),
