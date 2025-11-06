@@ -38,23 +38,22 @@ export class InicioComponent implements OnInit {
 
   ngOnInit(): void {
     this.informations = this.fb.group({
-      Fc: ['', [Validators.required, Validators.min(0)]],
-      Fy: ['', [Validators.required, Validators.min(0)]],
-      Wc: ['', [Validators.required, Validators.min(0)]],
-      Ws: ['', [Validators.required, Validators.min(0)]],
-      Qa: ['', [Validators.required, Validators.min(0)]],
-      Ds: ['', [Validators.required, Validators.min(0)]],
-      Hz: ['', [Validators.required, Validators.min(0)]],
-      C: ['', [Validators.required, Validators.min(0)]],
-      Lz: ['', [Validators.required, Validators.min(0)]],
-      PdExt: ['', [Validators.required, Validators.min(0)]],
-      PlExt: ['', [Validators.required, Validators.min(0)]],
-      CxExt: ['', [Validators.required, Validators.min(0)]],
-      CyExt: ['', [Validators.required, Validators.min(0)]],
-      PdInt: ['', [Validators.required, Validators.min(0)]],
-      PlInt: ['', [Validators.required, Validators.min(0)]],
-      CxInt: ['', [Validators.required, Validators.min(0)]],
-      CyInt: ['', [Validators.required, Validators.min(0)]]
+      Fc: [3000, [Validators.required, Validators.min(0)]],
+      Fy: [60000, [Validators.required, Validators.min(0)]],
+      Wc: [24, [Validators.required, Validators.min(0)]],
+      Ws: [15.71, [Validators.required, Validators.min(0)]],
+      Qa: [239.4, [Validators.required, Validators.min(0)]],
+      Ds: [1.13, [Validators.required, Validators.min(0)]],
+      Hz: [0.68, [Validators.required, Validators.min(0)]],
+      Lz: [3.65, [Validators.required, Validators.min(0)]],
+      PdExt: [534.06, [Validators.required, Validators.min(0)]],
+      PlExt: [444, [Validators.required, Validators.min(0)]],
+      CxExt: [0.45, [Validators.required, Validators.min(0)]],
+      CyExt: [0.45, [Validators.required, Validators.min(0)]],
+      PdInt: [890.19, [Validators.required, Validators.min(0)]],
+      PlInt: [667.35, [Validators.required, Validators.min(0)]],
+      CxInt: [0.5, [Validators.required, Validators.min(0)]],
+      CyInt: [0.5, [Validators.required, Validators.min(0)]]
     });
     this.prepararDatosGrafico();
   }
@@ -167,7 +166,13 @@ export class InicioComponent implements OnInit {
   }
 
   calculate() {
-    this.inicioS.calculateZapata(this.informations.value).subscribe({
+    // Convertir todos los valores a números antes de enviar
+    const formData = { ...this.informations.value };
+    for (const key of Object.keys(formData)) {
+      formData[key] = Number(formData[key]);
+    }
+
+    this.inicioS.calculateZapata(formData).subscribe({
       next: (datos) => {
         this.response = datos;
         if (datos.error) {
