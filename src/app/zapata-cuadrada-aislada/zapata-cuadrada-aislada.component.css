@@ -27,10 +27,14 @@ input{
 .header {
   text-align: center;
   padding: 2rem 0;
-  background: rgba(255, 255, 255, 0.9);
+  /* Imagen de fondo con degradado superpuesto */
+  background: 
+    linear-gradient(135deg, rgba(52, 152, 219, 0.8), rgba(41, 128, 185, 0.9)),
+    url('/assets/img/zapata-centrica.png') center/cover;
   backdrop-filter: blur(10px);
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
   margin-bottom: 2rem;
+  color: white;
 }
 
 .header h1 {
@@ -70,18 +74,66 @@ input{
 
 .form-control {
   padding: 0.75rem;
-  border: 2px solid #e9ecef;
+  border: 2px solid rgba(233, 236, 239, 0.6);
   border-radius: 8px;
-  
   font-size: 1rem;
   transition: all 0.3s ease;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 .form-control:focus {
   border-color: #3498db;
   box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
   outline: none;
+}
+
+/* Estilos para inputs válidos */
+.form-control:valid:not(:placeholder-shown) {
+  border-color: #28a745;
+  box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.1);
+}
+
+/* Estilos para inputs inválidos */
+.form-control:invalid:not(:placeholder-shown) {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.1);
+}
+
+/* Indicadores visuales para campos requeridos */
+.form-group label::after {
+  content: ' *';
+  color: #dc3545;
+  font-weight: bold;
+}
+
+/* Estilos para mensajes de error */
+.text-danger {
+  color: #dc3545 !important;
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+/* Contador de caracteres visual */
+.form-group {
+  position: relative;
+}
+
+/* Animación para campos que se llenan */
+.form-control:valid:not(:focus) {
+  border-color: #28a745;
+  animation: field-valid 0.3s ease;
+}
+
+@keyframes field-valid {
+  0% {
+    border-color: #e9ecef;
+  }
+  100% {
+    border-color: #28a745;
+  }
 }
 
 .btn-calculate {
@@ -111,17 +163,52 @@ input{
 }
 
 .btn-primary {
-  background-color: #007bff;
+  background: linear-gradient(45deg, #3498db, #2980b9);
   color: white;
+  box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+  border: none;
+  transition: all 0.3s ease;
 }
 
 .btn-primary:hover {
-  background-color: #0056b3;
+  background: linear-gradient(45deg, #2980b9, #1f4e79);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
 }
 
 .btn-primary:disabled {
-  background-color: #6c757d;
+  background: linear-gradient(45deg, #6c757d, #5a6268);
   cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 2px 10px rgba(108, 117, 125, 0.2);
+}
+
+/* Botón activo cuando el formulario es válido */
+.btn-primary.btn-active {
+  background: linear-gradient(45deg, #28a745, #20c997, #17a2b8);
+  color: white;
+  box-shadow: 0 6px 25px rgba(40, 167, 69, 0.4);
+  transform: scale(1.02);
+  animation: pulse-glow 2s infinite;
+}
+
+.btn-primary.btn-active:hover {
+  background: linear-gradient(45deg, #218838, #1e7e34, #138496);
+  transform: scale(1.05) translateY(-2px);
+  box-shadow: 0 8px 30px rgba(40, 167, 69, 0.6);
+}
+
+/* Animación de pulso para el botón activo */
+@keyframes pulse-glow {
+  0% {
+    box-shadow: 0 6px 25px rgba(40, 167, 69, 0.4);
+  }
+  50% {
+    box-shadow: 0 6px 35px rgba(40, 167, 69, 0.6);
+  }
+  100% {
+    box-shadow: 0 6px 25px rgba(40, 167, 69, 0.4);
+  }
 }
 
 .btn-danger {
@@ -138,14 +225,27 @@ input{
   font-size: 0.875rem;
 }
 
+/* Contenedor del formulario sin imagen de fondo */
+.columna-form-container {
+  position: relative;
+  padding: 3rem;
+  margin: 2rem;
+  border-radius: 15px;
+  /* Fondo simple sin imagen */
+  background: #f6f5f5;
+  box-shadow: 5px 5px 10px #e1e0e0;
+}
+
+
+
 /* Estilos para la lista de columnas */
 .columnas-lista {
-  background: #f6f5f5;
+  background: rgba(246, 245, 245, 0.9);
   padding: 2em;
   margin: 2em;
   box-shadow: 5px 5px 10px #e1e0e0;
   border-radius: 8px;
-  
+  backdrop-filter: blur(10px);
 }
 
 .columnas-lista h5 {
@@ -203,6 +303,79 @@ input{
   font-size: 11px;
   fill: #dc3545;
   font-weight: bold;
+}
+
+
+
+
+.imagen-degradado-radial > * {
+  position: relative;
+  z-index: 2;
+  color: white;
+  text-align: center;
+}
+
+/* Degradado solo CSS (sin imagen de fondo) */
+.solo-degradado {
+  background: linear-gradient(
+    135deg,
+    #667eea 0%,
+    #764ba2 100%
+  );
+  padding: 2rem;
+  border-radius: 12px;
+  color: white;
+}
+
+/* Degradado animado */
+.degradado-animado {
+  background: linear-gradient(
+    -45deg,
+    #ee7752,
+    #e73c7e,
+    #23a6d5,
+    #23d5ab
+  );
+  background-size: 400% 400%;
+  animation: gradiente-animado 15s ease infinite;
+  padding: 2rem;
+  border-radius: 12px;
+  color: white;
+}
+
+@keyframes gradiente-animado {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Mejoras adicionales para el formulario con fondo */
+.form-group label {
+  font-weight: bold;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+/* Formulario con fondo simple */
+.columna-form-container form {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  border: 1px solid #e9ecef;
+}
+
+/* Estilo para el cuerpo con fondo simple */
+.body {
+  background: white;
+  min-height: 100vh;
 }
 
 

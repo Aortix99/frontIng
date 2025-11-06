@@ -9,69 +9,136 @@
   <div class="titulo">
     <title>ZAPATA CUADRADA SIMPLE</title>
   </div>
+  
+  <!-- Ejemplo de contenedor con imagen y degradado -->
+  <!-- <div class="imagen-con-degradado">
+    <h1>Contenido sobre la imagen con degradado</h1>
+  </div> -->
 
 </head>
 
 <body class="body">
+  
+  <!-- Header con imagen y degradado -->
+  <div class="header">
+    <h1>ZAPATA CUADRADA AISLADA</h1>
+    <p>Sistema de cálculos estructurales</p>
+  </div>
+
   <!-- Formulario para agregar columnas -->
   <div class="columna-form-container">
     <form [formGroup]="informations" (ngSubmit)="calculate()">
       <!-- Datos normales en dos columnas -->
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
         <div class="form-group">
-          <label for="Fc">Fc:</label>
-          <input type="number" id="Fc" formControlName="Fc" class="form-control" step="0.1">
+          <label for="Fc">Resistencia a la compresión del concreto (Fc):</label>
+          <input type="text" id="Fc" formControlName="Fc" class="form-control" 
+                 (input)="handleNumericInput($event, 10)" 
+                 (keydown)="handleKeydown($event, 10)"
+                 (paste)="handlePaste($event, 10)" 
+                 pattern="[0-9]*[.,]?[0-9]*" 
+                 required>
+          </div>
+        <div class="form-group">
+          <label for="Fy">Límite de la fluencia del acero (Fy):</label>
+          <input type="text" id="Fy" formControlName="Fy" class="form-control" 
+                 (input)="handleNumericInput($event, 10)" 
+                 (keydown)="handleKeydown($event, 10)"
+                 (paste)="handlePaste($event, 10)" 
+                 pattern="[0-9]*[.,]?[0-9]*" required>
         </div>
         <div class="form-group">
-          <label for="Fy">Fy:</label>
-          <input type="number" id="Fy" formControlName="Fy" class="form-control" step="0.1">
+          <label for="Pd">Carga muerta (Pd):</label>
+          <input type="text" id="Pd" formControlName="Pd" class="form-control" 
+                 (input)="handleNumericInput($event, 10)" 
+                 (keydown)="handleKeydown($event, 10)"
+                 (paste)="handlePaste($event, 10)" 
+                 pattern="[0-9]*[.,]?[0-9]*" required>
         </div>
         <div class="form-group">
-          <label for="Pd">Pd:</label>
-          <input type="number" id="Pd" formControlName="Pd" class="form-control" step="0.1">
+          <label for="Pl">Carga viva (Pl):</label>
+          <input type="text" id="Pl" formControlName="Pl" class="form-control" 
+                 (input)="handleNumericInput($event, 10)" 
+                 (keydown)="handleKeydown($event, 10)"
+                 (paste)="handlePaste($event, 10)" 
+                 pattern="[0-9]*[.,]?[0-9]*" required>
         </div>
         <div class="form-group">
-          <label for="Pl">Pl:</label>
-          <input type="number" id="Pl" formControlName="Pl" class="form-control" step="0.1">
-        </div>
-        <div class="form-group">
-          <label for="Wc">Wc:</label>
-          <input type="number" id="Wc" formControlName="Wc" class="form-control" step="0.1">
+          <label for="Wc">Peso específico del concreto (Wc):</label>
+          <input type="text" id="Wc" formControlName="Wc" class="form-control" 
+                 (input)="handleNumericInput($event, 10)" 
+                 (keydown)="handleKeydown($event, 10)"
+                 (paste)="handlePaste($event, 10)" 
+                 pattern="[0-9]*[.,]?[0-9]*" required>
         </div>
         <div class="form-group">
           <label for="Cx">Cx:</label>
-          <input type="number" id="Cx" formControlName="Cx" class="form-control" step="0.1">
+          <input type="text" id="Cx" formControlName="Cx" class="form-control" 
+                 (input)="handleNumericInput($event, 10)" 
+                 (keydown)="handleKeydown($event, 10)"
+                 (paste)="handlePaste($event, 10)" 
+                 pattern="[0-9]*[.,]?[0-9]*" required>
         </div>
         <div class="form-group">
             <label for="Cy">Cy:</label>
-          <input type="number" id="Cy" formControlName="Cy" class="form-control" step="0.1">
+          <input type="text" id="Cy" formControlName="Cy" class="form-control" 
+                 (input)="handleNumericInput($event, 10)" 
+                 (keydown)="handleKeydown($event, 10)"
+                 (paste)="handlePaste($event, 10)" 
+                 pattern="[0-9]*[.,]?[0-9]*" required>
         </div>
         <div class="form-group">
           <label for="Hz">Hz:</label>
-          <input type="number" id="Hz" formControlName="Hz" class="form-control" step="0.1">
+          <input type="text" id="Hz" formControlName="Hz" class="form-control" 
+                 (input)="handleNumericInput($event, 10)" 
+                 (keydown)="handleKeydown($event, 10)"
+                 (paste)="handlePaste($event, 10)" 
+                 pattern="[0-9]*[.,]?[0-9]*" required>
         </div>
         <div class="form-group">
           <label for="Ds">Ds:</label>
-          <input type="number" id="Ds" formControlName="Ds" class="form-control" step="0.1">
+          <input type="text" id="Ds" formControlName="Ds" class="form-control" 
+                 (input)="handleNumericInput($event, 10)" 
+                 (keydown)="handleKeydown($event, 10)"
+                 (paste)="handlePaste($event, 10)" 
+                 pattern="[0-9]*[.,]?[0-9]*" required>
         </div>
         <div class="form-group">
-          <label for="Ws">Ws:</label>
-          <input type="number" id="Ws" formControlName="Ws" class="form-control" step="0.1">
+          <label for="Ws">Peso específico del suelo (Ws):</label>
+          <input type="text" id="Ws" formControlName="Ws" class="form-control" 
+                 (input)="handleNumericInput($event, 10)" 
+                 (keydown)="handleKeydown($event, 10)"
+                 (paste)="handlePaste($event, 10)" 
+                 pattern="[0-9]*[.,]?[0-9]*" required>
         </div>
         <div class="form-group">
-          <label for="Qa">Qa:</label>
-          <input type="number" id="Qa" formControlName="Qa" class="form-control" step="0.1">
+          <label for="Qa">Presión admisible del suelo (Qa):</label>
+          <input type="text" id="Qa" formControlName="Qa" class="form-control" 
+                 (input)="handleNumericInput($event, 10)" 
+                 (keydown)="handleKeydown($event, 10)"
+                 (paste)="handlePaste($event, 10)" 
+                 pattern="[0-9]*[.,]?[0-9]*" required>
         </div>
         <div class="form-group">
-          <label for="Rc">Rc:</label>
-          <input type="number" id="Rc" formControlName="Rc" class="form-control" step="0.1">
+          <label for="Rc">Recubrimiento (Rc):</label>
+          <input type="text" id="Rc" formControlName="Rc" class="form-control" 
+                 (input)="handleNumericInput($event, 10)" 
+                 (keydown)="handleKeydown($event, 10)"
+                 (paste)="handlePaste($event, 10)" 
+                 pattern="[0-9]*[.,]?[0-9]*" required>
         </div>
         <div class="form-group">
-          <label for="Az">Az:</label>
-          <input type="number" id="Az" formControlName="Az" class="form-control" step="0.1">
+          <label for="Az">Diámetro de la barra (Az):</label>
+          <input type="text" id="Az" formControlName="Az" class="form-control" 
+                 (input)="handleNumericInput($event, 10)" 
+                 (keydown)="handleKeydown($event, 10)"
+                 (paste)="handlePaste($event, 10)" 
+                 pattern="[0-9]*[.,]?[0-9]*" required>
         </div>
       </div>
-      <button style="margin-top: 20px;" type="submit" [disabled]="informations.invalid" class="btn btn-primary">
+      <button style="margin-top: 20px;" type="submit" 
+              [disabled]="informations.invalid" 
+              [class]="informations.valid ? 'btn btn-primary btn-active' : 'btn btn-primary'">
         Calcular
       </button>
     </form>
