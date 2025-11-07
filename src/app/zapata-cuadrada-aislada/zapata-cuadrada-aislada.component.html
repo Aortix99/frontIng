@@ -25,9 +25,11 @@
     <p>Sistema de cálculos estructurales</p>
   </div>
 
-  <!-- Formulario para agregar columnas -->
-  <div class="columna-form-container">
-    <form [formGroup]="informations" (ngSubmit)="calculate()">
+  <!-- Contenedor con formulario e imagen -->
+  <div style="display: flex; gap: 30px; align-items: flex-start;">
+    <!-- Formulario para agregar columnas -->
+    <div class="columna-form-container" style="flex: 1; margin-left: 25px;">
+      <form [formGroup]="informations" (ngSubmit)="calculate()">
       <!-- Datos normales en dos columnas -->
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
         <div class="form-group">
@@ -142,6 +144,12 @@
         Calcular
       </button>
     </form>
+    </div>
+    
+    <!-- Imagen al lado del formulario -->
+    <div style="flex: 0 0 400px; margin-top: -50px;">
+      <img src="assets/img/DEINERSITO.png" alt="Logo DEINERSITO" style="width: 100%; height: auto; border-radius: 10px;">
+    </div>
   </div>
 
   <!-- Modal Reutilizable -->

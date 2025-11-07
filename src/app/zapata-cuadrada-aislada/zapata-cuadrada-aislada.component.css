@@ -1,28 +1,4 @@
-h4{
-  font-size: 50px;
-  padding-top: 5px;
-  margin-left: 1em;
-}
-
-th{
-  width: 500px;
-}
-.Con_Imput{
-display: inline-block;
-position: relative;
-margin-top: 3rem;
-margin-left: 4em;
-
-
-}
-input{
-  border: solid 1px;
-  border-color: black;
-  border-top: none;
-  border-left: none;
-  border-right: none;
-  
-}
+/* Estilos no utilizados eliminados */
 
 .header {
   text-align: center;
@@ -116,10 +92,7 @@ input{
   display: block;
 }
 
-/* Contador de caracteres visual */
-.form-group {
-  position: relative;
-}
+/* Contador de caracteres eliminado - no se usa */
 
 /* Animación para campos que se llenan */
 .form-control:valid:not(:focus) {
@@ -136,20 +109,7 @@ input{
   }
 }
 
-.btn-calculate {
-  padding: 1rem 3rem;
-  font-size: 1.2rem;
-  background: linear-gradient(45deg, #3498db, #2980b9);
-  color: white;
-  border: none;
-  border-radius: 50px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
-  text-transform: uppercase;
-  font-weight: bold;
-  letter-spacing: 1px;
-}
+/* .btn-calculate eliminado - no se usa */
 
 .btn {
   padding: 0.5rem 2rem;
@@ -211,65 +171,13 @@ input{
   }
 }
 
-.btn-danger {
-  background-color: #dc3545;
-  color: white;
-}
-
-.btn-danger:hover {
-  background-color: #c82333;
-}
-
-.btn-sm {
-  padding: 0.25rem 1rem;
-  font-size: 0.875rem;
-}
-
-/* Contenedor del formulario sin imagen de fondo */
-.columna-form-container {
-  position: relative;
-  padding: 3rem;
-  margin: 2rem;
-  border-radius: 15px;
-  /* Fondo simple sin imagen */
-  background: #f6f5f5;
-  box-shadow: 5px 5px 10px #e1e0e0;
-}
+/* Estilos de botones no utilizados eliminados */
 
 
 
-/* Estilos para la lista de columnas */
-.columnas-lista {
-  background: rgba(246, 245, 245, 0.9);
-  padding: 2em;
-  margin: 2em;
-  box-shadow: 5px 5px 10px #e1e0e0;
-  border-radius: 8px;
-  backdrop-filter: blur(10px);
-}
 
-.columnas-lista h5 {
-  margin-bottom: 1em;
-  color: #333;
-  font-size: 1.2em;
-}
 
-.columna-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1em;
-  margin-bottom: 0.5em;
-  background: white;
-  border-radius: 4px;
-  box-shadow: 2px 2px 5px #e1e0e0;
-}
-
-.columna-info {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1em;
-}
+/* Estilos de lista de columnas eliminados - no se usan en este componente */
 
 .zapata-diagram-modal h4 {
   color: #2c3e50;
@@ -308,69 +216,11 @@ input{
 
 
 
-.imagen-degradado-radial > * {
-  position: relative;
-  z-index: 2;
-  color: white;
-  text-align: center;
-}
+/* Estilos de degradados no utilizados eliminados */
 
-/* Degradado solo CSS (sin imagen de fondo) */
-.solo-degradado {
-  background: linear-gradient(
-    135deg,
-    #667eea 0%,
-    #764ba2 100%
-  );
-  padding: 2rem;
-  border-radius: 12px;
-  color: white;
-}
+/* Estilo duplicado de form-group label eliminado */
 
-/* Degradado animado */
-.degradado-animado {
-  background: linear-gradient(
-    -45deg,
-    #ee7752,
-    #e73c7e,
-    #23a6d5,
-    #23d5ab
-  );
-  background-size: 400% 400%;
-  animation: gradiente-animado 15s ease infinite;
-  padding: 2rem;
-  border-radius: 12px;
-  color: white;
-}
 
-@keyframes gradiente-animado {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-/* Mejoras adicionales para el formulario con fondo */
-.form-group label {
-  font-weight: bold;
-  color: #2c3e50;
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
-  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
-}
-
-/* Formulario con fondo simple */
-.columna-form-container form {
-  background: white;
-  border-radius: 12px;
-  padding: 2rem;
-  border: 1px solid #e9ecef;
-}
 
 /* Estilo para el cuerpo con fondo simple */
 .body {

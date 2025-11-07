@@ -62,24 +62,7 @@
   font-weight: 400;
 }
 
-.sidebar-toggle {
-  background: rgba(255, 255, 255, 0.2);
-  border: none;
-  color: white;
-  width: 32px;
-  height: 32px;
-  border-radius: 6px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-  font-size: 1.2rem;
-}
-
-.sidebar-toggle:hover {
-  background: rgba(255, 255, 255, 0.3);
-}
+/* Estilos del sidebar-toggle eliminados completamente */
 
 /* User Info */
 .sidebar-user {
@@ -656,7 +639,6 @@
 
 /* Focus Styles */
 .nav-link:focus,
-.sidebar-toggle:focus,
 .logout-button:focus,
 .action-button:focus,
 .feature-button:focus {

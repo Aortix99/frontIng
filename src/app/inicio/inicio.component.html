@@ -13,29 +13,36 @@
 </head>
 
 <body class="body">
+  
+  <!-- Header con imagen y degradado -->
+  <div class="header">
+    <h1>ZAPATA COMBINADA</h1>
+    <p>Sistema de cálculos estructurales</p>
+  </div>
+
   <!-- Formulario para agregar columnas -->
   <div class="columna-form-container">
     <form [formGroup]="informations" (ngSubmit)="calculate()">
       <!-- Datos normales en dos columnas -->
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
         <div class="form-group">
-          <label for="Fc">Fc:</label>
+          <label for="Fc">Resistencia a la compresion de concreto (Fc):</label>
           <input type="number" id="Fc" formControlName="Fc" class="form-control" step="0.1">
         </div>
         <div class="form-group">
-          <label for="Fy">Fy:</label>
+          <label for="Fy">Limite de fluencia del acero (Fy):</label>
           <input type="number" id="Fy" formControlName="Fy" class="form-control" step="0.1">
         </div>
         <div class="form-group">
-          <label for="Wc">Wc:</label>
+          <label for="Wc">peso especifico del concreto (Wc):</label>
           <input type="number" id="Wc" formControlName="Wc" class="form-control" step="0.1">
         </div>
         <div class="form-group">
-          <label for="Ws">Ws:</label>
+          <label for="Ws">peso especifico del suelo (Ws):</label>
           <input type="number" id="Ws" formControlName="Ws" class="form-control" step="0.1">
         </div>
         <div class="form-group">
-          <label for="Qa">Qa:</label>
+          <label for="Qa">presion admisible del suelo (Qa):</label>
           <input type="number" id="Qa" formControlName="Qa" class="form-control" step="0.1">
         </div>
         <div class="form-group">
