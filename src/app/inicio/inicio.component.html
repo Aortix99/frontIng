@@ -47,10 +47,6 @@
           <input type="number" id="Hz" formControlName="Hz" class="form-control" step="0.1">
         </div>
         <div class="form-group">
-          <label for="C">C:</label>
-          <input type="number" id="C" formControlName="C" class="form-control" step="0.1">
-        </div>
-        <div class="form-group">
           <label for="Lz">Lz:</label>
           <input type="number" id="Lz" formControlName="Lz" class="form-control" step="0.1">
         </div>
@@ -116,9 +112,9 @@
 
     <h5>Detalles:</h5>
     <ul>
-      <li><strong>Qe: Qe - (Hz)(Wc) - (Ds)(Ws) = </strong> {{response.response.Qe}}</li>
+      <li><strong>Qe: Qa - (Hz)(Wc) - (Ds)(Ws) = </strong> {{response.response.Qe}}</li>
       <li><strong>Area: (PdInt + PlInt + PdExt + PlExt) / Qe = </strong> {{response.response.A}}</li>
-      <li><strong>Xc.gExt: ((PdInt + PlInt) / 2 ) / PdExt +PlInt + PdInt + PlInt = </strong>
+      <li><strong>Xc.gExt: ((PdInt + PlInt) * Lz ) / PdExt +PlInt + PdInt + PlInt = </strong>
         {{response.response.Xc_gExt}}
       </li>
       <li><strong>Dl: (CyExt/2) +Xc.gExt = </strong> {{response.response.Dl}}</li>
@@ -127,7 +123,7 @@
       <li><strong>PuExt: 1.2PdExt + 1.6PlExt = </strong> {{response.response.PuExt}}</li>
       <li><strong>PuInt: 1.2PdInt + 1.6PlInt = </strong> {{response.response.PuInt}}</li>
       <li><strong>R: PuExt + PuInt = </strong> {{response.response.R}}</li>
-      <li><strong>W: (R / L) = </strong> {{response.response.W}}</li>
+      <li><strong>W: Qu * Dl = </strong> {{response.response.W}}</li>
       <li><strong>E: (CxExt) / 2 = </strong> {{response.response.E}}</li>
       <li><strong>X1: (PuInt * Lz) / R = </strong> {{response.response.X1}}</li>
       <li><strong>X2: L - X1 = </strong> {{response.response.X2}}</li>
