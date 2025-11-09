@@ -106,7 +106,7 @@ export class PDFGeneratorService {
   private addCanvasToPDF(doc: jsPDF, canvas: HTMLCanvasElement, pageOptions: PDFPageOptions): void {
     const margins = {
       left: pageOptions.margins?.left || 10,
-    //   top: pageOptions.margins?.top || 10,
+      top: pageOptions.margins?.top || 10,
       right: pageOptions.margins?.right || 10,
       bottom: pageOptions.margins?.bottom || 10
     };
@@ -116,25 +116,25 @@ export class PDFGeneratorService {
     
     const imgWidth = pageWidth - margins.left - margins.right;
     const imgHeight = (canvas.height * imgWidth) / canvas.width;
-    const availableHeight = pageHeight - margins.bottom;
+    const availableHeight = pageHeight - margins.top - margins.bottom;
 
     const imgData = canvas.toDataURL('image/png');
 
     if (imgHeight <= availableHeight) {
       // Cabe en una página
-      doc.addImage(imgData, 'PNG', margins.left, imgWidth, imgHeight);
+      doc.addImage(imgData, 'PNG', margins.left, margins.top, imgWidth, imgHeight);
     } else {
       // Múltiples páginas
       let heightLeft = imgHeight;
-      let position = 0;
+      let position = margins.top;
 
       // Primera página
       doc.addImage(imgData, 'PNG', margins.left, position, imgWidth, imgHeight);
       heightLeft -= availableHeight;
 
       // Páginas adicionales
-      while (heightLeft >= 0) {
-        position = heightLeft - imgHeight ;
+      while (heightLeft > 0) {
+        position = margins.top - (imgHeight - heightLeft);
         doc.addPage();
         doc.addImage(imgData, 'PNG', margins.left, position, imgWidth, imgHeight);
         heightLeft -= availableHeight;

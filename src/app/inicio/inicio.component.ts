@@ -1,14 +1,14 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Subject } from 'rxjs';
 import { InicioService } from '../services/inicio.service';
 import { Inicio } from '../interface/inicio';
 import { Columna } from '../interface/columna';
-import { NgModel } from '@angular/forms';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Chart } from 'chart.js/auto';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import Swal from 'sweetalert2';
+import { ZapataCombinadaCalculationData, ZapataCuadradaPDFTemplate } from './zapata-combinada-pdf.template';
+import { PDFGeneratorService } from '../services/pdf-generator-clean.service';
 
 
 @Component({
@@ -34,26 +34,25 @@ export class InicioComponent implements OnInit {
   tituloModal: string = 'Información del Sistema';
   tamanoModal: 'small' | 'medium' | 'large' = 'medium';
 
-  constructor(private fb: FormBuilder, private http: HttpClient, private inicioS: InicioService) { }
+  constructor(private readonly pdfTemplate: ZapataCuadradaPDFTemplate, private readonly fb: FormBuilder, private readonly pdfGenerator: PDFGeneratorService, private readonly http: HttpClient, private readonly inicioS: InicioService) { }
 
   ngOnInit(): void {
     this.informations = this.fb.group({
-      Fc: [3000, [Validators.required, Validators.min(0)]],
-      Fy: [60000, [Validators.required, Validators.min(0)]],
+      Fc: [210, [Validators.required, Validators.min(0)]],
+      Fy: [4200, [Validators.required, Validators.min(0)]],
       Wc: [24, [Validators.required, Validators.min(0)]],
-      Ws: [15.71, [Validators.required, Validators.min(0)]],
-      Qa: [239.4, [Validators.required, Validators.min(0)]],
+      Qa: [23.3, [Validators.required, Validators.min(0)]],
       Ds: [1.13, [Validators.required, Validators.min(0)]],
-      Hz: [0.68, [Validators.required, Validators.min(0)]],
-      Lz: [3.65, [Validators.required, Validators.min(0)]],
-      PdExt: [534.06, [Validators.required, Validators.min(0)]],
-      PlExt: [444, [Validators.required, Validators.min(0)]],
-      CxExt: [0.45, [Validators.required, Validators.min(0)]],
-      CyExt: [0.45, [Validators.required, Validators.min(0)]],
-      PdInt: [890.19, [Validators.required, Validators.min(0)]],
-      PlInt: [667.35, [Validators.required, Validators.min(0)]],
-      CxInt: [0.5, [Validators.required, Validators.min(0)]],
-      CyInt: [0.5, [Validators.required, Validators.min(0)]]
+      Hz: [0.7, [Validators.required, Validators.min(0)]],
+      Lz: [5, [Validators.required, Validators.min(0)]],
+      PdExt: [46.05, [Validators.required, Validators.min(0)]],
+      PlExt: [9.21, [Validators.required, Validators.min(0)]],
+      CxExt: [0.3, [Validators.required, Validators.min(0)]],
+      CyExt: [0.4, [Validators.required, Validators.min(0)]],
+      PdInt: [85.52, [Validators.required, Validators.min(0)]],
+      PlInt: [17.105, [Validators.required, Validators.min(0)]],
+      CxInt: [0.4, [Validators.required, Validators.min(0)]],
+      CyInt: [0.4, [Validators.required, Validators.min(0)]]
     });
     this.prepararDatosGrafico();
   }
@@ -246,5 +245,91 @@ export class InicioComponent implements OnInit {
     this.mostrarModal = false;
   }
 
+  private preparePDFData(reportName: string): ZapataCombinadaCalculationData {
+    return {
+      input: this.informations.value,
+      response: this.response,
+      metadata: {
+        projectName: reportName,
+        date: new Date(),
+        location: 'Ubicación del Proyecto'
+      }
+    };
+  }
+
+  async generatePDFReport(): Promise<void> {
+    try {
+      const reportName = await this.getReportNameFromUser();
+      if (!reportName) return;
+
+      const pdfData = this.preparePDFData(reportName);
+
+      this.showLoadingAlert('Generando PDF...', 'Por favor espere mientras se genera su reporte');
+
+      await this.pdfGenerator.generatePDF({
+        template: this.pdfTemplate,
+        data: pdfData,
+        showProgress: false
+      });
+
+      this.showSuccessAlert('¡PDF Generado!', 'El reporte se ha descargado exitosamente.');
+
+    } catch (error) {
+      console.error('Error generando PDF:', error);
+      this.showErrorAlert('Error al generar PDF', 'Hubo un problema al generar el reporte. Intente nuevamente.');
+    }
+  }
+  private showLoadingAlert(title: string, text: string): void {
+    Swal.fire({
+      title,
+      text,
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+  }
+  private showSuccessAlert(title: string, text: string): void {
+    Swal.fire({
+      icon: 'success',
+      title,
+      text,
+      timer: 2000,
+      showConfirmButton: false
+    });
+  }
+  private showErrorAlert(title: string, text: string): void {
+    Swal.fire({
+      icon: 'error',
+      title,
+      text,
+      confirmButtonText: 'Intentar de nuevo',
+      confirmButtonColor: '#dc3545'
+    });
+  }
+  private async getReportNameFromUser(): Promise<string | null> {
+    const { value: reportName } = await Swal.fire({
+      title: 'Nombre del Reporte',
+      text: 'Ingrese el nombre para su reporte PDF:',
+      input: 'text',
+      inputValue: 'Proyecto Zapata Cuadrada',
+      inputPlaceholder: 'Ej: Proyecto Edificio Central',
+      showCancelButton: true,
+      confirmButtonText: 'Generar PDF',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#2c5aa0',
+      cancelButtonColor: '#6c757d',
+      inputValidator: (value) => {
+        if (!value || value.trim().length === 0) {
+          return 'Por favor ingrese un nombre para el reporte';
+        }
+        if (value.trim().length < 3) {
+          return 'El nombre debe tener al menos 3 caracteres';
+        }
+        return null;
+      }
+    });
+    return reportName || null;
+  }
 }
 
