@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://backing-iwik.onrender.com/api'
+  apiUrl: 'https://backing-iwik.onrender.com/api'
 };
