@@ -401,11 +401,11 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
           <div style="font-family: 'Times New Roman', serif; line-height: 1.2; margin-bottom: 15px;">
            <p style="margin: 5px 0;">Pu<sub>Ext</sub> = ${data.response.response.PuExt} </p>
            <p style="margin: 5px 0;">Pu<sub>Int</sub> = ${data.response.response.PuInt} </p>
-           <strong>Pu<sub>MaxExt</sub> =  Φ * 0.85 * F<sub>c</sub> * C<sub>x</sub> * C<sub>y</sub></strong>
+           <strong>Pu<sub>Max</sub> =  Φ * 0.85 * F<sub>c</sub> * C<sub>x</sub> * C<sub>y</sub></strong>
            <p style="margin: 5px 0;">Pu<sub>MaxExt</sub> =  (0.7 * 0.85 * ${data.input.Fc} Kg/cm² * ${data.input.CxExt * 100} cm * ${data.input.CyExt * 100} cm) / 1000 Ton/kgf = ${data.response.response.PuMaxExt} Ton </p>
            <p style="margin: 5px 0;">Pu<sub>MaxInt</sub> =  (0.7 * 0.85 * ${data.input.Fc} Kg/cm² * ${data.input.CxInt * 100} cm * ${data.input.CyInt * 100} cm) / 1000 Ton/kgf = ${data.response.response.PuMaxInt} Ton </p>
-           <p style="margin: 5px 0;">Pu<sub>Ext</sub> =  ${data.response.response.PuExt} < ${data.response.response.PuMaxExt} OK</p>
-           <p style="margin: 5px 0;">Pu<sub>Int</sub> =  ${data.response.response.PuInt} < ${data.response.response.PuMaxInt} OK</p>
+           <p style="font-weight: bold; margin: 5px 0;">Pu<sub>MaxExt</sub> =  ${data.response.response.PuExt} < ${data.response.response.PuMaxExt} OK</p>
+           <p style="font-weight: bold; margin: 5px 0;">Pu<sub>MaxInt</sub> =  ${data.response.response.PuInt} < ${data.response.response.PuMaxInt} OK</p>
            </div>
         </div>
         </div>
@@ -428,9 +428,19 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
           <h4 style="margin-bottom: 10px;">Paso 2: Area requerida.</h4>
           <div style="font-family: 'Times New Roman', serif; line-height: 1.2; margin-bottom: 15px;">
            <p style="margin: 5px 0;">Factor de seguridad 1.5 </p>
-           <strong> ρ = Pu<sub>MaxInt</sub> Ton / 1.5 </strong>
-           <strong> ρ = ${data.response.response.PuMaxInt} Ton / 1.5  = ${data.response.response.PuMaxInt / 1.5} Ton </strong>
-           <p style="margin: 5px 0;">A =  ${data.response.response.PuMaxInt / 1.5} Ton / ${data.input.Qa} Ton/m² = ${data.response.response.A} m²</p>
+           <strong> ρ<sub>Servicio</sub> = Pu<sub>MaxInt</sub> Ton / 1.5 </strong>
+           <p style="margin: 5px 0;"> ρ<sub>Servicio</sub> = ${data.response.response.PuMaxInt} Ton / 1.5  = ${data.response.response.PuMaxInt / 1.5} Ton </p>
+           <strong> R = Pu<sub>Ext</sub> + Pu<sub>Int</sub> = ${data.response.response.R} Ton </strong>
+           <strong> X<sub>1</sub> = Pu<sub>Int</sub> * Lz / R Ton </strong>
+           <p style="margin: 5px 0;"> X<sub>1</sub> = ${data.response.response.PuInt} Ton * ${data.input.Lz} m / ${data.response.response.R} Ton = ${data.response.response.X1} m </p>
+           <strong> X<sub>2</sub> = X<sub>1</sub> - Lz </strong>
+           <p style="margin: 5px 0;"> X<sub>2</sub> = ${data.response.response.X1} m - ${data.input.Lz} = ${data.response.response.X2}</p>
+           <strong> L = 2 * (Cx<sub>Ext</sub> / 2) X<sub>1</sub></strong>
+           <p style="margin: 5px 0;"> L = 2 * ( ${data.input.CxExt} m / 2) - ${data.response.response.X1} m = ${data.response.response.L} m </p>
+           <strong> A<sub>min</sub> =  ρ<sub>Servicio</sub> / Q<sub>a</sub> = ${data.response.response.A} m² </strong>
+           <p style="font-weight: bold; margin: 5px 0;"> B = A<sum>min</sum> / L= ${data.response.response.B} m </P>
+           <strong> Q<sub>u</sub> =  (1.2 * (Pd<sub>Ext</sub> + Pd<sub>Int</sub>) + 1.6 * (Pl<sub>Ext</sub> + Pl<sub>Int</sub>)) / A<sum>min</sum> </strong>
+           <p style="font-weight: bold; margin: 5px 0;"> Q<sub>u</sub> = (1.2 * (${data.input.PdExt} + ${data.input.PdInt}) + 1.6 * (${data.input.PlExt} + ${data.input.PlInt})) / ${data.response.response.A} m² </P>
           </div>
         </div>
         <div class= "paso3">
