@@ -106,7 +106,7 @@ export class PDFGeneratorService {
   private addCanvasToPDF(doc: jsPDF, canvas: HTMLCanvasElement, pageOptions: PDFPageOptions): void {
     const margins = {
       left: pageOptions.margins?.left || 10,
-      top: pageOptions.margins?.top || 10,
+      top: 5,
       right: pageOptions.margins?.right || 10,
       bottom: pageOptions.margins?.bottom || 10
     };

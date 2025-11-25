@@ -22,13 +22,14 @@ import {
   LoadingState,
   ApiResponse 
 } from '../models/auth.model';
+import { environment } from 'src/environments/environment.prod';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private readonly CONFIG: AuthConfig = {
-    apiBaseUrl: 'https://backing-iwik.onrender.com/api',
+    apiBaseUrl: environment.apiUrl,
     tokenKey: 'ing_civil_token',
     refreshTokenKey: 'ing_civil_refresh_token',
     tokenExpirationBuffer: 5 // 5 minutos antes de expirar

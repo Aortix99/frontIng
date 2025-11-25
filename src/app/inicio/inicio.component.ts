@@ -253,8 +253,17 @@ export class InicioComponent implements OnInit {
         projectName: reportName,
         date: new Date(),
         location: 'Ubicación del Proyecto'
-      }
+      },
+      chartImage: this.getChartAsBase64(),
+      chartPoints: this.data?.datasets?.[0]?.data || []
     };
+  }
+
+  private getChartAsBase64(): string {
+    if (this.chart && this.chart.canvas) {
+      return this.chart.canvas.toDataURL('image/png');
+    }
+    return '';
   }
 
   async generatePDFReport(): Promise<void> {
