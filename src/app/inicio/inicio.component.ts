@@ -18,6 +18,7 @@ import { PDFGeneratorService } from '../services/pdf-generator-clean.service';
 })
 export class InicioComponent implements OnInit {
   public chart: Chart | undefined;
+  public chartMomento: Chart | undefined;
   buscar = '';
   InicioV: Array<Inicio> = [];
   myForm!: FormGroup;
@@ -28,6 +29,7 @@ export class InicioComponent implements OnInit {
   fc: number = 0;
   longitude: number = 0;
   data: any;
+  dataMomento: any;
   response: any;
   // Propiedades para la modal
   mostrarModal: boolean = false;
@@ -61,12 +63,30 @@ export class InicioComponent implements OnInit {
     this.data = {
       labels: [1, 2, 3, 4, 5],
       datasets: [{
-        label: 'Ventas',
+        label: 'Cortante',
         data: [12, 19, 3, 5, 2],
         fill: false,
         borderColor: 'rgba(75, 192, 192, 1)',
         backgroundColor: 'rgba(75, 192, 192, 0.2)',
         tension: 0.1
+      }]
+    }
+
+    // Datos iniciales para la gráfica de momento
+    this.dataMomento = {
+      datasets: [{
+        label: 'Diagrama de Momento',
+        data: [
+          { x: 1, y: 8 },
+          { x: 2, y: 15 },
+          { x: 3, y: 6 },
+          { x: 4, y: 10 },
+          { x: 5, y: 4 }
+        ],
+        fill: true,
+        borderColor: 'rgba(255, 99, 132, 1)',
+        backgroundColor: 'rgba(255, 99, 132, 0.1)',
+        tension: 0.4
       }]
     }
   }
@@ -75,7 +95,6 @@ export class InicioComponent implements OnInit {
     if (this.chart) {
       this.chart.destroy();
     }
-
 
     setTimeout(() => {
       const canvas = document.getElementById('MyChart') as HTMLCanvasElement;
@@ -164,6 +183,111 @@ export class InicioComponent implements OnInit {
     }, 100);
   }
 
+  crearGraficoMomento() {
+    if (this.chartMomento) {
+      this.chartMomento.destroy();
+    }
+
+    setTimeout(() => {
+      const canvas = document.getElementById('MomentoChart') as HTMLCanvasElement;
+      if (canvas) {
+        this.chartMomento = new Chart(canvas, {
+          type: 'line',
+          data: this.dataMomento,
+          options: {
+            responsive: true,
+            plugins: {
+              title: {
+                display: true,
+                text: 'Diagrama de Momento'
+              },
+              legend: {
+                display: true
+              },
+              datalabels: {
+                display: true,
+                color: 'black',
+                font: {
+                  weight: 'bold'
+                },
+                formatter: function (value: any) {
+                  return `${value.y.toFixed(2)}`;
+                }
+              }
+            },
+            elements: {
+              line: {
+                tension: 0.4, // Hace las líneas más curvas
+                borderWidth: 3
+              },
+              point: {
+                radius: 6,
+                hoverRadius: 8,
+                backgroundColor: 'rgba(255, 99, 132, 1)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 2
+              }
+            },
+            scales: {
+              x: {
+                type: 'linear',
+                position: 'bottom',
+                title: {
+                  display: true,
+                  text: 'Distancia (m)'
+                },
+                grid: {
+                  color: function (context) {
+                    if (context.tick.value === 0) {
+                      return '#000000';
+                    }
+                    return 'rgba(0, 0, 0, 0.1)';
+                  },
+                  lineWidth: function (context) {
+                    if (context.tick.value === 0) {
+                      return 3;
+                    }
+                    return 1;
+                  }
+                },
+                ticks: {
+                  callback: function (value) {
+                    return value;
+                  }
+                }
+              },
+              y: {
+                title: {
+                  display: true,
+                  text: 'Momento (kN·m)'
+                },
+                grid: {
+                  color: function (context) {
+                    if (context.tick.value === 0) {
+                      return '#000000';
+                    }
+                    return 'rgba(0, 0, 0, 0.1)';
+                  },
+                  lineWidth: function (context) {
+                    if (context.tick.value === 0) {
+                      return 3;
+                    }
+                    return 1;
+                  }
+                },
+                ticks: {
+                  callback: function (value) {
+                    return value;
+                  }
+                }
+              }
+            }
+          }
+        });
+      }
+    }, 100);
+  }
+
   calculate() {
     // Convertir todos los valores a números antes de enviar
     const formData = { ...this.informations.value };
@@ -187,11 +311,13 @@ export class InicioComponent implements OnInit {
         }
         this.InicioV = datos.response;
         this.actualizarDatosGrafico(datos.responseGrafica);
+        this.actualizarDatosMomento(datos.response);
         this.tituloModal = 'Resultados del Cálculo';
         this.tamanoModal = 'large';
         this.mostrarModal = true;
 
         this.crearGrafico();
+        this.crearGraficoMomento();
       },
       error: (error) => {
         console.error('Error en la petición:', error);
@@ -208,7 +334,7 @@ export class InicioComponent implements OnInit {
 
 
   actualizarDatosGrafico(resultados: any) {
-    // Convertir los datos D,V a formato {x, y} para el scatter plot
+    // Convertir los datos D,V a formato {x, y} para el scatter plot de cortante
     const puntosXY = resultados.D.map((x: number, index: number) => ({
       x: x,
       y: resultados.V[index]
@@ -216,7 +342,7 @@ export class InicioComponent implements OnInit {
 
     this.data = {
       datasets: [{
-        label: 'Resultados de Cálculo',
+        label: 'Resultados de Cálculo - Cortante',
         data: puntosXY,
         borderColor: 'rgba(75, 192, 192, 1)',
         backgroundColor: 'rgba(75, 192, 192, 0.8)',
@@ -228,6 +354,35 @@ export class InicioComponent implements OnInit {
     }
   }
 
+  actualizarDatosMomento(datosResponse: any) {
+    // Usar los datos reales de momento que vienen del backend
+    if (datosResponse && datosResponse.graficaMomento) {
+      const { x, y } = datosResponse.graficaMomento;
+      
+      // Ordenar los puntos por valor X para una mejor visualización
+      const puntosOrdenados = x.map((xVal: number, index: number) => ({
+        x: xVal,
+        y: y[index]
+      })).sort((a: { x: number; y: number }, b: { x: number; y: number }) => a.x - b.x);
+
+      this.dataMomento = {
+        datasets: [{
+          label: 'Diagrama de Momento',
+          data: puntosOrdenados,
+          borderColor: 'rgba(255, 99, 132, 1)',
+          backgroundColor: 'rgba(255, 99, 132, 0.1)',
+          fill: true, // Rellena el área bajo la curva
+          tension: 0.4, // Curva suave
+          pointRadius: 6,
+          pointHoverRadius: 8,
+          pointBackgroundColor: 'rgba(255, 99, 132, 1)',
+          pointBorderColor: 'rgba(255, 255, 255, 1)',
+          pointBorderWidth: 2
+        }]
+      }
+    }
+  }
+
   // Métodos para manejar la modal
   abrirModalEjemplo() {
     this.tituloModal = 'Reporte de la zapata combinada';
@@ -235,12 +390,17 @@ export class InicioComponent implements OnInit {
     this.mostrarModal = true;
 
     this.crearGrafico();
+    this.crearGraficoMomento();
   }
 
   cerrarModal() {
     if (this.chart) {
       this.chart.destroy();
       this.chart = undefined;
+    }
+    if (this.chartMomento) {
+      this.chartMomento.destroy();
+      this.chartMomento = undefined;
     }
     this.mostrarModal = false;
   }
@@ -255,13 +415,22 @@ export class InicioComponent implements OnInit {
         location: 'Ubicación del Proyecto'
       },
       chartImage: this.getChartAsBase64(),
-      chartPoints: this.data?.datasets?.[0]?.data || []
+      chartPoints: this.data?.datasets?.[0]?.data || [],
+      graficaMomento: this.getMomentoChartAsBase64(),
+      momentoPoints: this.dataMomento?.datasets?.[0]?.data || []
     };
   }
 
   private getChartAsBase64(): string {
     if (this.chart && this.chart.canvas) {
       return this.chart.canvas.toDataURL('image/png');
+    }
+    return '';
+  }
+
+  private getMomentoChartAsBase64(): string {
+    if (this.chartMomento && this.chartMomento.canvas) {
+      return this.chartMomento.canvas.toDataURL('image/png');
     }
     return '';
   }

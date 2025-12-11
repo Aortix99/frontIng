@@ -109,7 +109,11 @@
   <!-- Modal Reutilizable -->
   <app-modal [isOpen]="mostrarModal" [title]="tituloModal" [size]="tamanoModal" (closeModal)="cerrarModal()">
 
+    <h5>Gráfica de Cortante</h5>
     <canvas id="MyChart"></canvas>
+    
+    <h5 style="margin-top: 30px;">Gráfica de Momento</h5>
+    <canvas id="MomentoChart"></canvas>
 
     <!-- Diagrama de la Zapata -->
 
