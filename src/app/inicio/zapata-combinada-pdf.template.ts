@@ -197,10 +197,10 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
             margin-top: 35%;
           }
           .pdf-header-3 {
-            margin-top: 20%;
+            margin-top: 11%;
           }
           .pdf-header-4 {
-            margin-top: 30%;
+            margin-top: 29%;
           }
           .section {
             border-radius: 8px;
@@ -565,21 +565,6 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
            </div>
          </div>
         </div>
-
-        <div class= "paso3">
-         <h4 style="margin-bottom: 10px;">Paso 4: Peralte requerido para el cortante por punzonamiento en dos direcciones.</h4>
-          <div style="margin-top: 10px;">
-            <div style="font-family: 'Times New Roman', serif; line-height: 1.2;">
-              <strong>I = E + Lz - L</strong>
-              <p style="margin: 5px 0; font-weight: bold;"> ${Math.abs(data.response.response.E)} m+ ${Math.abs(data.input.Lz)}m - ${data.response.response.L}m = ${data.response.response.I}m </p> 
-              <h4 style="margin: 10px 0 5px 0;"> Chequeo de pedestal combinadas.</h4>
-              <p style="margin: 5px 0; font-weight: bold;"> F<sub>2</sub> = ( Pu ) <= 0.85 * 0.65 * ((fc) * (( C<sub>x</sub> * C<sub>y</sub>) * 100)) / 1000 </p>
-              <strong> Externa </strong>
-              <p style="margin: 5px 0;"> ${data.response.response.PuExt} <= 0.85 * 0.65 * ((${Math.abs(data.input.Fc)}) * (( ${data.input.CxExt} * ${data.input.CyExt}) * 100)) / 1000</p>
-              <p style="margin: 5px 0;"> ${data.response.response.PuExt} <=  ${data.response.response.validateExt.calculo} Ok </p>
-            </div>
-          </div>
-        </div>
         <div class="pdf-header-3">
           <table class="header-table">
             <tr>
@@ -595,11 +580,18 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
             </tr>
           </table>
         </div>
+        <div class= "paso3">
+         <h4 style="margin-bottom: 10px;">Paso 4: Peralte requerido para el cortante por punzonamiento en dos direcciones.</h4>
+          <div style="margin-top: 10px;">
+            <div style="font-family: 'Times New Roman', serif; line-height: 1.2;">
+              <strong>I = E + Lz - L</strong>
+              <p style="margin: 5px 0; font-weight: bold;"> ${Math.abs(data.response.response.E)} m+ ${Math.abs(data.input.Lz)}m - ${data.response.response.L}m = ${data.response.response.I}m </p> 
+            </div>
+          </div>
+        </div>
         <div class= "section">
           <div style="margin-top: 10px;">
 <strong> Interna </strong>
-              <p style="margin: 5px 0;"> ${data.response.response.PuInt} <= 0.85 * 0.65 * ((${Math.abs(data.input.Fc)}) * (( ${data.input.CxInt} * ${data.input.CyInt}) * 100)) / 1000</p>
-              <p style="margin: 5px 0;"> ${data.response.response.PuInt} <=  ${data.response.response.validateInt.calculo} Ok </p>
               <p style="margin: 5px 0;"> B<sub>0</sub> = (Cy<sub>Ext</sub> / 2 + ((Pd<sub>Int</sub> + Pl<sub>Int</sub>) * Lz) / (Pd<sub>Ext</sub> + Pl<sub>Ext</sub> + Pd<sub>Int</sub> + Pl<sub>Int</sub>)) </p>
               <p style="margin: 5px 0;"> B<sub>0</sub> = ${data.input.CyExt} / 2 ((${data.input.PdInt} + ${data.input.PlInt}) * ${data.input.Lz}) / (${data.input.PdExt} + ${data.input.PlExt} + ${data.input.PdInt} + ${data.input.PlInt})</p>
               <p style="margin: 5px 0;"> B<sub>0</sub> = ${data.response.response.Bo} </p>
@@ -685,14 +677,14 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
                 Separación entre barras:
               </p>
               ${data.response.response.separacionA1
-                      .slice(0, 3)
-                      .map((item: any) => `<p>Φ#${item.Az} @ ${item.separacion}</p>`)
-                      .join('')}
+        .slice(0, 3)
+        .map((item: any) => `<p>Φ#${item.Az} @ ${item.separacion}</p>`)
+        .join('')}
               
               </div>
           </div>
         </div>
-        <div class="section-result" style="margin-top: 47%;">
+        <div class="section-result" style="margin-top: 56%;">
           <h3 class="section-header">✅ Verificaciones y Validaciones</h3>
           <div class="section-content">
             <ul class="validation-list">
