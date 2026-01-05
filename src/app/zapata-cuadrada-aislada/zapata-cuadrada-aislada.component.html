@@ -33,7 +33,7 @@
       <!-- Datos normales en dos columnas -->
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
         <div class="form-group">
-          <label for="Fc">Resistencia a la compresión del concreto (Fc):</label>
+          <label for="Fc">Resistencia a la compresión del concreto Fc (Psi):</label>
           <input type="text" id="Fc" formControlName="Fc" class="form-control" 
                  (input)="handleNumericInput($event, 10)" 
                  (keydown)="handleKeydown($event, 10)"
@@ -42,7 +42,7 @@
                  required>
           </div>
         <div class="form-group">
-          <label for="Fy">Límite de la fluencia del acero (Fy):</label>
+          <label for="Fy">Límite de la fluencia del acero Fy (Psi):</label>
           <input type="text" id="Fy" formControlName="Fy" class="form-control" 
                  (input)="handleNumericInput($event, 10)" 
                  (keydown)="handleKeydown($event, 10)"
@@ -50,7 +50,7 @@
                  pattern="[0-9]*[.,]?[0-9]*" required>
         </div>
         <div class="form-group">
-          <label for="Pd">Carga muerta (Pd):</label>
+          <label for="Pd">Carga muerta Pd (Kn):</label>
           <input type="text" id="Pd" formControlName="Pd" class="form-control" 
                  (input)="handleNumericInput($event, 10)" 
                  (keydown)="handleKeydown($event, 10)"
@@ -58,7 +58,7 @@
                  pattern="[0-9]*[.,]?[0-9]*" required>
         </div>
         <div class="form-group">
-          <label for="Pl">Carga viva (Pl):</label>
+          <label for="Pl">Carga viva Pl (Kn):</label>
           <input type="text" id="Pl" formControlName="Pl" class="form-control" 
                  (input)="handleNumericInput($event, 10)" 
                  (keydown)="handleKeydown($event, 10)"
@@ -66,7 +66,7 @@
                  pattern="[0-9]*[.,]?[0-9]*" required>
         </div>
         <div class="form-group">
-          <label for="Wc">Peso específico del concreto (Wc):</label>
+          <label for="Wc">Peso específico del concreto Wc (Kn/m³):</label>
           <input type="text" id="Wc" formControlName="Wc" class="form-control" 
                  (input)="handleNumericInput($event, 10)" 
                  (keydown)="handleKeydown($event, 10)"
@@ -74,7 +74,7 @@
                  pattern="[0-9]*[.,]?[0-9]*" required>
         </div>
         <div class="form-group">
-          <label for="Cx">Cx:</label>
+          <label for="Cx">Cx (m):</label>
           <input type="text" id="Cx" formControlName="Cx" class="form-control" 
                  (input)="handleNumericInput($event, 10)" 
                  (keydown)="handleKeydown($event, 10)"
@@ -82,7 +82,7 @@
                  pattern="[0-9]*[.,]?[0-9]*" required>
         </div>
         <div class="form-group">
-            <label for="Cy">Cy:</label>
+            <label for="Cy">Cy (m):</label>
           <input type="text" id="Cy" formControlName="Cy" class="form-control" 
                  (input)="handleNumericInput($event, 10)" 
                  (keydown)="handleKeydown($event, 10)"
@@ -90,7 +90,7 @@
                  pattern="[0-9]*[.,]?[0-9]*" required>
         </div>
         <div class="form-group">
-          <label for="Hz">Hz:</label>
+          <label for="Hz">Hz (m):</label>
           <input type="text" id="Hz" formControlName="Hz" class="form-control" 
                  (input)="handleNumericInput($event, 10)" 
                  (keydown)="handleKeydown($event, 10)"
@@ -98,7 +98,7 @@
                  pattern="[0-9]*[.,]?[0-9]*" required>
         </div>
         <div class="form-group">
-          <label for="Ds">Ds:</label>
+          <label for="Ds">Ds (m):</label>
           <input type="text" id="Ds" formControlName="Ds" class="form-control" 
                  (input)="handleNumericInput($event, 10)" 
                  (keydown)="handleKeydown($event, 10)"
@@ -106,7 +106,7 @@
                  pattern="[0-9]*[.,]?[0-9]*" required>
         </div>
         <div class="form-group">
-          <label for="Ws">Peso específico del suelo (Ws):</label>
+          <label for="Ws">Peso específico del suelo Ws (Kn/m²):</label>
           <input type="text" id="Ws" formControlName="Ws" class="form-control" 
                  (input)="handleNumericInput($event, 10)" 
                  (keydown)="handleKeydown($event, 10)"
@@ -114,7 +114,7 @@
                  pattern="[0-9]*[.,]?[0-9]*" required>
         </div>
         <div class="form-group">
-          <label for="Qa">Presión admisible del suelo (Qa):</label>
+          <label for="Qa">Presión admisible del suelo Qa (Kn/m²):</label>
           <input type="text" id="Qa" formControlName="Qa" class="form-control" 
                  (input)="handleNumericInput($event, 10)" 
                  (keydown)="handleKeydown($event, 10)"
@@ -122,7 +122,7 @@
                  pattern="[0-9]*[.,]?[0-9]*" required>
         </div>
         <div class="form-group">
-          <label for="Rc">Recubrimiento (Rc):</label>
+          <label for="Rc">Recubrimiento (Cm):</label>
           <input type="text" id="Rc" formControlName="Rc" class="form-control" 
                  (input)="handleNumericInput($event, 10)" 
                  (keydown)="handleKeydown($event, 10)"
@@ -130,7 +130,7 @@
                  pattern="[0-9]*[.,]?[0-9]*" required>
         </div>
         <div class="form-group">
-          <label for="Az">Diámetro de la barra (Az):</label>
+          <label for="Az">Designacion de barra Nº:</label>
           <input type="text" id="Az" formControlName="Az" class="form-control" 
                  (input)="handleNumericInput($event, 10)" 
                  (keydown)="handleKeydown($event, 10)"

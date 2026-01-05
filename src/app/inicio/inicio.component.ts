@@ -490,7 +490,7 @@ export class InicioComponent implements OnInit {
       title: 'Nombre del Reporte',
       text: 'Ingrese el nombre para su reporte PDF:',
       input: 'text',
-      inputValue: 'Proyecto Zapata Cuadrada',
+      inputValue: 'Proyecto Zapata Combinada',
       inputPlaceholder: 'Ej: Proyecto Edificio Central',
       showCancelButton: true,
       confirmButtonText: 'Generar PDF',

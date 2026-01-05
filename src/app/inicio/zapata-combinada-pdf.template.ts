@@ -5,6 +5,7 @@
 
 import { Injectable } from '@angular/core';
 import { PDFTemplate, PDFPageOptions } from '../services/pdf-generator.service';
+import { LOGO_BASE64 } from '../imgBase64/img';
 
 export interface ZapataCombinadaCalculationData {
   // Datos de entrada
@@ -84,6 +85,24 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
             margin-bottom: 20px;
             border-bottom: 2px solid #2c5aa0;
             padding-bottom: 10px;
+          }
+          .logo-cell {
+            width: 15%;
+            background-color: #f8f9fa;
+            text-align: center;
+            border-right: 1px solid #ddd;
+            padding: 0;           /* 🔴 clave */
+          }
+
+          .logo-cell img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* o cover */
+            display: block;
+          }
+
+          .logo-placeholder {
+            display: none;
           }
 
           .header-table {
@@ -378,7 +397,7 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
           <table class="header-table">
             <tr>
               <td class="logo-cell">
-                <div class="logo-placeholder">[LOGO]</div>
+                <img src="data:image/png;base64,${LOGO_BASE64}" alt="Logo" />
               </td>
               <td class="title-cell">
                 <div class="main-title">${data.metadata.projectName}</div>
@@ -482,7 +501,7 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
           <table class="header-table">
             <tr>
               <td class="logo-cell">
-                <div class="logo-placeholder">[LOGO]</div>
+                <img src="data:image/png;base64,${LOGO_BASE64}" alt="Logo" />
               </td>
               <td class="title-cell">
                 <div class="subtitle">Reporte de cálculo estructural para zapata combinada</div>
@@ -568,7 +587,7 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
           <table class="header-table">
             <tr>
               <td class="logo-cell">
-                <div class="logo-placeholder">[LOGO]</div>
+                <img src="data:image/png;base64,${LOGO_BASE64}" alt="Logo" />
               </td>
               <td class="title-cell">
                 <div class="subtitle">Reporte de cálculo estructural para zapata combinada</div>
@@ -641,7 +660,7 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
           <table class="header-table">
             <tr>
               <td class="logo-cell">
-                <div class="logo-placeholder">[LOGO]</div>
+                <img src="data:image/png;base64,${LOGO_BASE64}" alt="Logo" />
               </td>
               <td class="title-cell">
                 <div class="subtitle">Reporte de cálculo estructural para zapata combinada</div>
@@ -748,9 +767,9 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
 
         <!-- Footer -->
         <div class="footer">
-          <p><strong>Sistema de Cálculos Estructurales - Ing Civil</strong></p>
-          <p>Este documento fue generado automáticamente el ${currentDate}</p>
-          <p>Los cálculos están basados en normativas técnicas vigentes</p>
+          <p><strong>SS INGENIERIA</strong> | Potenciado por System Structur</p>
+          <p>Reporte generado automáticamente. El ingeniero responsable debe validar los resultados según la NSR-10 / ACI 318.</p>
+          <p>Soporte y Ventas: <strong>(+57) 3023631005</strong> • Acceso Web: <strong>front-ing.vercel.app</strong></p>
         </div>
       </body>
       </html>
