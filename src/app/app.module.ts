@@ -45,6 +45,7 @@ import { AuthGuard } from './guards/auth.guard';
 
 // Interceptores
 import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { ZapataExcentricaVigaAmarreComponent } from './zapata-excentrica-viga-amarre/zapata-excentrica-viga-amarre.component';
 
 @NgModule({
   declarations: [
@@ -69,7 +70,8 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
     PacientePipe,
 
     // Componentes compartidos
-    ModalComponent
+    ModalComponent,
+      ZapataExcentricaVigaAmarreComponent
   ],
   imports: [
     // Módulos de Angular

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en" class="html">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <div class="titulo">
+    <title>ZAPATA EXCÉNTRICA CON VIGA DE AMARRE</title>
+  </div>
+</head>
+
+<body class="body" style="background-color: white;">
+
+  <!-- Header con imagen y degradado -->
+  <div class="header">
+    <h1>ZAPATA EXCÉNTRICA CON VIGA DE AMARRE</h1>
+    <p>Sistema de cálculos estructurales avanzados</p>
+  </div>
+
+  <div style="display: flex; gap: 30px; align-items: flex-start;">
+    <!-- Formulario para ingresar datos -->
+    <div class="columna-form-container" style="margin-left: 15px;">
+      <form [formGroup]="informations" (ngSubmit)="calculate()">
+        <!-- Datos generales -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+          <h3 style="grid-column: 1 / -1;">Propiedades del Material</h3>
+          
+          <div class="form-group">
+            <label for="Fc">Resistencia a la compresión Fc (Kgf/cm²):</label>
+            <input type="number" id="Fc" formControlName="Fc" class="form-control" step="0.1">
+          </div>
+          <div class="form-group">
+            <label for="Fy">Límite de fluencia Fy (Kgf/cm²):</label>
+            <input type="number" id="Fy" formControlName="Fy" class="form-control" step="0.1">
+          </div>
+          <div class="form-group">
+            <label for="Qa">Presión admisible del suelo Qa (Ton/m²):</label>
+            <input type="number" id="Qa" formControlName="Qa" class="form-control" step="0.1">
+          </div>
+          <div class="form-group">
+            <label for="Hz">Altura de la zapata Hz (cm):</label>
+            <input type="number" id="Hz" formControlName="Hz" class="form-control" step="1">
+          </div>
+        </div>
+
+        <!-- Dimensiones de la viga de amarre -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
+          <h3 style="grid-column: 1 / -1;">Viga de Amarre</h3>
+          
+          <div class="form-group">
+            <label for="Lz">Distancia entre columnas Lz (m):</label>
+            <input type="number" id="Lz" formControlName="Lz" class="form-control" step="0.1">
+          </div>
+          <div class="form-group">
+            <label for="Av">Ancho de la viga Av (cm):</label>
+            <input type="number" id="Av" formControlName="Av" class="form-control" step="1">
+          </div>
+          <div class="form-group">
+            <label for="Hv">Altura de la viga Hv (cm):</label>
+            <input type="number" id="Hv" formControlName="Hv" class="form-control" step="1">
+          </div>
+          <div class="form-group">
+            <label for="ramas">Número de ramas de estribos:</label>
+            <input type="number" id="ramas" formControlName="ramas" class="form-control" step="1">
+          </div>
+        </div>
+
+        <!-- Columna Externa -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
+          <h3 style="grid-column: 1 / -1;">Columna Externa (Excéntrica)</h3>
+          
+          <div class="form-group">
+            <label for="PuExt">Carga mayorada PuExt (Ton):</label>
+            <input type="number" id="PuExt" formControlName="PuExt" class="form-control" step="0.1">
+          </div>
+          <div class="form-group">
+            <label for="CxExt">Dimensión X del pedestal CxExt (cm):</label>
+            <input type="number" id="CxExt" formControlName="CxExt" class="form-control" step="1">
+          </div>
+          <div class="form-group">
+            <label for="CyExt">Dimensión Y del pedestal CyExt (cm):</label>
+            <input type="number" id="CyExt" formControlName="CyExt" class="form-control" step="1">
+          </div>
+        </div>
+
+        <!-- Columna Interna -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
+          <h3 style="grid-column: 1 / -1;">Columna Interna</h3>
+          
+          <div class="form-group">
+            <label for="PuInt">Carga mayorada PuInt (Ton):</label>
+            <input type="number" id="PuInt" formControlName="PuInt" class="form-control" step="0.1">
+          </div>
+          <div class="form-group">
+            <label for="CxInt">Dimensión X del pedestal CxInt (cm):</label>
+            <input type="number" id="CxInt" formControlName="CxInt" class="form-control" step="1">
+          </div>
+          <div class="form-group">
+            <label for="CyInt">Dimensión Y del pedestal CyInt (cm):</label>
+            <input type="number" id="CyInt" formControlName="CyInt" class="form-control" step="1">
+          </div>
+        </div>
+
+        <!-- Refuerzo de Acero -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
+          <h3 style="grid-column: 1 / -1;">Refuerzo de Acero</h3>
+          
+          <div class="form-group">
+            <label for="Nbarras">Barras de Estribos (Nbarras):</label>
+            <select id="Nbarras" formControlName="Nbarras" class="form-control">
+              <option [ngValue]="{ data: 71, item: '3/8' }">3/8 - 71</option>
+              <option [ngValue]="{ data: 79, item: '1/2' }">1/2 - 79</option>
+              <option [ngValue]="{ data: 99, item: '5/8' }">5/8 - 99</option>
+              <option [ngValue]="{ data: 127, item: '3/4' }">3/4 - 127</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="zapataExtLarga">Acero Zapata Externa (Larga):</label>
+            <select id="zapataExtLarga" formControlName="zapataExtLarga" class="form-control">
+              <option [ngValue]="{ area: 1.99, Nomen: '5/8' }">5/8 - 1.99</option>
+              <option [ngValue]="{ area: 2.84, Nomen: '3/4' }">3/4 - 2.84</option>
+              <option [ngValue]="{ area: 3.87, Nomen: '7/8' }">7/8 - 3.87</option>
+              <option [ngValue]="{ area: 5.07, Nomen: '1' }">1 - 5.07</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="zapataExtCorta">Acero Zapata Externa (Corta):</label>
+            <select id="zapataExtCorta" formControlName="zapataExtCorta" class="form-control">
+              <option [ngValue]="{ area: 1.29, Nomen: '1/2' }">1/2 - 1.29</option>
+              <option [ngValue]="{ area: 1.99, Nomen: '5/8' }">5/8 - 1.99</option>
+              <option [ngValue]="{ area: 2.84, Nomen: '3/4' }">3/4 - 2.84</option>
+              <option [ngValue]="{ area: 3.87, Nomen: '7/8' }">7/8 - 3.87</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="zapataInt">Acero Zapata Interna:</label>
+            <select id="zapataInt" formControlName="zapataInt" class="form-control">
+              <option [ngValue]="{ area: 1.29, Nomen: '1/2' }">1/2 - 1.29</option>
+              <option [ngValue]="{ area: 1.99, Nomen: '5/8' }">5/8 - 1.99</option>
+              <option [ngValue]="{ area: 2.84, Nomen: '3/4' }">3/4 - 2.84</option>
+              <option [ngValue]="{ area: 3.87, Nomen: '7/8' }">7/8 - 3.87</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="vgNroBarra">Acero Viga de Amarre (vgNroBarra):</label>
+            <select id="vgNroBarra" formControlName="vgNroBarra" class="form-control">
+              <option [ngValue]="{ area: 1.29, Nomen: '1/2' }">1/2 - 1.29</option>
+              <option [ngValue]="{ area: 1.99, Nomen: '5/8' }">5/8 - 1.99</option>
+              <option [ngValue]="{ area: 2.84, Nomen: '3/4' }">3/4 - 2.84</option>
+              <option [ngValue]="{ area: 3.87, Nomen: '7/8' }">7/8 - 3.87</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="margin-top: 30px;">
+          <button type="submit" class="btn-submit">Calcular</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Panel de resultados -->
+    <div class="resultados-container" style="margin-right: 15px; flex: 1;">
+      <div *ngIf="response" class="resultados">
+        <h2>Resultados del Cálculo</h2>
+        
+        <div *ngIf="response.error" class="alert alert-error">
+          <strong>Error:</strong> {{ response.message }}
+        </div>
+
+        <div *ngIf="!response.error" class="resultados-contenido">
+          <!-- Dimensiones de la zapata -->
+          <div class="resultado-grupo">
+            <h3>Dimensiones Finales de las Zapatas</h3>
+            <div class="resultado-item">
+              <span>Zapata Externa - Largo (L):</span>
+              <strong>{{ response.LfinalExt?.resultado | number:'1.2-2' }} m</strong>
+            </div>
+            <div class="resultado-item">
+              <span>Zapata Externa - Ancho (B):</span>
+              <strong>{{ response.BfinalExt?.resultado | number:'1.2-2' }} m</strong>
+            </div>
+            <div class="resultado-item">
+              <span>Zapata Interna - Largo (L):</span>
+              <strong>{{ response.LfinalInt?.resultado | number:'1.2-2' }} m</strong>
+            </div>
+            <div class="resultado-item">
+              <span>Zapata Interna - Ancho (B):</span>
+              <strong>{{ response.BfinalInt?.resultado | number:'1.2-2' }} m</strong>
+            </div>
+          </div>
+
+          <!-- Presiones y reacciones -->
+          <div class="resultado-grupo">
+            <h3>Análisis de Presiones</h3>
+            <div class="resultado-item">
+              <span>Reacción Externa (Re):</span>
+              <strong>{{ response.Re_Servicio?.resultado | number:'1.2-2' }} Ton</strong>
+            </div>
+            <div class="resultado-item">
+              <span>Reacción Interna (Ri):</span>
+              <strong>{{ response.Ri_Servicio?.resultado | number:'1.2-2' }} Ton</strong>
+            </div>
+          </div>
+
+          <!-- Validaciones de corte -->
+          <div class="resultado-grupo">
+            <h3>Validaciones de Cortante</h3>
+            <div class="resultado-item">
+              <span>Cortante en viga (ϕVc):</span>
+              <strong>{{ response.delta_Vc?.resultado | number:'1.2-2' }} Ton</strong>
+            </div>
+            <div class="resultado-item">
+              <span>Cortante requerido (Vu):</span>
+              <strong>{{ response.arrayDataEjeY?.[2] | number:'1.2-2' }} Ton</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botón para mostrar detalles -->
+        <button (click)="mostrarDetalles()" class="btn-detalles" *ngIf="!response.error">
+          Ver Detalles Completos
+        </button>
+      </div>
+
+      <div *ngIf="!response" class="sin-resultados">
+        <p>Ingrese los datos y presione "Calcular" para ver los resultados</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gráficas -->
+  <div *ngIf="response && !response.error" style="margin-top: 40px; padding: 20px;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+      <div>
+        <canvas id="MyChart"></canvas>
+      </div>
+      <div>
+        <canvas id="MomentoChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de detalles -->
+  <div *ngIf="mostrarModal" class="modal-overlay" (click)="cerrarModal()" role="dialog" aria-modal="true">
+    <div class="modal-contenido" (click)="$event.stopPropagation()" role="document">
+      <div class="modal-header">
+        <h2>Detalles Completos del Cálculo</h2>
+        <button class="btn-cerrar" (click)="cerrarModal()" type="button">✕</button>
+      </div>
+      <div class="modal-body">
+        <pre>{{ response | json }}</pre>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>

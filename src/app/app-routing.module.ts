@@ -15,6 +15,7 @@ import { AuthGuard, GuestGuard } from './guards/auth.guard';
 // Importar componentes existentes
 import { InicioComponent } from './inicio/inicio.component';
 import { ZapataCuadradaAisladaComponent } from './zapata-cuadrada-aislada/zapata-cuadrada-aislada.component';
+import { ZapataExcentricaVigaAmarreComponent } from './zapata-excentrica-viga-amarre/zapata-excentrica-viga-amarre.component';
 import { WelcomeComponent } from './components/welcome/welcome.component';
 
 // Importar nuevo componente dashboard
@@ -50,6 +51,10 @@ const routes: Routes = [
       {
         path: 'zapata-combinada', 
         component: InicioComponent
+      },
+      {
+        path: 'zapata-excentrica-viga-amarre',
+        component: ZapataExcentricaVigaAmarreComponent
       }
     ]
   },
@@ -83,6 +88,15 @@ const routes: Routes = [
     data: { 
       title: 'Zapata Cuadrada Aislada',
       description: 'Cálculo de zapatas cuadradas aisladas'
+    }
+  },
+  {
+    path: 'zapata-excentrica-viga-amarre',
+    component: ZapataExcentricaVigaAmarreComponent,
+    canActivate: [AuthGuard],
+    data: { 
+      title: 'Zapata Excéntrica con Viga de Amarre',
+      description: 'Cálculo de zapatas excéntricas con viga de amarre'
     }
   },
   {
