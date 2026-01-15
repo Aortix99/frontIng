@@ -97,7 +97,8 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
           }
 
           .logo-cell img {
-            width: 100%;
+            width: 70%;
+            margin-left: 14px;
             height: 100%;
             object-fit: contain; /* o cover */
             display: block;
@@ -591,7 +592,7 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
           <div class="section-content">
             <div class="input-grid">
               <div class="input-item">
-                <div class="input-label">Dimensión de la Zapata (L)</div>
+                <div class="input-label">Dimensión de la Zapata (L, B)</div>
                 <div class="input-value">${data.response?.L || 'N/A'} m</div>
               </div>
               <div class="input-item">

@@ -95,7 +95,8 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
           }
 
           .logo-cell img {
-            width: 100%;
+            width: 70%;
+            margin-left: 14px;
             height: 100%;
             object-fit: contain; /* o cover */
             display: block;

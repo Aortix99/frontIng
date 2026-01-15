@@ -18,7 +18,9 @@ import { Router, ActivatedRoute } from '@angular/router';
         <div class="about-section">
           <h3 class="about-title">¿Quiénes Somos?</h3>
           <p class="about-text">
-            Somos la monda parada
+           Somos tu aliado en el diseño estructural.
+           Desarrollamos software intuitivo creado por ingenieros para ingenieros,
+           diseñado para simplificar cálculos complejos de cimentaciones y optimizar tu flujo de trabajo.
           </p>
         </div>
       </div>
