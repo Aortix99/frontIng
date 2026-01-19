@@ -37,6 +37,7 @@ import { PacientePipe } from './pipe/paciente.pipe';
 
 // Componentes compartidos
 import { ModalComponent } from './shared/modal/modal.component';
+import { PdfReportButtonComponent } from './shared/pdf-report-button/pdf-report-button.component';
 
 
 
@@ -46,6 +47,7 @@ import { AuthGuard } from './guards/auth.guard';
 // Interceptores
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { ZapataExcentricaVigaAmarreComponent } from './zapata-excentrica-viga-amarre/zapata-excentrica-viga-amarre.component';
+import { ZapataAisladaComponent } from './zapata-esquinera/zapata-aislada.component';
 
 @NgModule({
   declarations: [
@@ -71,7 +73,9 @@ import { ZapataExcentricaVigaAmarreComponent } from './zapata-excentrica-viga-am
 
     // Componentes compartidos
     ModalComponent,
-      ZapataExcentricaVigaAmarreComponent
+    PdfReportButtonComponent,
+      ZapataExcentricaVigaAmarreComponent,
+      ZapataAisladaComponent
   ],
   imports: [
     // Módulos de Angular

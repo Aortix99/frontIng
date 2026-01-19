@@ -4,6 +4,8 @@ import { ZapataExcentricaVigaAmarreService } from '../services/zapata-excentrica
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Chart } from 'chart.js/auto';
 import Swal from 'sweetalert2';
+import { PDFGeneratorService } from '../services/pdf-generator.service';
+import { ZapataExcentricaVigaAmarrePDFTemplate, ZapataExcentricaVigaAmarrePDFData } from './zapata-excentrica-viga-amarre-pdf.template';
 
 @Component({
   selector: 'app-zapata-excentrica-viga-amarre',
@@ -21,11 +23,15 @@ export class ZapataExcentricaVigaAmarreComponent implements OnInit {
   mostrarModal: boolean = false;
   tituloModal: string = 'Información del Sistema';
   tamanoModal: 'small' | 'medium' | 'large' = 'medium';
+  // función para el botón reusable
+  preparePDFDataFn = (name: string) => this.preparePDFData(name);
 
   constructor(
     private readonly fb: FormBuilder,
     private readonly http: HttpClient,
-    private readonly zapataService: ZapataExcentricaVigaAmarreService
+    private readonly zapataService: ZapataExcentricaVigaAmarreService,
+    private readonly pdfGenerator: PDFGeneratorService,
+    public readonly pdfTemplate: ZapataExcentricaVigaAmarrePDFTemplate
   ) { }
 
   ngOnInit(): void {
@@ -58,11 +64,11 @@ export class ZapataExcentricaVigaAmarreComponent implements OnInit {
       
       // Acero
       ramas: [2, [Validators.required, Validators.min(0)]],
-      Nbarras: [{ data: 71, item: '3/8' }, Validators.required],
-      zapataExtLarga: [{ area: 1.99, Nomen: '5/8' }, Validators.required],
+      Nbarras: [{ data: 1.29, item: '1/2' }, Validators.required],
+      zapataExtLarga: [{ data: 1.99, item: '5/8' }, Validators.required],
       zapataExtCorta: [{ area: 3.87, Nomen: '7/8' }, Validators.required],
-      zapataInt: [{ area: 1.99, Nomen: '5/8' }, Validators.required],
-      vgNroBarra: [{ area: 1.99, Nomen: '5/8' }, Validators.required]
+      zapataInt: [{ data: 1.99, item: '5/8' }, Validators.required],
+      vgNroBarra: [{ data: 2.84, item: '3/4' }, Validators.required]
     });
   }
 
@@ -379,5 +385,20 @@ export class ZapataExcentricaVigaAmarreComponent implements OnInit {
 
   cerrarModal(): void {
     this.mostrarModal = false;
+  }
+
+  // Estructura de datos para el PDF
+  private preparePDFData(reportName: string): ZapataExcentricaVigaAmarrePDFData {
+    return {
+      input: this.informations?.value,
+      response: this.response,
+      metadata: {
+        projectName: reportName,
+        engineer: 'Ing. Civil',
+        client: 'Cliente',
+        date: new Date(),
+        location: 'Ubicación del Proyecto'
+      }
+    };
   }
 }

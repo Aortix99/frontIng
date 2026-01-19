@@ -7,21 +7,16 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <div class="titulo">
-    <title>ZAPATA CUADRADA SIMPLE</title>
+    <title>ZAPATA ESQUINERA</title>
   </div>
   
-  <!-- Ejemplo de contenedor con imagen y degradado -->
-  <!-- <div class="imagen-con-degradado">
-    <h1>Contenido sobre la imagen con degradado</h1>
-  </div> -->
-
 </head>
 
 <body class="body">
   
   <!-- Header con imagen y degradado -->
   <div class="header">
-    <h1>ZAPATA CUADRADA AISLADA</h1>
+    <h1>ZAPATA ESQUINERA</h1>
     <p>Sistema de cálculos estructurales</p>
   </div>
 
@@ -101,7 +96,7 @@
 
   <!-- Modal Reutilizable -->
   <app-modal [isOpen]="mostrarModal" [title]="tituloModal" [size]="tamanoModal" (closeModal)="cerrarModal()">
-    <h1>Calculo de la zapata aislada centrica exitoso</h1>
+    <h1>Calculo de la zapata esquinera exitoso</h1>
 
     <h2>Cumple las siguientes validaciones</h2>
 
@@ -139,14 +134,13 @@
     <!-- Botones para generar PDF y DXF -->
     <div style="text-align: center; margin-top: 30px; padding: 20px; border-top: 2px solid #e9ecef;">
       <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
-        <app-pdf-report-button
-          [template]="pdfTemplate"
-          [prepareData]="preparePDFDataFn"
-          defaultReportName="Proyecto Zapata Cuadrada"
-          buttonText="📄 Generar Reporte PDF"
-          buttonClass="btn btn-success btn-lg"
-          [showProgress]="false"
-        ></app-pdf-report-button>
+        <button 
+          type="button" 
+          class="btn btn-success btn-lg"
+          (click)="generatePDFReport()"
+          style="padding: 12px 30px; font-size: 16px; font-weight: bold; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+          📄 Generar Reporte PDF
+        </button>
         <button 
           type="button" 
           class="btn btn-primary btn-lg"

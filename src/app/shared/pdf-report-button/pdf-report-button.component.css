@@ -1,0 +1,4 @@
+/* Estilos mínimos; el botón hereda clases del host */
+:host {
+  display: inline-block;
+}

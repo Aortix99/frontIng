@@ -43,6 +43,13 @@
             <span class="nav-text" *ngIf="!sidebarCollapsed">Zapata Cuadrada</span>
           </button>
         </li>
+
+        <li class="nav-item">
+          <button type="button" class="nav-link" (click)="navigateToSection('zapata-aislada')" title="Zapata Esquinera">
+            <span class="nav-icon">📐</span>
+            <span class="nav-text" *ngIf="!sidebarCollapsed">Zapata Esquinera</span>
+          </button>
+        </li>
         
         <li class="nav-item">
           <button type="button" class="nav-link" (click)="navigateToSection('zapata-combinada')" title="Zapata Combinada">

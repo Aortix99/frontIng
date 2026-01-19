@@ -1,0 +1,214 @@
+/* Estilos no utilizados eliminados */
+
+.header {
+  text-align: center;
+  padding: 2rem 0;
+  /* Imagen de fondo con degradado superpuesto */
+  background: 
+    linear-gradient(135deg, rgba(52, 152, 219, 0.8), rgba(41, 128, 185, 0.9)),
+    url('/assets/img/zapata-centrica.png') center/cover;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+  color: white;
+}
+
+.header h1 {
+  font-size: 2.5rem;
+  color: #2c3e50;
+  font-weight: bold;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 0;
+}
+
+
+.parameter-group h3 {
+  color: #2c3e50;
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+  text-align: center;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: bold;
+  color: #34495e;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.form-control {
+  padding: 0.75rem;
+  border: 2px solid rgba(233, 236, 239, 0.6);
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.form-control:focus {
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+  outline: none;
+}
+
+/* Estilos para inputs válidos */
+.form-control:valid:not(:placeholder-shown) {
+  border-color: #28a745;
+  box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.1);
+}
+
+/* Estilos para inputs inválidos */
+.form-control:invalid:not(:placeholder-shown) {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.1);
+}
+
+/* Indicadores visuales para campos requeridos */
+.form-group label::after {
+  content: ' *';
+  color: #dc3545;
+  font-weight: bold;
+}
+
+/* Estilos para mensajes de error */
+.text-danger {
+  color: #dc3545 !important;
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+/* Contador de caracteres eliminado - no se usa */
+
+/* Animación para campos que se llenan */
+.form-control:valid:not(:focus) {
+  border-color: #28a745;
+  animation: field-valid 0.3s ease;
+}
+
+@keyframes field-valid {
+  0% {
+    border-color: #e9ecef;
+  }
+  100% {
+    border-color: #28a745;
+  }
+}
+
+/* .btn-calculate eliminado - no se usa */
+
+.btn {
+  padding: 0.5rem 2rem;
+  font-size: 1rem;
+  border-radius: 12px;
+  text-transform: uppercase;
+  font-weight: bold;
+  cursor: pointer;
+  
+  border: none;
+}
+
+.btn-primary {
+  background: linear-gradient(45deg, #3498db, #2980b9);
+  color: white;
+  box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(45deg, #2980b9, #1f4e79);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+}
+
+.btn-primary:disabled {
+  background: linear-gradient(45deg, #6c757d, #5a6268);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 2px 10px rgba(108, 117, 125, 0.2);
+}
+
+/* Botón activo cuando el formulario es válido */
+.btn-primary.btn-active {
+  background: linear-gradient(45deg, #28a745, #20c997, #17a2b8);
+  color: white;
+  box-shadow: 0 6px 25px rgba(40, 167, 69, 0.4);
+  transform: scale(1.02);
+  animation: pulse-glow 2s infinite;
+}
+
+.btn-primary.btn-active:hover {
+  background: linear-gradient(45deg, #218838, #1e7e34, #138496);
+  transform: scale(1.05) translateY(-2px);
+  box-shadow: 0 8px 30px rgba(40, 167, 69, 0.6);
+}
+
+/* Animación de pulso para el botón activo */
+@keyframes pulse-glow {
+  0% {
+    box-shadow: 0 6px 25px rgba(40, 167, 69, 0.4);
+  }
+  50% {
+    box-shadow: 0 6px 35px rgba(40, 167, 69, 0.6);
+  }
+  100% {
+    box-shadow: 0 6px 25px rgba(40, 167, 69, 0.4);
+  }
+}
+
+/* Estilos de botones no utilizados eliminados */
+
+/* Estilos de lista de columnas eliminados - no se usan en este componente */
+
+.zapata-diagram-modal h4 {
+  color: #2c3e50;
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 18px;
+  font-weight: bold;
+}
+.zapata-svg-modal {
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+  background: white;
+}
+
+.dimension-label-modal {
+  font-size: 12px;
+  fill: #495057;
+  font-weight: bold;
+}
+
+.dimension-label-modal.main-dimension {
+  font-size: 14px;
+  fill: #2c3e50;
+  font-weight: bold;
+}
+
+.load-label-modal {
+  font-size: 11px;
+  fill: #dc3545;
+  font-weight: bold;
+}
+
+/* Estilo para el cuerpo con fondo simple */
+.body {
+  background: white;
+  min-height: 100vh;
+}

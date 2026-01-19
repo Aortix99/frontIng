@@ -21,6 +21,7 @@ import { WelcomeComponent } from './components/welcome/welcome.component';
 // Importar nuevo componente dashboard
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './auth/login/login.component';
+import { ZapataAisladaComponent } from './zapata-esquinera/zapata-aislada.component';
 
 const routes: Routes = [
   // Redirección por defecto
@@ -47,6 +48,10 @@ const routes: Routes = [
       {
         path: 'zapata-cuadrada-aislada',
         component: ZapataCuadradaAisladaComponent
+      },
+      {
+        path: 'zapata-aislada',
+        component: ZapataAisladaComponent
       },
       {
         path: 'zapata-combinada', 
@@ -97,6 +102,15 @@ const routes: Routes = [
     data: { 
       title: 'Zapata Excéntrica con Viga de Amarre',
       description: 'Cálculo de zapatas excéntricas con viga de amarre'
+    }
+  },
+  {
+    path: 'zapata-aislada',
+    component: ZapataAisladaComponent,
+    canActivate: [AuthGuard],
+    data: { 
+      title: 'Zapata Esquinera',
+      description: 'Cálculo de zapatas esquinera'
     }
   },
   {

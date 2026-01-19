@@ -1,33 +1,30 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
-import { zapataCuadradaAislada } from '../services/zapata-cuadrada-simple';
+import { zapataEsquineraService } from '../services/zapata-esquinera';
 import { PDFGeneratorService } from '../services/pdf-generator.service';
-import { ZapataCuadradaPDFTemplate, ZapataCalculationData } from './zapata-cuadrada-pdf.template';
-import { DxfExportService } from './zapata-cuadrada-aislada-dfx';
+import { ZapataCuadradaPDFTemplate, ZapataCalculationData } from '../zapata-cuadrada-aislada/zapata-cuadrada-pdf.template';
+import { DxfExportService } from '../zapata-cuadrada-aislada/zapata-cuadrada-aislada-dfx';
 
 @Component({
-  selector: 'app-zapata-cuadrada-aislada',
-  templateUrl: './zapata-cuadrada-aislada.component.html',
-  styleUrls: ['./zapata-cuadrada-aislada.component.css']
+  selector: 'app-zapata-aislada',
+  templateUrl: './zapata-aislada.component.html',
+  styleUrls: ['./zapata-aislada.component.css']
 })
-export class ZapataCuadradaAisladaComponent implements OnInit {
+export class ZapataAisladaComponent implements OnInit {
   informations!: FormGroup;
   tamanoModal: 'small' | 'medium' | 'large' = 'medium';
   mostrarModal: boolean = false;
   tituloModal: string = 'Información del Sistema';
   response: any;
-  // Función de preparación de datos para el componente reutilizable
-  preparePDFDataFn = (name: string) => this.preparePDFData(name);
 
   constructor(
     private readonly fb: FormBuilder,
-    private readonly zapataCuadradaSimple: zapataCuadradaAislada,
+    private readonly zapataEsquineraService: zapataEsquineraService,
     private readonly pdfGenerator: PDFGeneratorService,
-    public readonly pdfTemplate: ZapataCuadradaPDFTemplate,
+    private readonly pdfTemplate: ZapataCuadradaPDFTemplate,
     private readonly dxfExportService: DxfExportService
   ) { }
-
 
   ngOnInit(): void {
     this.informations = this.fb.group({
@@ -129,8 +126,6 @@ export class ZapataCuadradaAisladaComponent implements OnInit {
     this.mostrarModal = false;
   }
 
-
-
   /**
    * Maneja inputs numéricos con conversión de comas a puntos
    */
@@ -138,36 +133,29 @@ export class ZapataCuadradaAisladaComponent implements OnInit {
     const input = event.target;
     let value = input.value;
 
-    // Permitir solo números, puntos y comas
     value = value.replace(/[^0-9.,]/gi, '');
 
-    // Convertir comas a puntos
     if (value.includes(',')) {
       value = value.replace(/,/g, '.');
     }
 
-    // Permitir solo un punto decimal
     const parts = value.split('.');
     if (parts.length > 2) {
       value = parts[0] + '.' + parts.slice(1).join('');
     }
 
-    // Limitar longitud
     if (value.length > maxLength) {
       value = value.substring(0, maxLength);
     }
 
     input.value = value;
 
-    // Actualizar FormControl
     const controlName = input.getAttribute('formControlName');
     if (controlName) {
       const numericValue = value === '' ? null : parseFloat(value);
       this.informations.get(controlName)?.setValue(isNaN(numericValue as number) ? undefined : numericValue);
     }
   }
-
-
 
   /**
    * Maneja el evento keydown para prevenir entrada excesiva
@@ -176,26 +164,22 @@ export class ZapataCuadradaAisladaComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     const currentValue = input.value || '';
 
-    // Permitir teclas de control
     const controlKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Tab', 'Enter'];
     if (controlKeys.includes(event.key)) {
       return;
     }
 
-    // Permitir solo números, puntos y comas
     const allowedKeys = /[0-9.,]/;
     if (!allowedKeys.test(event.key)) {
       event.preventDefault();
       return;
     }
 
-    // Prevenir múltiples puntos decimales
     if ((event.key === '.' || event.key === ',') && (currentValue.includes('.') || currentValue.includes(','))) {
       event.preventDefault();
       return;
     }
 
-    // Verificar longitud máxima
     if (currentValue.length >= maxLength) {
       event.preventDefault();
     }
@@ -209,20 +193,16 @@ export class ZapataCuadradaAisladaComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     const pastedText = event.clipboardData?.getData('text') || '';
 
-    // Permitir solo números, puntos y comas
     let processedText = pastedText.replace(/[^0-9.,]/gi, '');
 
-    // Convertir comas a puntos
     processedText = processedText.replace(/,/g, '.');
 
-    // Limitar longitud
     if (processedText.length > maxLength) {
       processedText = processedText.substring(0, maxLength);
     }
 
     input.value = processedText;
 
-    // Actualizar FormControl
     const controlName = input.getAttribute('formControlName');
     if (controlName) {
       const numericValue = processedText === '' ? null : parseFloat(processedText);
@@ -231,7 +211,7 @@ export class ZapataCuadradaAisladaComponent implements OnInit {
   }
 
   calculate(): void {
-    this.zapataCuadradaSimple.zapataCuadradaSimple(this.informations.value).subscribe({
+    this.zapataEsquineraService.zapataEsquinera(this.informations.value).subscribe({
       next: (datos) => {
         if (datos.error) {
           this.showErrorAlert('Error en el cálculo', datos.message);
@@ -291,7 +271,7 @@ export class ZapataCuadradaAisladaComponent implements OnInit {
       title: 'Nombre del Reporte',
       text: 'Ingrese el nombre para su reporte PDF:',
       input: 'text',
-      inputValue: 'Proyecto Zapata Cuadrada',
+      inputValue: 'Proyecto Zapata Esquinera',
       inputPlaceholder: 'Ej: Proyecto Edificio Central',
       showCancelButton: true,
       confirmButtonText: 'Generar PDF',
@@ -378,5 +358,4 @@ export class ZapataCuadradaAisladaComponent implements OnInit {
     }
     return true;
   }
-
 }
