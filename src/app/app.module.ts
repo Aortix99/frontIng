@@ -39,7 +39,8 @@ import { PacientePipe } from './pipe/paciente.pipe';
 import { ModalComponent } from './shared/modal/modal.component';
 import { PdfReportButtonComponent } from './shared/pdf-report-button/pdf-report-button.component';
 
-
+// Directivas
+import { MathExpressionDirective } from './shared/directives/math-expression.directive';
 
 // Guards
 import { AuthGuard } from './guards/auth.guard';
@@ -75,7 +76,10 @@ import { ZapataAisladaComponent } from './zapata-esquinera/zapata-aislada.compon
     ModalComponent,
     PdfReportButtonComponent,
       ZapataExcentricaVigaAmarreComponent,
-      ZapataAisladaComponent
+      ZapataAisladaComponent,
+
+    // Directivas
+    MathExpressionDirective
   ],
   imports: [
     // Módulos de Angular

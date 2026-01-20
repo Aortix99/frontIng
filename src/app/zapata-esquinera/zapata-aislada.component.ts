@@ -38,12 +38,12 @@ export class ZapataAisladaComponent implements OnInit {
         this.minLengthNumberValidator(1),
         this.maxLengthValidator(10)
       ]],
-      Pd: [889.6, [
+      Pd: [400, [
         Validators.required,
         this.minLengthNumberValidator(1),
         this.maxLengthValidator(10)
       ]],
-      Pl: [711.7, [
+      Pl: [180, [
         Validators.required,
         this.minLengthNumberValidator(1),
         this.maxLengthValidator(10)

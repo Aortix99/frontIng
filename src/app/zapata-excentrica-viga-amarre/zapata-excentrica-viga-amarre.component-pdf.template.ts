@@ -1,28 +1,34 @@
 /**
- * ZapataCuadradaPDFTemplate - Template específico para reportes de zapata cuadrada
+ * ZapataExcentricaVigaAmarrePDFTemplate - Template específico para reportes de zapata excéntrica con viga de amarre
  * Implementa PDFTemplate para generar contenido HTML específico
  */
 
 import { Injectable } from '@angular/core';
 import { PDFTemplate, PDFPageOptions } from '../services/pdf-generator.service';
-import { IMG_CUADRADA1, IMG_CUADRADA2, IMG_ESQUINERA1, IMG_ESQUINERA2, LOGO_BASE64 } from '../imgBase64/img';
+import { LOGO_BASE64 } from '../imgBase64/img';
 
-export interface ZapataCalculationData {
+export interface ZapataExcentricaVigaAmarreCalculationData {
   // Datos de entrada
   input: {
     Fc: number;
     Fy: number;
-    Pd: number;
-    Pl: number;
-    Cx: number;
-    Cy: number;
-    Hz: number;
-    Ds: number;
-    Ws: number;
-    Wc: number;
     Qa: number;
-    Rc: number;
-    Az: number;
+    Hz: number;
+    Lz: number;
+    Av: number;
+    Hv: number;
+    PuExt: number;
+    PuInt: number;
+    CxExt: number;
+    CyExt: number;
+    CxInt: number;
+    CyInt: number;
+    ramas: number;
+    Nbarras?: any;
+    zapataExtLarga?: any;
+    zapataExtCorta?: any;
+    zapataInt?: any;
+    vgNroBarra?: any;
   };
 
   // Resultados del cálculo
@@ -36,29 +42,46 @@ export interface ZapataCalculationData {
     date?: Date;
     location?: string;
   };
+
+  // Imagen de la gráfica de cortante
+  chartImage?: string;
+
+  // Datos de los puntos de la gráfica
+  chartPoints?: Array<{ x: number; y: number }>;
+
+  // Imagen de la gráfica de momento
+  graficaMomento?: string;
+
+  // Datos de los puntos de la gráfica de momento
+  momentoPoints?: Array<{ x: number; y: number }>;
 }
 
 @Injectable({
   providedIn: 'root'
 })
-export class ZapataCuadradaPDFTemplate implements PDFTemplate {
+export class ZapataExcentricaVigaAmarrePDFTemplate implements PDFTemplate {
 
-  generateContent(data: ZapataCalculationData): string {
+  generateContent(data: ZapataExcentricaVigaAmarreCalculationData): string {
     const currentDate = new Date().toLocaleDateString('es-CO', {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
     });
 
-    const img1 = data.response.isEsquinera ? IMG_ESQUINERA1 : IMG_CUADRADA1;
-    const img2 = data.response.isEsquinera ? IMG_ESQUINERA2 : IMG_CUADRADA2;
-    const acerPorFraguado = data.response.acerPorFraguado || '';
+    const r = data.response || {};
+    const inpt = data.input || {};
+
+    // Utilidades para formateo
+    const formatNum = (v: any, d: number = 2) => {
+      const n = Number(v);
+      return Number.isFinite(n) ? n.toFixed(d) : String(v ?? 'N/A');
+    };
+    const safeArr = (arr: any) => Array.isArray(arr) ? arr : [];
 
     return `
       <!DOCTYPE html>
       <html>
       <head>
-
         <meta charset="UTF-8">
         <style>
           body {
@@ -73,9 +96,27 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
           .pdf-header {
             width: 100%;
             margin-bottom: 20px;
-            margin-top: 20px;
             border-bottom: 2px solid #2c5aa0;
             padding-bottom: 10px;
+          }
+          .logo-cell {
+            width: 15%;
+            background-color: #f8f9fa;
+            text-align: center;
+            border-right: 1px solid #ddd;
+            padding: 0;
+          }
+
+          .logo-cell img {
+            width: 70%;
+            margin-left: 14px;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+          }
+
+          .logo-placeholder {
+            display: none;
           }
 
           .header-table {
@@ -90,26 +131,6 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
             padding: 8px;
             border: 1px solid #ddd;
             height: 60px;
-          }
-
-          .logo-cell {
-            width: 15%;
-            background-color: #f8f9fa;
-            text-align: center;
-            border-right: 1px solid #ddd;
-            padding: 0;           /* 🔴 clave */
-          }
-
-          .logo-cell img {
-            width: 70%;
-            margin-left: 14px;
-            height: 100%;
-            object-fit: contain; /* o cover */
-            display: block;
-          }
-
-          .logo-placeholder {
-            display: none;
           }
 
           .title-cell {
@@ -147,71 +168,56 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
             font-style: italic;
           }
           
-          .header {
-            text-align: center;
-            border-bottom: 3px solid #2c5aa0;
-            padding-bottom: 20px;
-            margin-bottom: 30px;
-          }
-          
-          .header h1 {
-            color: #2c5aa0;
-            margin: 0;
-            font-size: 24px;
-            font-weight: bold;
-          }
-          
-          .header h2 {
-            color: #666;
-            margin: 5px 0;
-            font-size: 18px;
-            font-weight: normal;
-          }
-          
-          .project-info {
-            background-color: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 25px;
-            border-left: 4px solid #2c5aa0;
-          }
-          
-          .project-info-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-          }
-          
-          .info-item {
-            margin: 5px 0;
-          }
-          
-          .info-label {
-            font-weight: bold;
-            color: #2c5aa0;
-          }
-          
           .section-result {
-            margin-top: 4%;
             border-radius: 8px;
             overflow: hidden;
           }
+          .page-break {
+            page-break-before: always;
+            break-before: page;
+            display: block;
+            height: 0;
+            margin: 0;
+            padding: 0;
+          }
           .pdf-header-2 {
-            margin-top: 20%;
+            margin-top: 560px;
+            page-break-before: always;
+            break-before: page;
           }
           .pdf-header-3 {
-            margin-top: 22%;
+            margin-top: 400px;
+            page-break-before: always;
+            break-before: page;
           }
           .pdf-header-4 {
-            margin-top: 70%;
+            margin-top: 200px;
+            page-break-before: always;
+            break-before: page;
           }
           .section {
             border-radius: 8px;
             overflow: hidden;
+            page-break-inside: avoid;
+            break-inside: avoid;
           }
           .section-jump-line {
             border-radius: 8px;
             overflow: hidden;
+            page-break-inside: avoid;
+            break-inside: avoid;
+          }
+          .paso3 {
+            page-break-inside: avoid;
+            break-inside: avoid;
+          }
+          .paso3-momento {
+            page-break-inside: avoid;
+            break-inside: avoid;
+          }
+          .chart-section {
+            page-break-inside: avoid;
+            break-inside: avoid;
           }
           
           .section-header {
@@ -316,7 +322,65 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
             font-weight: bold;
             color: #2c5aa0;
           }
-            </style>
+
+          .chart-section {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+            margin: 20px 0;
+          }
+
+          .chart-image-container {
+            flex: 1;
+            min-width: 300px;
+          }
+
+          .chart-image-container img {
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+          }
+
+          .chart-table-container {
+            flex: 1;
+            min-width: 200px;
+          }
+
+          .chart-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            margin-top: 10px;
+          }
+
+          .chart-table thead {
+            background-color: #2c5aa0;
+            color: white;
+          }
+
+          .chart-table th {
+            padding: 8px;
+            text-align: center;
+            font-weight: bold;
+            border: 1px solid #ddd;
+          }
+
+          .chart-table td {
+            padding: 8px;
+            text-align: center;
+            border: 1px solid #ddd;
+          }
+
+          .chart-table tbody tr:nth-child(even) {
+            background-color: #f8f9fa;
+          }
+
+          .chart-table tbody tr:hover {
+            background-color: #e8f0f8;
+          }
+        </style>
       </head>
       <body>
         <div class="pdf-header">
@@ -326,8 +390,8 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
                 <img src="data:image/png;base64,${LOGO_BASE64}" alt="Logo" />
               </td>
               <td class="title-cell">
-                <div class="main-title">${data.metadata.projectName}</div>
-                <div class="subtitle">Reporte de cálculo estructural para zapata centrica</div>
+                <div class="main-title">${data.metadata.projectName || 'Zapata Excéntrica con Viga de Amarre'}</div>
+                <div class="subtitle">Reporte de cálculo estructural para zapata excéntrica con viga de amarre</div>
               </td>
               <td class="info-cell">
                 <div style="font-weight: bold; margin-bottom: 3px;">FECHA:</div>
@@ -342,85 +406,82 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
           <h3 class="section-header">📊 Datos de Entrada</h3>
           <div class="section-content">
             <div class="input-grid">
+              <!-- Concreto y Materiales -->
               <div class="input-item">
-                <div class="input-label">Resistencia del Concreto (Fc)</div>
-                <div class="input-value">${data.input.Fc} MPa</div>
+                <div class="input-label">Fc (Resistencia Concreto)</div>
+                <div class="input-value">${inpt.Fc ?? 'N/A'} kgf/cm²</div>
               </div>
               <div class="input-item">
-                <div class="input-label">Limite de fluencia del Acero (Fy)</div>
-                <div class="input-value">${data.input.Fy} MPa</div>
+                <div class="input-label">Fy (Límite Fluencia Acero)</div>
+                <div class="input-value">${inpt.Fy ?? 'N/A'} kgf/cm²</div>
               </div>
               <div class="input-item">
-                <div class="input-label">Carga Muerta (Pd)</div>
-                <div class="input-value">${data.input.Pd} kN</div>
+                <div class="input-label">Qa (Capacidad Admisible)</div>
+                <div class="input-value">${inpt.Qa ?? 'N/A'} Ton/m²</div>
+              </div>
+              <!-- Geometría General -->
+              <div class="input-item">
+                <div class="input-label">Hz (Altura Zapata)</div>
+                <div class="input-value">${inpt.Hz ?? 'N/A'} cm</div>
               </div>
               <div class="input-item">
-                <div class="input-label">Carga Viva (Pl)</div>
-                <div class="input-value">${data.input.Pl} kN</div>
+                <div class="input-label">Lz (Distancia entre Columnas)</div>
+                <div class="input-value">${inpt.Lz ?? 'N/A'} m</div>
               </div>
               <div class="input-item">
-                <div class="input-label">Peso específico de concreto (Wc)</div>
-                <div class="input-value">${data.input.Wc} kN/m³</div>
+                <div class="input-label">Av (Ancho Viga)</div>
+                <div class="input-value">${inpt.Av ?? 'N/A'} cm</div>
               </div>
               <div class="input-item">
-                <div class="input-label">Dimensión Columna X (Cx)</div>
-                <div class="input-value">${data.input.Cx} m</div>
+                <div class="input-label">Hv (Altura Viga)</div>
+                <div class="input-value">${inpt.Hv ?? 'N/A'} cm</div>
+              </div>
+              <!-- Columna Externa -->
+              <div class="input-item">
+                <div class="input-label">PuExt (Carga Última Ext.)</div>
+                <div class="input-value">${inpt.PuExt ?? 'N/A'} Ton</div>
               </div>
               <div class="input-item">
-                <div class="input-label">Dimensión Columna Y (Cy)</div>
-                <div class="input-value">${data.input.Cy} m</div>
+                <div class="input-label">CxExt (Dimensión X Ext.)</div>
+                <div class="input-value">${inpt.CxExt ?? 'N/A'} cm</div>
               </div>
               <div class="input-item">
-                <div class="input-label">Altura pedestal (Ds)</div>
-                <div class="input-value">${data.input.Ds} m</div>
+                <div class="input-label">CyExt (Dimensión Y Ext.)</div>
+                <div class="input-value">${inpt.CyExt ?? 'N/A'} cm</div>
+              </div>
+              <!-- Columna Interna -->
+              <div class="input-item">
+                <div class="input-label">PuInt (Carga Última Int.)</div>
+                <div class="input-value">${inpt.PuInt ?? 'N/A'} Ton</div>
               </div>
               <div class="input-item">
-                <div class="input-label">Peso específico del suelo (Ws)</div>
-                <div class="input-value">${data.input.Ws} kN/m³</div>
+                <div class="input-label">CxInt (Dimensión X Int.)</div>
+                <div class="input-value">${inpt.CxInt ?? 'N/A'} cm</div>
               </div>
               <div class="input-item">
-                <div class="input-label">Altura Zapata (Hz)</div>
-                <div class="input-value">${data.input.Hz} m</div>
+                <div class="input-label">CyInt (Dimensión Y Int.)</div>
+                <div class="input-value">${inpt.CyInt ?? 'N/A'} cm</div>
               </div>
               <div class="input-item">
-                <div class="input-label">Capacidad Admisible (Qa)</div>
-                <div class="input-value">${data.input.Qa} kN/m²</div>
-              </div>
-              <div class="input-item">
-                <div class="input-label">Recubrimiento (Rc)</div>
-                <div class="input-value">${data.input.Rc} cm</div>
-              </div>
-              <div class="input-item">
-                <div class="input-label">Designacion de la barra (Az)</div>
-                <div class="input-value">#${data.input.Az}</div>
+                <div class="input-label">Ramas</div>
+                <div class="input-value">${inpt.ramas ?? 'N/A'}</div>
               </div>
             </div>
           </div>
-          <img src="data:image/png;base64,${img1}" />
-          <!-- Validation Results Section -->
+        </div>
         <div class="section">
-        <h4 style="margin-bottom: 28px;">Paso 1: Área requerida.</h4>
+        <h4 style="margin-bottom: 10px;">Paso 1: Revisión de la presión de contacto.</h4>
           <div style="font-family: 'Times New Roman', serif; line-height: 1.2; margin-bottom: 15px;">
-           <strong>Q<sub>e</sub> =  Q<sub>a</sub> - H<sub>z</sub> * W<sub>c</sub> - D<sub>s</sub> * W<sub>s</sub></strong>
-           <p style="margin: 5px 0;">Qe = ${data.input.Qa} kN/m² - ${data.input.Hz} m * ${data.input.Wc} kN/m³ - ${data.input.Ds} m * ${data.input.Ws} kN/m³ = ${data.response.Qe} kN/m²</p>
+           <p style="margin: 5px 0;">Pu<sub>Ext</sub> = ${formatNum(inpt.PuExt)} Ton </p>
+           <p style="margin: 5px 0;">Pu<sub>Int</sub> = ${formatNum(inpt.PuInt)} Ton </p>
+           <strong>Pu<sub>Max</sub> =  Φ * 0.85 * F<sub>c</sub> * C<sub>x</sub> * C<sub>y</sub></strong>
+           <p style="margin: 5px 0;">Pu<sub>MaxExt</sub> =  (0.7 * 0.85 * ${inpt.Fc} Kg/cm² * ${inpt.CxExt} cm * ${inpt.CyExt} cm) / 1000 Ton/kgf = ${formatNum(r.presionExt?.resultado)} Ton </p>
+           <p style="margin: 5px 0;">Pu<sub>MaxInt</sub> =  (0.7 * 0.85 * ${inpt.Fc} Kg/cm² * ${inpt.CxInt} cm * ${inpt.CyInt} cm) / 1000 Ton/kgf = ${formatNum(r.presionInt?.resultado)} Ton </p>
+           <p style="font-weight: bold; margin: 5px 0;">Pu<sub>Ext</sub> =  ${formatNum(inpt.PuExt)} ≤ ${formatNum(r.presionExt?.resultado)} OK</p>
+           <p style="font-weight: bold; margin: 5px 0;">Pu<sub>Int</sub> =  ${formatNum(inpt.PuInt)} ≤ ${formatNum(r.presionInt?.resultado)} OK</p>
            </div>
         </div>
-
-        <div style="margin-top: 10px;">
-          <div style="font-family: 'Times New Roman', serif; line-height: 1.2;">
-            <strong>A = ΣP / Q<sub>e</sub></strong>
-            <p style="margin: 5px 0;"> A = ${data.input.Pl} kN + ${data.input.Pd} kN / ${data.response.Qe} kN/m² </p>
-            <div style="font-family: 'Times New Roman', serif; margin: 5px 0;">
-              <span>B, L = </span>
-              <span>
-                <span>√</span>
-                <span>
-                  ${data.response.a} m²  = ${data.response.B} m
-                </span>
-              </span>
-            </div>
-          </div>
-        </div>
+        <div class="page-break"></div>
         <div class="pdf-header-2">
           <table class="header-table">
             <tr>
@@ -428,53 +489,66 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
                 <img src="data:image/png;base64,${LOGO_BASE64}" alt="Logo" />
               </td>
               <td class="title-cell">
-                <div class="main-title">${data.metadata.projectName}</div>
-                <div class="subtitle">Reporte de cálculo estructural para zapata centrica</div>
+                <div class="subtitle">Reporte de cálculo estructural para zapata excéntrica con viga de amarre</div>
               </td>
               <td class="info-cell">
                 <div style="font-weight: bold; margin-bottom: 3px;">FECHA:</div>
-                <div style="font-size: 10px;">${currentDate}</div>
               </td>
             </tr>
           </table>
         </div>
-        <div class= "section">
-          <h4 style="margin-bottom: 10px;">Paso 2: Presion de apoyo para diseño por resistencia.</h4>
-          <div style="margin-top: 10px;">
-            <div style="font-family: 'Times New Roman', serif; line-height: 1.2;">
-            <p style="margin: 5px 0; font-weight: bold;"> ( Q<sub>u</sub> = 1.6 * P<sub>l</sub> + 1.2 * P<sub>d</sub> )/ (A)²</p>
-            <p style="margin: 5px 0;"> Q<sub>u</sub> = 1.6 * ${data.input.Pl} kN + 1.2 * ${data.input.Pd} kN / (${data.response.B})² m² = ${data.response.Qu} kN/m²</p>
-            <h4> verificacion de la resistencia a compresion del pedestal </h4>
-              <p style="margin: 5px 0; font-weight: bold;"> P<sub>u</sub> Ton ≤ 0.85 * 0.65 * (F<sub>c</sub> MPa)/100 * (C<sub>x</sub>cm * C<sub>y</sub>cm) </p>
-              <p style="margin: 5px 0;"> ${(data.response.Pu / 9.81).toFixed(2)} ≤ 0.85 * 0.65 * (${(data.input.Fc / 145.038).toFixed(2)} MPa) * (${data.input.Cx * 100} cm * ${data.input.Cy * 100} cm) = ${(data.response.Pu / 9.81).toFixed(2)} ≤ ${data.response.validate0.calculo} OK</p>
-            </div>
+        <div class="section">
+          <h4>Paso 2: Dimensiones y distribución.</h4>
+          <div style="font-family: 'Times New Roman', serif; line-height: 1.2; margin-bottom: 15px;">
+           <div style="margin-top: 10px;">
+             <div style="font-weight: bold; margin: 5px 0;">Zapata Interna (Cuadrada)</div>
+             <p style="margin: 5px 0;">B<sub>Int</sub> = ${formatNum(r.B_Int)} m</p>
+             <p style="margin: 5px 0;">L<sub>Int</sub> = ${formatNum(r.L_Int)} m</p>
+             <p style="margin: 5px 0;">Área = ${formatNum(r.AreaZapataInt?.resultado)} m²</p>
+           </div>
+           <div style="margin-top: 10px;">
+             <div style="font-weight: bold; margin: 5px 0;">Zapata Externa (Rectangular)</div>
+             <p style="margin: 5px 0;">B<sub>Ext</sub> = ${formatNum(r.B_Ext?.resultado)} m</p>
+             <p style="margin: 5px 0;">L<sub>Ext</sub> = ${formatNum(r.L_Ext)} m</p>
+             <p style="margin: 5px 0;">Área = ${formatNum(r.AreaZapataExt?.resultado)} m²</p>
+           </div>
+           <div style="margin-top: 10px;">
+             <p style="margin: 5px 0;">Disposición (Desfase) = ${formatNum(r.Dis?.resultado)} m</p>
+             <p style="margin: 5px 0;">Lz₂ = ${formatNum(r.Lz2)} m</p>
+           </div>
           </div>
         </div>
-        <div class= "paso3">
-         <h4 style="margin-bottom: 10px;">Paso 3: Peralte requerido para el cortante por punzonamiento en dos direcciones.</h4>
-          <img src="data:image/png;base64,${img2}" />
-          <div style="margin-top: 10px;">
-            <div style="font-family: 'Times New Roman', serif; line-height: 1.2;">
-              <strong>B<sub>0</sub> = 4 * (C<sub>x</sub> + d<sub>e</sub>)</strong>
-              <p style="margin: 5px 0;"> B<sub>0</sub> = 4 * (${data.input.Cx} m + ${data.response.De} m) = ${data.response.Bo} kN/m² </p> 
-              <p style="margin: 5px 0; font-weight: bold;"> V<sub>u2</sub> = (A - (C + d<sub>e</sub>)) * (Q<sub>u</sub>) </p> 
-              <p style="margin: 5px 0;"> V<sub>u2</sub> = (${data.response.A} m² - (${data.response.maxCxCy} m + ${data.response.De}m)) * ${data.response.Qu} kN/m²</p> 
-              <h4 style="margin: 10px 0 5px 0;"> Ecuación 12.2. Diseño de concreto reforzado McCormac.</h4>
-              <p style="margin: 5px 0; font-weight: bold;"> D = V<sub>u2</sub> / (Φ.4.λ.√( F<sub>c</sub> ).B<sub>0</sub>) < d </p>
-              <p style="margin: 5px 0;"> D = ((${data.response.Vu2}Kn * 224.809 lb/kn)/ (0.75 * 4 * 1 * √${data.input.Fc} psi * (${data.response.Bo}m * 39.37 Plg/m))) * 0.0254 m/plg = ${data.response.D} m < ${data.response.d} m OK</p>
-            </div>
-          </div>
+        <div class="paso3">
+         <h4 style="margin-bottom: 1px;">Paso 3: Gráfica de Cortante</h4>
+         <div class="chart-section">
+           <div class="chart-image-container">
+             ${data.chartImage ? `<img src="${data.chartImage}" style="width: 100%; max-width: 600px; height: auto; border: 1px solid #ccc; border-radius: 5px;" />` : '<p>No hay gráfica disponible</p>'}
+           </div>
+           <div class="chart-table-container">
+             <table class="chart-table">
+               <thead>
+                 <tr>
+                   <th>Distancia (m)</th>
+                   <th>Cortante (Ton)</th>
+                 </tr>
+               </thead>
+               <tbody>
+                 ${safeArr(r.arrayDataEjeX).length > 0 ? safeArr(r.arrayDataEjeX).map((x: number, i: number) => {
+      const y = safeArr(r.arrayDataEjeY)[i] ?? 0;
+      return `
+                     <tr>
+                       <td>${formatNum(x)}</td>
+                       <td>${formatNum(y)}</td>
+                     </tr>
+                   `;
+    }).join('') : '<tr><td colspan="2">No hay datos disponibles</td></tr>'}
+               </tbody>
+             </table>
+           </div>
+         </div>
         </div>
-        <div class= "section-result">
-          <div style="margin-top: 10px;">
-            <div style="font-family: 'Times New Roman', serif; line-height: 1.2;">
-            <h4 style="margin: 10px 0 5px 0;"> Ecuación 12.3. Diseño de concreto reforzado McCormac.</h4>
-              <p style="margin: 5px 0; font-weight: bold;"> D = V<sub>u2</sub> / (Φ.(2 + (4/B<sub>C</sub>)).λ.√( F<sub>c</sub> ).B<sub>0</sub>) < d </p>
-              <p style="margin: 5px 0;"> D = ((${data.response.Vu2}Kn * 224.809 lb/kn)/ (0.75 * (2 + (4/${data.response.Bc})) * 1 * √${data.input.Fc} psi * (${data.response.Bo}m * 39.37 Plg/m))) * 0.0254 m/plg </p>
-              <p style="margin: 5px 0;"> = ${data.response.validate2.d} m < ${data.response.d} m OK</p>
-            </div>
-          </div>
-        </div>
+
+        <div class="page-break"></div>
         <div class="pdf-header-3">
           <table class="header-table">
             <tr>
@@ -482,56 +556,77 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
                 <img src="data:image/png;base64,${LOGO_BASE64}" alt="Logo" />
               </td>
               <td class="title-cell">
-                <div class="main-title">${data.metadata.projectName}</div>
-                <div class="subtitle">Reporte de cálculo estructural para zapata centrica</div>
+                <div class="subtitle">Reporte de cálculo estructural para zapata excéntrica con viga de amarre</div>
               </td>
               <td class="info-cell">
                 <div style="font-weight: bold; margin-bottom: 3px;">FECHA:</div>
-                <div style="font-size: 10px;">${currentDate}</div>
               </td>
             </tr>
           </table>
         </div>
-        <div class= "section">
+        <div class="paso3-momento">
+         <h4 style="margin-bottom: 1px;">Gráfica de Momento</h4>
+         <div class="chart-section">
+           <div class="chart-image-container">
+             ${data.graficaMomento ? `<img src="${data.graficaMomento}" style="width: 100%; max-width: 600px; height: auto; border: 1px solid #ccc; border-radius: 5px;" />` : '<p>No hay gráfica de momento disponible</p>'}
+           </div>
+           <div class="chart-table-container">
+             <table class="chart-table">
+               <thead>
+                 <tr>
+                   <th>Distancia (m)</th>
+                   <th>Momento (Ton·m)</th>
+                 </tr>
+               </thead>
+               <tbody>
+                 ${safeArr(r.arrayDataEjeX).length > 0 ? safeArr(r.arrayDataEjeX).map((x: number, i: number) => {
+      const my = safeArr(r.momentEjeY)[i] ?? 0;
+      return `
+                     <tr>
+                       <td>${formatNum(x)}</td>
+                       <td>${formatNum(my)}</td>
+                     </tr>
+                   `;
+    }).join('') : '<tr><td colspan="2">No hay datos disponibles</td></tr>'}
+               </tbody>
+             </table>
+           </div>
+         </div>
+        </div>
+        <div class="section">
+         <h4 style="margin-bottom: 10px;">Paso 4: Verificaciones de punzonamiento y cortante.</h4>
           <div style="margin-top: 10px;">
             <div style="font-family: 'Times New Roman', serif; line-height: 1.2;">
-            <h4 style="margin: 10px 0 5px 0;"> Ecuación 12.4. Diseño de concreto reforzado McCormac.</h4>
-              <p style="margin: 5px 0; font-weight: bold;"> D = V<sub>u2</sub> / (Φ.((α<sub>s</sub>*d/B<sub>0</sub>) + 2).λ.√( F<sub>c</sub> ) * B<sub>0</sub>) < d </p>
-              <p style="margin: 5px 0;"> D = ((${data.response.Vu2}Kn * 224.809 lb/kn)/ (0.75 * ((40 * (${data.response.d}m * 39.37 )/(${data.response.Bo}m * 39.37 Plg/m)) + 2) * 1 * √${data.input.Fc} psi * ${data.response.Bo}m * 39.37 Plg/m)) * 0.0254 m/plg </p>
-              <p style="margin: 5px 0;"> = ${data.response.validate3.d} m < ${data.response.d} m OK</p>
+              <div style="font-weight: bold; margin: 10px 0 5px 0;">Columna Interna</div>
+              <p style="margin: 5px 0;">Q<sub>u</sub> = ${formatNum(r.QultimoInt?.resultado)} Ton/m²</p>
+              <p style="margin: 5px 0;">b₀ = ${formatNum(r.b0)} cm</p>
+              <p style="margin: 5px 0;">d = ${(inpt.Hz ?? 0) - 9} cm</p>
+              <p style="margin: 5px 0;">Vu = ${formatNum(r.Vu)} Ton</p>
+              <p style="margin: 5px 0;">Verificaciones cumplen ✓</p>
+              
+              <div style="font-weight: bold; margin: 10px 0 5px 0;">Columna Externa</div>
+              <p style="margin: 5px 0;">b₀,ext = ${formatNum(r.bo_Ext?.resultado)} m</p>
+              <p style="margin: 5px 0;">Qvt = ${formatNum(r.Qvt?.resultado)} Ton/m²</p>
+              <p style="margin: 5px 0;">Vu<sub>ext</sub> = ${formatNum(r.VuExt?.resultado)} Ton</p>
+              <p style="margin: 5px 0;">Verificaciones cumplen ✓</p>
             </div>
           </div>
         </div>
-        <h4 style="margin: 10px 0 5px 0;">Paso 4: Peralte requerido para el cortante en una dirección.</h4>
-        <div class= "section">
+        <h4 style="margin: 10px 0 5px 0;">Paso 5: Diseño de viga de amarre.</h4>
+        <div class="section">
           <div style="margin-top: 10px;">
             <div style="font-family: 'Times New Roman', serif; line-height: 1.2;">
-              <p style="margin: 5px 0; font-weight: bold;"> e = (L/2) - (a/2) - (d/2) </p>
-              <p style="margin: 5px 0; font-weight: bold;">V<sub>u1</sub> = L * e * Q<sub>u</sub> </p>
-              <p style="margin: 5px 0;">V<sub>u1</sub> = ${data.response.L}m * ${data.response.e}m * ${data.response.Qu}kn/m² = ${data.response.Vu1}Kn/m² </p>
-              <p style="margin: 5px 0; font-weight: bold;"> D = V<sub>u1</sub> / (Φ.2.λ.√( F<sub>c</sub> ).B<sub>0</sub>) < d </p>
-              <p style="margin: 5px 0;"> D =(${data.response.Vu1}Kn/m² * 224.809 lb/kn / (0.75.2.1.√( ${data.input.Fc} psi )*${data.response.Bo}m * 39.37 Plg/m)) * 0.0254 m/plg </p>
-              <p style="margin: 5px 0;"> = ${data.response.validate4.d} m < ${data.response.d} m OK</p>
-              </div>
+              <p style="margin: 5px 0; font-weight: bold;">Chequeo de ancho por cortante</p>
+              <p style="margin: 5px 0;">b = ${formatNum(r.b_Ext?.resultado)} cm ≤ Av = ${inpt.Av ?? 'N/A'} cm</p>
+              <p style="margin: 5px 0; font-weight: bold;">Acero por cortante (C.11.4)</p>
+              <p style="margin: 5px 0;">Vc = ${formatNum(r.Vc_acero?.resultado)} Ton</p>
+              <p style="margin: 5px 0;">ΔVc = ${formatNum(r.delta_Vc?.resultado)} Ton</p>
+              <p style="margin: 5px 0; font-weight: bold;">Separación máx estribos S<sub>max</sub> = ${formatNum(r.SMax?.resultado)} cm</p>
+              <p style="margin: 5px 0;">Recomendado: ${r.Hierro || 'N/A'}</p>
+            </div>
           </div>
         </div>
-        <h4 style="margin: 10px 0 5px 0;">Paso 5: Diseño del acero de refuerzo por friccion.</h4>
-        <h5 style="margin: 10px 0 5px 0;">Si ρ es menor que 0.0033 se toma por defecto 0.0033. (ρ ≥ 0.0033) </h5>
-        <div class= "section">
-          <div style="margin-top: 10px;">
-            <div style="font-family: 'Times New Roman', serif; line-height: 1.2;">
-              <p style="margin: 5px 0; font-weight: bold;"> M<sub>u</sub> = (e + d) * L * Q<sub>u</sub> * ((e + d)/2) </p>
-              <p style="margin: 5px 0; font-weight: bold;"> M<sub>u</sub> = (${data.response.e}m + ${data.response.d}m) * ${data.response.L}m * ${data.response.Qu}Kn/m² * ((${data.response.e}m + ${data.response.d}m)/2) = ${data.response.Mu}Knm</p>
-              <p style="margin: 5px 0; font-weight: bold;"> M<sub>u</sub> = ${data.response.Mu}Kn.m * 0.001 Mn.m/Kn.m = ${data.response.Mu * 0.001}Mn.m </p>
-              <p style="margin: 5px 0; font-weight: bold;"> F<sub>c</sub> = ${data.input.Fc}Psi * 0.007 Mp/Psi = ${data.input.Fc * 0.007}Mpa</p>
-              <p style="margin: 5px 0; font-weight: bold;"> F<sub>y</sub> = ${data.input.Fy}Psi * 0.007 Mp/Psi = ${data.input.Fy * 0.007}Mpa</p>
-              <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA8kAAADCCAYAAAB644DHAAAAOXRFWHRTb2Z0d2FyZQBNYXRwbG90bGliIHZlcnNpb24zLjYuMywgaHR0cHM6Ly9tYXRwbG90bGliLm9yZy/P9b71AAAACXBIWXMAAB7CAAAewgFu0HU+AAApRUlEQVR4nO3deXTNd/7H8VckISSWaGrfs1A7zdT5EY1iGi2tdVoME0VCtaPWH8aWakvNUEtCrZmpokXbMWh/WkqUbrYmlpLkxhZZaGwhEbL9/sg3d6RZ3EjkJjwf5/Qcvuv73k+dc1/f72exyczMzBQAAAAAAFA5axcAAAAAAEBpQUgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgGAAAAAMBASAYAAAAAwEBIBgAAAADAQEgG
-              <p style="margin: 5px 0; font-weight: bold;"> As = ${data.response.P} * (${data.response.L}m * 100 cm/m) * (${data.response.d}m * 100 cm/m) = ${data.response.As}cm²</p>
-              <p style="margin: 5px 0; font-weight: bold;"> Separación entre barras es de = Φ#${data.input.Az}@${data.response.espacioEntreBarrasValidate}</p>
-              <p style="margin: 5px 0; font-weight: bold;"> ${data.response?.acerPorFraguado ? data.response?.acerPorFraguado : ''}</p>
-              </div>
-          </div>
-        </div>
+        <div class="page-break"></div>
         <div class="pdf-header-4">
           <table class="header-table">
             <tr>
@@ -539,49 +634,52 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
                 <img src="data:image/png;base64,${LOGO_BASE64}" alt="Logo" />
               </td>
               <td class="title-cell">
-                <div class="main-title">${data.metadata.projectName}</div>
-                <div class="subtitle">Reporte de cálculo estructural para zapata centrica</div>
+                <div class="subtitle">Reporte de cálculo estructural para zapata excéntrica con viga de amarre</div>
               </td>
               <td class="info-cell">
                 <div style="font-weight: bold; margin-bottom: 3px;">FECHA:</div>
-                <div style="font-size: 10px;">${currentDate}</div>
               </td>
             </tr>
           </table>
         </div>
-        <div class="section-result">
+        <h4 style="margin: 10px 0 5px 0;">Paso 6: Diseño del acero de refuerzo en zapatas.</h4>
+        <div class="section">
+          <div style="margin-top: 10px;">
+            <div style="font-family: 'Times New Roman', serif; line-height: 1.2;">
+              <div style="font-weight: bold; margin: 10px 0 5px 0;">Zapata Interna</div>
+              <p style="margin: 5px 0;">Mu = ${formatNum(r.MuInt?.resultado)} Ton·m</p>
+              <p style="margin: 5px 0;">${r.AsInt?.formula || 'N/A'}</p>
+              <p style="margin: 5px 0;">Separación = ${formatNum(r.AsInt?.Arroba2)} cm</p>
+              
+              <div style="font-weight: bold; margin: 10px 0 5px 0;">Zapata Externa (Lado Largo)</div>
+              <p style="margin: 5px 0;">Mu = ${formatNum(r.MuExt?.resultado)} Ton·m</p>
+              <p style="margin: 5px 0;">${r.AsExtLarga?.formula || 'N/A'}</p>
+              <p style="margin: 5px 0;">Separación = ${formatNum(r.AsExtLarga?.Arroba2)} cm</p>
+              
+              <div style="font-weight: bold; margin: 10px 0 5px 0;">Zapata Externa (Lado Corto)</div>
+              <p style="margin: 5px 0;">${r.AsExtCorta?.formula || 'N/A'}</p>
+              <p style="margin: 5px 0;">Separación = ${formatNum(r.AsExtCorta?.Arroba2)} cm</p>
+              
+              <div style="font-weight: bold; margin: 10px 0 5px 0;">Parrillas Dobles</div>
+              <p style="margin: 5px 0;">Int: ${r.AsParrillaDobleInterna?.formula || 'N/A'}</p>
+              <p style="margin: 5px 0;">Ext: ${r.AsParrillaDobleExterna?.formula || 'N/A'}</p>
+            </div>
+          </div>
+        </div>
+        <div class="section-result" style="margin-top: 5%;">
           <h3 class="section-header">✅ Verificaciones y Validaciones</h3>
           <div class="section-content">
             <ul class="validation-list">
               <li class="validation-item">
-                <div class="validation-title">🏗️ Chequeo del Pedestal</div>
+                <div class="validation-title">🏗️ Chequeo del Pedestal externo</div>
                 <div class="validation-detail">
-                  <strong>Condición:</strong> Pedestal cumple: ${data.response?.validate0?.Pu || 'N/A'} < ${data.response?.validate0?.calculo || 'N/A'}
-                  <span class="success-icon">✓ CUMPLE</span>
+                  <span class="success-icon">${formatNum(inpt.PuExt)} <= ${formatNum(r.presionExt?.resultado)} ✓ CUMPLE</span>
                 </div>
               </li>
-
               <li class="validation-item">
-                <div class="validation-title">🔧 Chequeo por Punzonamiento en Dos Direcciones</div>
+                <div class="validation-title">🏗️ Chequeo del Pedestal interno</div>
                 <div class="validation-detail">
-                  <strong>Ecuación 12.2:</strong> ${data.response?.D || 'N/A'} < ${data.response?.d || 'N/A'}
-                  <span class="success-icon">✓ CUMPLE</span>
-                </div>
-                <div class="validation-detail">
-                  <strong>Ecuación 12.3:</strong> ${data.response?.validate2?.d || 'N/A'} < ${data.response?.validate2?.Hz || 'N/A'}
-                  <span class="success-icon">✓ CUMPLE</span>
-                </div>
-                <div class="validation-detail">
-                  <strong>Ecuación 12.4:</strong> ${data.response?.validate3?.d || 'N/A'} < ${data.response?.validate3?.Hz || 'N/A'}
-                  <span class="success-icon">✓ CUMPLE</span>
-                </div>
-              </li>
-
-              <li class="validation-item">
-                <div class="validation-title">⚡ Chequeo por Punzonamiento en Una Dirección</div>
-                <div class="validation-detail">
-                  <strong>Paso 4:</strong> ${data.response?.validate4?.d || 'N/A'} < ${data.response?.validate4?.Hz || 'N/A'}
-                  <span class="success-icon">✓ CUMPLE</span>
+                  <span class="success-icon">${formatNum(inpt.PuInt)} <= ${formatNum(r.presionInt?.resultado)} ✓ CUMPLE</span>
                 </div>
               </li>
             </ul>
@@ -594,24 +692,16 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
           <div class="section-content">
             <div class="input-grid">
               <div class="input-item">
-                <div class="input-label">Dimensión de la Zapata (L, B)</div>
-                <div class="input-value">${data.response?.L || 'N/A'} m</div>
+                <div class="input-label">Zapata Externa (B, L)</div>
+                <div class="input-value">${formatNum(r.B_Ext?.resultado)} m × ${formatNum(r.L_Ext)} m</div>
               </div>
               <div class="input-item">
-                <div class="input-label">Área de la Zapata (A)</div>
-                <div class="input-value">${data.response?.A || 'N/A'} m²</div>
+                <div class="input-label">Zapata Interna (B, L)</div>
+                <div class="input-value">${formatNum(r.B_Int)} m × ${formatNum(r.L_Int)} m</div>
               </div>
               <div class="input-item">
-                <div class="input-label">Separación entre Barras</div>
-                <div class="input-value">${data.response?.espacioEntreBarrasValidate || 'N/A'} cm</div>
-              </div>
-              <div class="input-item">
-                <div class="input-label">Presión de Diseño (Qu)</div>
-                <div class="input-value">${data.response?.Qu || 'N/A'} kPa</div>
-              </div>
-              <div class="input-item">
-                <div class="input-label">Peralte Efectivo (d)</div>
-                <div class="input-value">${data.response?.d || 'N/A'} m</div>
+                <div class="input-label">Separación Estribos Viga</div>
+                <div class="input-value">${formatNum(r.SMax?.resultado)} cm</div>
               </div>
             </div>
           </div>
@@ -638,8 +728,8 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
     `;
   }
 
-  getFileName(data: ZapataCalculationData): string {
-    const projectName = data.metadata?.projectName || 'ZapataCuadrada';
+  getFileName(data: ZapataExcentricaVigaAmarreCalculationData): string {
+    const projectName = data.metadata?.projectName || 'ZapataExcentricaVigaAmarre';
     const timestamp = new Date().toISOString().slice(0, 16).replaceAll(/[:-]/g, '');
     return `${(projectName).trim()}_${timestamp}.pdf`;
   }

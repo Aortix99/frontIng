@@ -5,7 +5,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Chart } from 'chart.js/auto';
 import Swal from 'sweetalert2';
 import { PDFGeneratorService } from '../services/pdf-generator.service';
-import { ZapataExcentricaVigaAmarrePDFTemplate, ZapataExcentricaVigaAmarrePDFData } from './zapata-excentrica-viga-amarre-pdf.template';
+import { ZapataExcentricaVigaAmarrePDFTemplate, ZapataExcentricaVigaAmarreCalculationData } from './zapata-excentrica-viga-amarre.component-pdf.template';
 
 @Component({
   selector: 'app-zapata-excentrica-viga-amarre',
@@ -388,7 +388,29 @@ export class ZapataExcentricaVigaAmarreComponent implements OnInit {
   }
 
   // Estructura de datos para el PDF
-  private preparePDFData(reportName: string): ZapataExcentricaVigaAmarrePDFData {
+  private preparePDFData(reportName: string): ZapataExcentricaVigaAmarreCalculationData {
+    // Preparar puntos de gráfica de cortante
+    const chartPoints: Array<{ x: number; y: number }> = [];
+    if (this.response?.arrayDataEjeX && this.response?.arrayDataEjeY) {
+      this.response.arrayDataEjeX.forEach((x: number, i: number) => {
+        chartPoints.push({
+          x: x,
+          y: this.response.arrayDataEjeY[i] || 0
+        });
+      });
+    }
+
+    // Preparar puntos de gráfica de momento
+    const momentoPoints: Array<{ x: number; y: number }> = [];
+    if (this.response?.arrayDataEjeX && this.response?.momentEjeY) {
+      this.response.arrayDataEjeX.forEach((x: number, i: number) => {
+        momentoPoints.push({
+          x: x,
+          y: this.response.momentEjeY[i] || 0
+        });
+      });
+    }
+
     return {
       input: this.informations?.value,
       response: this.response,
@@ -398,7 +420,37 @@ export class ZapataExcentricaVigaAmarreComponent implements OnInit {
         client: 'Cliente',
         date: new Date(),
         location: 'Ubicación del Proyecto'
-      }
+      },
+      chartImage: this.getChartAsBase64(),
+      chartPoints: chartPoints,
+      graficaMomento: this.getMomentoChartAsBase64(),
+      momentoPoints: momentoPoints
     };
+  }
+
+  private getChartAsBase64(): string {
+    try {
+      if (this.chart && this.chart.canvas) {
+        // Asegurar que el chart esté actualizado
+        this.chart.update('none');
+        return this.chart.canvas.toDataURL('image/png', 1.0);
+      }
+    } catch (error) {
+      console.error('Error capturando gráfica de cortante:', error);
+    }
+    return '';
+  }
+
+  private getMomentoChartAsBase64(): string {
+    try {
+      if (this.chartMomento && this.chartMomento.canvas) {
+        // Asegurar que el chart esté actualizado
+        this.chartMomento.update('none');
+        return this.chartMomento.canvas.toDataURL('image/png', 1.0);
+      }
+    } catch (error) {
+      console.error('Error capturando gráfica de momento:', error);
+    }
+    return '';
   }
 }
