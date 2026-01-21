@@ -252,7 +252,7 @@ export class ZapataExcentricaVigaAmarrePDFTemplate implements PDFTemplate {
               <div class="grid-2">
                 <div class="card">
                   <div class="label">Interna</div>
-                  <div class="formula">Q<sub>u</sub> = ${formatNum(r.QultimoInt?.resultado)} Ton/m² · b₀ = ${formatNum(r.b0)} cm · d = ${(inpt.Hz ?? 0) - 9} cm</div>
+                  <div class="formula">Q<sub>u</sub> = ${formatNum(r.QultimoInt?.resultado)} Ton/m² · b₀ = ${formatNum(r.b0)} cm · d = ${inpt.Hz ?? 0} cm</div>
                   <div class="note">Vu = ${formatNum(r.Vu)} Ton; Vc (1.1·0.75·√Fc) y Vc (0.53·0.75·√Fc) cumplen.</div>
                 </div>
                 <div class="card">

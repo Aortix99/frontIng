@@ -600,7 +600,7 @@ export class ZapataExcentricaVigaAmarrePDFTemplate implements PDFTemplate {
               <div style="font-weight: bold; margin: 10px 0 5px 0;">Columna Interna</div>
               <p style="margin: 5px 0;">Q<sub>u</sub> = ${formatNum(r.QultimoInt?.resultado)} Ton/m²</p>
               <p style="margin: 5px 0;">b₀ = ${formatNum(r.b0)} cm</p>
-              <p style="margin: 5px 0;">d = ${(inpt.Hz ?? 0) - 9} cm</p>
+              <p style="margin: 5px 0;">d = ${inpt.Hz ?? 0} cm</p>
               <p style="margin: 5px 0;">Vu = ${formatNum(r.Vu)} Ton</p>
               <p style="margin: 5px 0;">Verificaciones cumplen ✓</p>
               

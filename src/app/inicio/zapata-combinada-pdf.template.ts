@@ -621,11 +621,11 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
           <div style="margin-top: 10px;">
             <div style="font-family: 'Times New Roman', serif; line-height: 1.2;">
               <p style="margin: 5px 0; font-weight: bold;"> V<sub>1</sub> = C - W * d </p>
-              <p style="margin: 5px 0; font-weight: bold;"> V<sub>1</sub> = ${data.response.response.C} - ${data.response.response.W} * ${data.input.Hz - 0.09}</p>
+              <p style="margin: 5px 0; font-weight: bold;"> V<sub>1</sub> = ${data.response.response.C} - ${data.response.response.W} * ${data.input.Hz}</p>
               <p style="margin: 5px 0; font-weight: bold;"> V<sub>1</sub> = ${data.response.response.Vu1} Ton</p>
               <p style="margin: 5px 0; font-weight: bold;"> d<sub>0</sub> = V<sub>1</sub> * 2204.62 / 0.75 * 2 * √((Fc * 14.223) * (Bo * 39.37)) </p>
               <p style="margin: 5px 0; font-weight: bold;"> d<sub>0</sub> = ${data.response.response.Vu1} Ton * 2204.62 Klb/Ton / 0.75 * 2 * √((${data.input.Fc} Kgf/ cm² * 14.223 Psi/(kgf/cm²)) * (${data.response.response.Bo} m * 39.37 Plg/m)) = ${data.response.response.Validate1.d} m </p>
-              <p style="margin: 5px 0; font-weight: bold;"> d<sub>0</sub> <= d =  ${data.response.response.Validate1.d} <  ${data.input.Hz - 0.09} OK </p>
+              <p style="margin: 5px 0; font-weight: bold;"> d<sub>0</sub> <= d =  ${data.response.response.Validate1.d} <  ${data.input.Hz} OK </p>
               </div>
           </div>
         </div>
@@ -634,12 +634,12 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
           <div style="margin-top: 10px;">
             <div style="font-family: 'Times New Roman', serif; line-height: 1.2;">
               <p style="margin: 5px 0; font-weight: bold;"> V<sub>2</sub> = ((Pu<sub>Int</sub>) - (Cy<sub>Int</sub> + d)² * Q<sub>u</sub>) </p>
-              <p style="margin: 5px 0;"> V<sub>2</sub> = ((${data.response.response.PuInt} Ton) - (${data.input.CyInt} m + ${data.input.Hz - 0.09} m)² * ${data.response.response.Qu} Ton) </p>
+              <p style="margin: 5px 0;"> V<sub>2</sub> = ((${data.response.response.PuInt} Ton) - (${data.input.CyInt} m + ${data.input.Hz} m)² * ${data.response.response.Qu} Ton) </p>
               <p style="margin: 5px 0; font-weight: bold;"> V<sub>2</sub> = ${data.response.response.Vu2} Ton</p>
-              <p style="margin: 5px 0; font-weight: bold;"> d<sub>0</sub> = V<sub>2</sub> * 2204.62 / (0.75 * 4 * √(Fc * 14.223) * (4 * (Cy<sub>Int</sub> * 39.37 + (Hz - 0.09) * 39.37))) </p>
-              <p style="margin: 5px 0; font-weight: bold;"> d<sub>0</sub> = (${data.response.response.Vu2} Ton * 2204.62 Klb/Ton / (0.75 * 4 * √(${data.input.Fc} Kgf/ cm² * 14.223 Psi/(kgf/cm²)) * (4 * (${data.input.CyInt} m * 39.37 Plg/m + (${data.input.Hz} m - 0.09 m) * 39.37 Plg/m)))) * 0.025 </p>
+              <p style="margin: 5px 0; font-weight: bold;"> d<sub>0</sub> = V<sub>2</sub> * 2204.62 / (0.75 * 4 * √(Fc * 14.223) * (4 * (Cy<sub>Int</sub> * 39.37 + Hz * 39.37))) </p>
+              <p style="margin: 5px 0; font-weight: bold;"> d<sub>0</sub> = (${data.response.response.Vu2} Ton * 2204.62 Klb/Ton / (0.75 * 4 * √(${data.input.Fc} Kgf/ cm² * 14.223 Psi/(kgf/cm²)) * (4 * (${data.input.CyInt} m * 39.37 Plg/m + ${data.input.Hz} m * 39.37 Plg/m)))) * 0.025 </p>
               <p style="margin: 5px 0; font-weight: bold;"> d<sub>0</sub> =  ${data.response.response.Validate2.d} m </p>
-              <p style="margin: 5px 0; font-weight: bold;"> d<sub>0</sub> <= d =  ${data.response.response.Validate2.d} <  ${data.input.Hz - 0.09} OK </p>
+              <p style="margin: 5px 0; font-weight: bold;"> d<sub>0</sub> <= d =  ${data.response.response.Validate2.d} <  ${data.input.Hz} OK </p>
               </div>
           </div>
         </div>
@@ -648,12 +648,12 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
           <div style="margin-top: 10px;">
             <div style="font-family: 'Times New Roman', serif; line-height: 1.2;">
               <p style="margin: 5px 0; font-weight: bold;"> V<sub>3</sub> = ((Pu<sub>Ext</sub>) - (Cy<sub>Ext</sub> + d) * (Cx<sub>Ext</sub> + d/2) * Q<sub>u</sub>) </p>
-              <p style="margin: 5px 0;"> V<sub>3</sub> = ((${data.response.response.PuExt} Ton) - (${data.input.CyExt} m + ${data.input.Hz - 0.09} m) * ${data.input.CxExt} m + ${data.input.Hz - 0.09} m / 2} * ${data.response.response.Qu} Ton) </p>
+              <p style="margin: 5px 0;"> V<sub>3</sub> = ((${data.response.response.PuExt} Ton) - (${data.input.CyExt} m + ${data.input.Hz} m) * ${data.input.CxExt} m + ${data.input.Hz} m / 2} * ${data.response.response.Qu} Ton) </p>
               <p style="margin: 5px 0; font-weight: bold;"> V<sub>3</sub> = ${data.response.response.Vu3} Ton</p>
-              <p style="margin: 5px 0; font-weight: bold;"> d<sub>0</sub> = V<sub>3</sub> * 2204.62 / (0.75 * 4 * √(Fc * 14.223) * (((Cy<sub>Ext</sub> + (Hz - 0.09)) * (Cx<sub>Ext</sub> + d/2)) * 39.37) * 2 </p>
-              <p style="margin: 5px 0; font-weight: bold;"> d<sub>0</sub> = (${data.response.response.Vu3} Ton * 2204.62 Klb/Ton / (0.75 * 4 * √(${data.input.Fc} Kgf/ cm² * 14.223 Psi/(kgf/cm²)) * (((${data.input.CyExt} m + (${data.input.Hz} m - 0.09 m)) * (${data.input.CxExt} m + ${data.input.Hz} m - 0.09 m / 2)) * 39.37 Plg/m) * 2 </p>
+              <p style="margin: 5px 0; font-weight: bold;"> d<sub>0</sub> = V<sub>3</sub> * 2204.62 / (0.75 * 4 * √(Fc * 14.223) * (((Cy<sub>Ext</sub> + Hz) * (Cx<sub>Ext</sub> + d/2)) * 39.37) * 2 </p>
+              <p style="margin: 5px 0; font-weight: bold;"> d<sub>0</sub> = (${data.response.response.Vu3} Ton * 2204.62 Klb/Ton / (0.75 * 4 * √(${data.input.Fc} Kgf/ cm² * 14.223 Psi/(kgf/cm²)) * (((${data.input.CyExt} m + ${data.input.Hz} m) * (${data.input.CxExt} m + ${data.input.Hz} m / 2)) * 39.37 Plg/m) * 2 </p>
               <p style="margin: 5px 0; font-weight: bold;"> d<sub>0</sub> =  ${data.response.response.Validate3.d} m </p>
-              <p style="margin: 5px 0; font-weight: bold;"> d<sub>0</sub> <= d =  ${data.response.response.Validate3.d} <  ${data.input.Hz - 0.09} OK </p>
+              <p style="margin: 5px 0; font-weight: bold;"> d<sub>0</sub> <= d =  ${data.response.response.Validate3.d} <  ${data.input.Hz} OK </p>
               </div>
           </div>
         </div>
@@ -715,19 +715,19 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
               <li class="validation-item">
               <div class="validation-title">🔧 Peralte requerido en una dirección </div>
               <div class="validation-detail">
-              <span class="success-icon"> ${data.response.response.Validate1.d} <= ${data.input.Hz - 0.09} ✓ CUMPLE</span>
+              <span class="success-icon"> ${data.response.response.Validate1.d} <= ${data.input.Hz} ✓ CUMPLE</span>
               </div>
               </li>
               <li class="validation-item">
               <div class="validation-title">🏗️ Peralte requerido en dos direcciones columna interna </div>
               <div class="validation-detail">
-              <span class="success-icon">${data.response.response.Validate2.d} <= ${data.input.Hz - 0.09} ✓ CUMPLE</span>
+              <span class="success-icon">${data.response.response.Validate2.d} <= ${data.input.Hz} ✓ CUMPLE</span>
               </div>
               </li>
               <li class="validation-item">
               <div class="validation-title">🏗️ Peralte requerido en dos direcciones columna externa </div>
               <div class="validation-detail">
-                <span class="success-icon">${data.response.response.Validate3.d} <= ${data.input.Hz - 0.09} ✓ CUMPLE</span>
+                <span class="success-icon">${data.response.response.Validate3.d} <= ${data.input.Hz} ✓ CUMPLE</span>
               </div>
               </li>
 
@@ -750,7 +750,7 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
               </div>
               <div class="input-item">
                 <div class="input-label">Peralte Efectivo (d)</div>
-                ${data.input.Hz - 0.09}
+                ${data.input.Hz}
               </div>
             </div>
           </div>
