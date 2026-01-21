@@ -750,7 +750,7 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
               </div>
               <div class="input-item">
                 <div class="input-label">Peralte Efectivo (d)</div>
-                ${data.input.Hz}
+                ${data.input.Hz - 0.09}
               </div>
             </div>
           </div>
