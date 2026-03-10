@@ -167,7 +167,7 @@ export class ZapataExcentricaVigaAmarrePDFTemplate implements PDFTemplate {
             font-size: 10px;
             font-style: italic;
           }
-          
+
           .section-result {
             border-radius: 8px;
             overflow: hidden;
@@ -186,12 +186,12 @@ export class ZapataExcentricaVigaAmarrePDFTemplate implements PDFTemplate {
             break-before: page;
           }
           .pdf-header-3 {
-            margin-top: 400px;
+            margin-top: 300px;
             page-break-before: always;
             break-before: page;
           }
           .pdf-header-4 {
-            margin-top: 200px;
+            margin-top: 130px;
             page-break-before: always;
             break-before: page;
           }
@@ -219,7 +219,7 @@ export class ZapataExcentricaVigaAmarrePDFTemplate implements PDFTemplate {
             page-break-inside: avoid;
             break-inside: avoid;
           }
-          
+
           .section-header {
             background-color: #2c5aa0;
             color: white;
@@ -228,43 +228,43 @@ export class ZapataExcentricaVigaAmarrePDFTemplate implements PDFTemplate {
             font-size: 15px;
             font-weight: bold;
           }
-          
+
           .section-content {
             padding: 5px;
           }
-          
+
           .input-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 5px;
             margin-bottom: 10px;
           }
-          
+
           .input-item {
             background-color: #f8f9fa;
             padding: 3px;
             border-radius: 5px;
           }
-          
+
           .input-label {
             font-weight: bold;
             color: #495057;
             font-size: 14px;
           }
-          
+
           .input-value {
             font-size: 16px;
             color: #2c5aa0;
             font-weight: bold;
             margin-top: 3px;
           }
-          
+
           .validation-list {
             list-style: none;
             padding: 0;
             margin: 0;
           }
-          
+
           .validation-item {
             background-color: #d4edda;
             border-radius: 5px;
@@ -272,26 +272,26 @@ export class ZapataExcentricaVigaAmarrePDFTemplate implements PDFTemplate {
             margin-bottom: 10px;
             border-left: 4px solid #28a72eff;
           }
-          
+
           .validation-title {
             font-weight: bold;
             color: #155724;
             margin-bottom: 8px;
             font-size: 16px;
           }
-          
+
           .validation-detail {
             color: #155724;
             font-size: 14px;
             margin: 5px 0;
           }
-          
+
           .success-icon {
             color: #28a745;
             font-weight: bold;
             margin-left: 10px;
           }
-          
+
           .footer {
             margin-top: 40px;
             text-align: center;
@@ -300,24 +300,24 @@ export class ZapataExcentricaVigaAmarrePDFTemplate implements PDFTemplate {
             color: #6c757d;
             font-size: 12px;
           }
-          
+
           .footer p {
             margin: 5px 0;
           }
-          
+
           .signature-section {
             margin-top: 60px;
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 40px;
           }
-          
+
           .signature-box {
             text-align: center;
             border-top: 2px solid #2c5aa0;
             padding-top: 10px;
           }
-          
+
           .signature-label {
             font-weight: bold;
             color: #2c5aa0;
@@ -471,15 +471,15 @@ export class ZapataExcentricaVigaAmarrePDFTemplate implements PDFTemplate {
         </div>
         <div class="section">
         <h4 style="margin-bottom: 10px;">Paso 1: Revisión de la presión de contacto.</h4>
-          <div style="font-family: 'Times New Roman', serif; line-height: 1.2; margin-bottom: 15px;">
-           <p style="margin: 5px 0;">Pu<sub>Ext</sub> = ${formatNum(inpt.PuExt)} Ton </p>
-           <p style="margin: 5px 0;">Pu<sub>Int</sub> = ${formatNum(inpt.PuInt)} Ton </p>
-           <strong>Pu<sub>Max</sub> =  Φ * 0.85 * F<sub>c</sub> * C<sub>x</sub> * C<sub>y</sub></strong>
-           <p style="margin: 5px 0;">Pu<sub>MaxExt</sub> =  (0.7 * 0.85 * ${inpt.Fc} Kg/cm² * ${inpt.CxExt} cm * ${inpt.CyExt} cm) / 1000 Ton/kgf = ${formatNum(r.presionExt?.resultado)} Ton </p>
-           <p style="margin: 5px 0;">Pu<sub>MaxInt</sub> =  (0.7 * 0.85 * ${inpt.Fc} Kg/cm² * ${inpt.CxInt} cm * ${inpt.CyInt} cm) / 1000 Ton/kgf = ${formatNum(r.presionInt?.resultado)} Ton </p>
-           <p style="font-weight: bold; margin: 5px 0;">Pu<sub>Ext</sub> =  ${formatNum(inpt.PuExt)} ≤ ${formatNum(r.presionExt?.resultado)} OK</p>
-           <p style="font-weight: bold; margin: 5px 0;">Pu<sub>Int</sub> =  ${formatNum(inpt.PuInt)} ≤ ${formatNum(r.presionInt?.resultado)} OK</p>
-           </div>
+          <div style="font-family: 'Times New Roman', serif; line-height: 1.3; margin-bottom: 15px;">
+           <p style="margin: 5px 0;">Pu<sub>Ext</sub> = ${formatNum(inpt.PuExt)} Ton</p>
+           <p style="margin: 5px 0;">Pu<sub>Int</sub> = ${formatNum(inpt.PuInt)} Ton</p>
+           <p style="margin: 5px 0;"><strong>Pu<sub>Max</sub> = (Φ · 0.85 · F<sub>c</sub> · C<sub>x</sub> · C<sub>y</sub>) / 1000</strong></p>
+           <p style="margin: 5px 0;">Pu<sub>MaxExt</sub> = ${r.presionExt?.formula ?? '(0.7·0.85·Fc·Cx·Cy)/1000'} = ${formatNum(r.presionExt?.resultado)} Ton</p>
+           <p style="margin: 5px 0;">Pu<sub>MaxInt</sub> = ${r.presionInt?.formula ?? '(0.7·0.85·Fc·Cx·Cy)/1000'} = ${formatNum(r.presionInt?.resultado)} Ton</p>
+           <p style="font-weight: bold; margin: 8px 0 5px 0;">Pu<sub>Ext</sub> = ${formatNum(inpt.PuExt)} ≤ ${formatNum(r.presionExt?.resultado)} ✓</p>
+           <p style="font-weight: bold; margin: 5px 0;">Pu<sub>Int</sub> = ${formatNum(inpt.PuInt)} ≤ ${formatNum(r.presionInt?.resultado)} ✓</p>
+          </div>
         </div>
         <div class="page-break"></div>
         <div class="pdf-header-2">
@@ -499,55 +499,44 @@ export class ZapataExcentricaVigaAmarrePDFTemplate implements PDFTemplate {
         </div>
         <div class="section">
           <h4>Paso 2: Dimensiones y distribución.</h4>
-          <div style="font-family: 'Times New Roman', serif; line-height: 1.2; margin-bottom: 15px;">
-           <div style="margin-top: 10px;">
-             <div style="font-weight: bold; margin: 5px 0;">Zapata Interna (Cuadrada)</div>
-             <p style="margin: 5px 0;">B<sub>Int</sub> = ${formatNum(r.B_Int)} m</p>
-             <p style="margin: 5px 0;">L<sub>Int</sub> = ${formatNum(r.L_Int)} m</p>
-             <p style="margin: 5px 0;">Área = ${formatNum(r.AreaZapataInt?.resultado)} m²</p>
-           </div>
-           <div style="margin-top: 10px;">
-             <div style="font-weight: bold; margin: 5px 0;">Zapata Externa (Rectangular)</div>
-             <p style="margin: 5px 0;">B<sub>Ext</sub> = ${formatNum(r.B_Ext?.resultado)} m</p>
-             <p style="margin: 5px 0;">L<sub>Ext</sub> = ${formatNum(r.L_Ext)} m</p>
-             <p style="margin: 5px 0;">Área = ${formatNum(r.AreaZapataExt?.resultado)} m²</p>
-           </div>
-           <div style="margin-top: 10px;">
-             <p style="margin: 5px 0;">Disposición (Desfase) = ${formatNum(r.Dis?.resultado)} m</p>
-             <p style="margin: 5px 0;">Lz₂ = ${formatNum(r.Lz2)} m</p>
-           </div>
+          <div style="font-family: 'Times New Roman', serif; line-height: 1.4; margin-bottom: 15px;">
+            <p style="margin: 5px 0;"><strong>R</strong> = ${r.R_value?.formula ?? 'N/A'} = ${formatNum(r.R_value?.resultado)} Ton</p>
+            <p style="margin: 5px 0;"><strong>X</strong> = ${r.X_value?.formula ?? 'N/A'} = ${formatNum(r.X_value?.resultado)} m</p>
+            <p style="margin: 5px 0;">P<sub>servicio Ext</sub> = ${r.PservicioExt?.formula ?? 'N/A'} = ${formatNum(r.PservicioExt?.resultado)} Ton</p>
+            <p style="margin: 5px 0;">P<sub>servicio Int</sub> = ${r.PservicioInt?.formula ?? 'N/A'} = ${formatNum(r.PservicioInt?.resultado)} Ton</p>
+            <p style="margin: 5px 0;">Área<sub>Int</sub> = ${r.AreaZapataInt?.formula ?? 'N/A'} = ${formatNum(r.AreaZapataInt?.resultado)} m²</p>
+            <p style="margin: 5px 0;">Área<sub>Ext</sub> = ${r.AreaZapataExt?.formula ?? 'N/A'} = ${formatNum(r.AreaZapataExt?.resultado)} m²</p>
+            <div style="margin-top: 10px;">
+              <div style="font-weight: bold; margin: 5px 0;">Zapata Interna (cuadrada)</div>
+              <p style="margin: 5px 0;">B<sub>Int</sub> = L<sub>Int</sub> = √(Área<sub>Int</sub>) = ${formatNum(r.B_Int)} m</p>
+            </div>
+            <div style="margin-top: 8px;">
+              <div style="font-weight: bold; margin: 5px 0;">Zapata Externa (rectangular)</div>
+              <p style="margin: 5px 0;">B<sub>Ext</sub> = ${r.B_Ext?.formula ?? 'N/A'} = ${formatNum(r.B_Ext?.resultado)} m</p>
+              <p style="margin: 5px 0;">L<sub>Ext</sub> = B<sub>Ext</sub>/2 = ${formatNum(r.L_Ext)} m</p>
+            </div>
+            <p style="margin: 5px 0;">Dis = ${r.Dis?.formula ?? 'N/A'} = ${formatNum(r.Dis?.resultado)} m</p>
+            <p style="margin: 5px 0;">Lz₂ = ${formatNum(r.Lz2)} m</p>
+            <p style="margin: 5px 0;">R<sub>e</sub> = ${r.Re_Servicio?.formula ?? 'N/A'} = ${formatNum(r.Re_Servicio?.resultado)} Ton</p>
+            <p style="margin: 5px 0;">R<sub>i</sub> = ${r.Ri_Servicio?.formula ?? 'N/A'} = ${formatNum(r.Ri_Servicio?.resultado)} Ton</p>
+            <p style="margin: 5px 0;">A<sub>e</sub> = ${r.Ae?.formula ?? 'N/A'} = ${formatNum(r.Ae?.resultado)} m²</p>
+            <p style="margin: 5px 0;">A<sub>i</sub> = ${r.Ai?.formula ?? 'N/A'} = ${formatNum(r.Ai?.resultado)} m²</p>
+            <p style="margin: 8px 0 5px 0;"><strong>Dimensiones finales:</strong></p>
+            <p style="margin: 5px 0;">B<sub>final Ext</sub> = ${formatNum(r.BfinalExt?.resultado)} m, L<sub>final Ext</sub> = ${formatNum(r.LfinalExt?.resultado)} m</p>
+            <p style="margin: 5px 0;">B<sub>final Int</sub> = ${formatNum(r.BfinalInt?.resultado)} m, L<sub>final Int</sub> = ${formatNum(r.LfinalInt?.resultado)} m</p>
           </div>
         </div>
-        <div class="paso3">
-         <h4 style="margin-bottom: 1px;">Paso 3: Gráfica de Cortante</h4>
-         <div class="chart-section">
-           <div class="chart-image-container">
-             ${data.chartImage ? `<img src="${data.chartImage}" style="width: 100%; max-width: 600px; height: auto; border: 1px solid #ccc; border-radius: 5px;" />` : '<p>No hay gráfica disponible</p>'}
-           </div>
-           <div class="chart-table-container">
-             <table class="chart-table">
-               <thead>
-                 <tr>
-                   <th>Distancia (m)</th>
-                   <th>Cortante (Ton)</th>
-                 </tr>
-               </thead>
-               <tbody>
-                 ${safeArr(r.arrayDataEjeX).length > 0 ? safeArr(r.arrayDataEjeX).map((x: number, i: number) => {
-      const y = safeArr(r.arrayDataEjeY)[i] ?? 0;
-      return `
-                     <tr>
-                       <td>${formatNum(x)}</td>
-                       <td>${formatNum(y)}</td>
-                     </tr>
-                   `;
-    }).join('') : '<tr><td colspan="2">No hay datos disponibles</td></tr>'}
-               </tbody>
-             </table>
-           </div>
-         </div>
+        <div class="section">
+          <h4 style="margin-bottom: 8px;">Paso 2 (cont.): Excentricidad y presión Ns.</h4>
+          <div style="font-family: 'Times New Roman', serif; line-height: 1.4;">
+            <p style="margin: 5px 0;">e = ${r.exenticidad?.formula ?? 'N/A'}</p>
+            <p style="margin: 5px 0;">Reemplazo: ${r.exenticidad?.reemplazo ?? 'N/A'} → e = ${formatNum(r.exenticidad?.resultado)} m</p>
+            <p style="margin: 5px 0;">Peso propio: Pp = ${r.pp?.reemplazo ?? r.pp?.formula ?? 'N/A'} = ${formatNum(r.pp?.resultado)} Ton</p>
+            <p style="margin: 5px 0;">ΣP₁ = ${r.sumatoriaP1?.reemplazo ?? r.sumatoriaP1?.formula ?? 'N/A'} = ${formatNum(r.sumatoriaP1?.resultado)} Ton</p>
+            <p style="margin: 5px 0;">A<sub>r</sub> = ${r.Ar?.reemplazo ?? r.Ar?.formula ?? 'N/A'} = ${formatNum(r.Ar?.resultado)} Ton</p>
+            <p style="margin: 5px 0;">N<sub>s</sub> = (ΣP₁ + A<sub>r</sub>) / (B<sub>final Ext</sub> · L<sub>final Ext</sub>) = ${formatNum(r.Ns?.resultado)} Ton/m² ≤ Qa ✓</p>
+          </div>
         </div>
-
         <div class="page-break"></div>
         <div class="pdf-header-3">
           <table class="header-table">
@@ -563,6 +552,35 @@ export class ZapataExcentricaVigaAmarrePDFTemplate implements PDFTemplate {
               </td>
             </tr>
           </table>
+        </div>
+                <div class="paso3">
+         <h4 style="margin-bottom: 1px;">Paso 3: Gráfica de Cortante</h4>
+         <div class="chart-section">
+           <div class="chart-image-container">
+             ${data.chartImage ? `<img src="${data.chartImage}" style="width: 100%; max-width: 600px; height: auto; border: 1px solid #ccc; border-radius: 5px;" />` : '<p>No hay gráfica disponible</p>'}
+           </div>
+           <div class="chart-table-container">
+             <table class="chart-table">
+               <thead>
+                 <tr>
+                   <th>Distancia (m)</th>
+                   <th>Cortante (Ton)</th>
+                 </tr>
+               </thead>
+               <tbody>
+                 ${safeArr(r.arrayDataEjeX).length > 0 ? safeArr(r.arrayDataEjeX).map((x: number, i: number) => {
+                    const y = safeArr(r.arrayDataEjeY)[i] ?? 0;
+                    return `
+                     <tr>
+                       <td>${formatNum(x)}</td>
+                       <td>${formatNum(y)}</td>
+                     </tr>
+                   `;
+                  }).join('') : '<tr><td colspan="2">No hay datos disponibles</td></tr>'}
+               </tbody>
+             </table>
+           </div>
+         </div>
         </div>
         <div class="paso3-momento">
          <h4 style="margin-bottom: 1px;">Gráfica de Momento</h4>
@@ -596,33 +614,23 @@ export class ZapataExcentricaVigaAmarrePDFTemplate implements PDFTemplate {
         <div class="section">
          <h4 style="margin-bottom: 10px;">Paso 4: Verificaciones de punzonamiento y cortante.</h4>
           <div style="margin-top: 10px;">
-            <div style="font-family: 'Times New Roman', serif; line-height: 1.2;">
+            <div style="font-family: 'Times New Roman', serif; line-height: 1.3;">
               <div style="font-weight: bold; margin: 10px 0 5px 0;">Columna Interna</div>
-              <p style="margin: 5px 0;">Q<sub>u</sub> = ${formatNum(r.QultimoInt?.resultado)} Ton/m²</p>
-              <p style="margin: 5px 0;">b₀ = ${formatNum(r.b0)} cm</p>
+              <p style="margin: 5px 0;">Q<sub>u</sub> = ${r.QultimoInt?.formula ?? 'N/A'} = ${formatNum(r.QultimoInt?.resultado)} Ton/m²</p>
+              <p style="margin: 5px 0;">b₀ = 2·(Cx+d) + 2·(Cy+d) = ${formatNum(r.b0)} cm</p>
               <p style="margin: 5px 0;">d = ${inpt.Hz ?? 0} cm</p>
-              <p style="margin: 5px 0;">Vu = ${formatNum(r.Vu)} Ton</p>
-              <p style="margin: 5px 0;">Verificaciones cumplen ✓</p>
-              
-              <div style="font-weight: bold; margin: 10px 0 5px 0;">Columna Externa</div>
-              <p style="margin: 5px 0;">b₀,ext = ${formatNum(r.bo_Ext?.resultado)} m</p>
-              <p style="margin: 5px 0;">Qvt = ${formatNum(r.Qvt?.resultado)} Ton/m²</p>
-              <p style="margin: 5px 0;">Vu<sub>ext</sub> = ${formatNum(r.VuExt?.resultado)} Ton</p>
-              <p style="margin: 5px 0;">Verificaciones cumplen ✓</p>
-            </div>
-          </div>
-        </div>
-        <h4 style="margin: 10px 0 5px 0;">Paso 5: Diseño de viga de amarre.</h4>
-        <div class="section">
-          <div style="margin-top: 10px;">
-            <div style="font-family: 'Times New Roman', serif; line-height: 1.2;">
-              <p style="margin: 5px 0; font-weight: bold;">Chequeo de ancho por cortante</p>
-              <p style="margin: 5px 0;">b = ${formatNum(r.b_Ext?.resultado)} cm ≤ Av = ${inpt.Av ?? 'N/A'} cm</p>
-              <p style="margin: 5px 0; font-weight: bold;">Acero por cortante (C.11.4)</p>
-              <p style="margin: 5px 0;">Vc = ${formatNum(r.Vc_acero?.resultado)} Ton</p>
-              <p style="margin: 5px 0;">ΔVc = ${formatNum(r.delta_Vc?.resultado)} Ton</p>
-              <p style="margin: 5px 0; font-weight: bold;">Separación máx estribos S<sub>max</sub> = ${formatNum(r.SMax?.resultado)} cm</p>
-              <p style="margin: 5px 0;">Recomendado: ${r.Hierro || 'N/A'}</p>
+              <p style="margin: 5px 0;">Vu = Pu − Q<sub>u</sub>·(Cx+d)·(Cy+d) = ${formatNum(r.Vu)} Ton</p>
+              <p style="margin: 5px 0;">b₀,int = ${r.b0Int?.formula ?? 'N/A'} = ${formatNum(r.b0Int?.resultado)} m</p>
+              <p style="margin: 5px 0;">Vu₁₂ = ${r.Vu1_2?.formula ?? 'N/A'} = ${formatNum(r.Vu1_2?.resultado)} Ton</p>
+              <p style="margin: 5px 0;">Vc = ${r.Vc?.formula ?? 'N/A'} = ${formatNum(r.Vc?.resultado)} Ton</p>
+              <p style="margin: 5px 0;">Cortante una dirección: Vu₂ = ${formatNum(r.Vu2?.resultado)} Ton, Vc₂ = ${formatNum(r.Vc2?.resultado)} Ton → Cumple ✓</p>
+
+              <div style="font-weight: bold; margin: 12px 0 5px 0;">Columna Externa</div>
+              <p style="margin: 5px 0;">b₀,ext = ${r.bo_Ext?.reemplazo ?? r.bo_Ext?.formula ?? 'N/A'} = ${formatNum(r.bo_Ext?.resultado)} m</p>
+              <p style="margin: 5px 0;">Qvt = ${r.Qvt?.reemplazo ?? 'N/A'} = ${formatNum(r.Qvt?.resultado)} Ton/m²</p>
+              <p style="margin: 5px 0;">Vu<sub>ext</sub> = ${r.VuExt?.reemplazo ?? 'N/A'} = ${formatNum(r.VuExt?.resultado)} Ton</p>
+              <p style="margin: 5px 0;">Vu₁,ext = ${formatNum(r.Vu1_Ext?.resultado)} Ton, Vc,ext = ${formatNum(r.Vc_Ext?.resultado)} Ton</p>
+              <p style="margin: 5px 0;">Vu₂,ext = ${formatNum(r.Vu2_Ext?.resultado)} Ton, Vc₂,ext = ${formatNum(r.Vc2_Ext?.resultado)} Ton → Verificaciones cumplen ✓</p>
             </div>
           </div>
         </div>
@@ -642,28 +650,97 @@ export class ZapataExcentricaVigaAmarrePDFTemplate implements PDFTemplate {
             </tr>
           </table>
         </div>
+              <h4 style="margin: 10px 0 5px 0;">Paso 5: Diseño de viga de amarre.</h4>
+        <div class="section">
+          <div style="margin-top: 10px;">
+            <div style="font-family: 'Times New Roman', serif; line-height: 1.3;">
+              <p style="margin: 5px 0; font-weight: bold;">Chequeo de ancho por cortante</p>
+              <p style="margin: 5px 0;">b = (P₃·1000) / (0.53·Φ·√Fc·d) = ${formatNum(r.b_Ext?.resultado)} cm ≤ Av = ${inpt.Av ?? 'N/A'} cm ✓</p>
+              <p style="margin: 8px 0 5px 0; font-weight: bold;">Cortante en viga (C.11.4)</p>
+              <p style="margin: 5px 0;">Φ·Vc = ${r.Vc_acero?.formula ?? 'N/A'} = ${formatNum(r.Vc_acero?.resultado)} Ton</p>
+              <p style="margin: 5px 0;">H′ = ${r.H_prima?.reemplazo ?? r.H_prima?.formula ?? 'N/A'} = ${formatNum(r.H_prima?.resultado)} Ton</p>
+              <p style="margin: 5px 0;">Vu<sub>Bc</sub> = ${r.VuBc?.reemplazo ?? r.VuBc?.formula ?? 'N/A'} = ${formatNum(r.VuBc?.resultado)} Ton</p>
+              <p style="margin: 5px 0;">ΔVs = Vu<sub>Bc</sub> − Φ·Vc = ${r.delta_Vs?.reemplazo ?? 'N/A'} = ${formatNum(r.delta_Vs?.resultado)} Ton</p>
+              <p style="margin: 5px 0;">s por cortante: ${r.szc?.reemplazo ?? r.szc?.formula ?? 'N/A'} = ${formatNum(r.szc?.resultado)} m (${formatNum((r.szc?.resultado ?? 0) * 100)} cm)</p>
+              <p style="margin: 5px 0;">s máx norma: ${r.sznc?.reemplazo ?? r.sznc?.formula ?? 'N/A'} = ${formatNum(r.sznc?.resultado)} m (${formatNum((r.sznc?.resultado ?? 0) * 100)} cm)</p>
+              <p style="margin: 8px 0 5px 0; font-weight: bold;">Separación estribos S<sub>max</sub> = mín(s cortante, s norma) = ${formatNum(r.SMax?.resultado)} cm</p>
+              <p style="margin: 5px 0; font-weight: bold; color: #2c5aa0;">Estribos viga: ${r.Hierro ?? 'N/A'}</p>
+            </div>
+          </div>
+        </div>
         <h4 style="margin: 10px 0 5px 0;">Paso 6: Diseño del acero de refuerzo en zapatas.</h4>
         <div class="section">
           <div style="margin-top: 10px;">
-            <div style="font-family: 'Times New Roman', serif; line-height: 1.2;">
+            <div style="font-family: 'Times New Roman', serif; line-height: 1.3;">
               <div style="font-weight: bold; margin: 10px 0 5px 0;">Zapata Interna</div>
-              <p style="margin: 5px 0;">Mu = ${formatNum(r.MuInt?.resultado)} Ton·m</p>
-              <p style="margin: 5px 0;">${r.AsInt?.formula || 'N/A'}</p>
-              <p style="margin: 5px 0;">Separación = ${formatNum(r.AsInt?.Arroba2)} cm</p>
-              
-              <div style="font-weight: bold; margin: 10px 0 5px 0;">Zapata Externa (Lado Largo)</div>
-              <p style="margin: 5px 0;">Mu = ${formatNum(r.MuExt?.resultado)} Ton·m</p>
-              <p style="margin: 5px 0;">${r.AsExtLarga?.formula || 'N/A'}</p>
-              <p style="margin: 5px 0;">Separación = ${formatNum(r.AsExtLarga?.Arroba2)} cm</p>
-              
-              <div style="font-weight: bold; margin: 10px 0 5px 0;">Zapata Externa (Lado Corto)</div>
-              <p style="margin: 5px 0;">${r.AsExtCorta?.formula || 'N/A'}</p>
+              <p style="margin: 5px 0;">Mu = ${r.MuInt?.reemplazo ?? r.MuInt?.formula ?? 'N/A'} = ${formatNum(r.MuInt?.resultado)} Ton·m</p>
+              <p style="margin: 5px 0;">Acero: ρ·b·d → ${r.AsInt?.formula ?? 'N/A'}</p>
+              <p style="margin: 5px 0;">Nº barras = ${r.AsInt?.acero ?? 'N/A'}, Separación = ${formatNum(r.AsInt?.Arroba2)} cm</p>
+
+              <div style="font-weight: bold; margin: 10px 0 5px 0;">Zapata Externa (lado largo)</div>
+              <p style="margin: 5px 0;">Mu = ${r.MuExt?.reemplazo ?? r.MuExt?.formula ?? 'N/A'} = ${formatNum(r.MuExt?.resultado)} Ton·m</p>
+              <p style="margin: 5px 0;">Acero: ${r.AsExtLarga?.formula ?? 'N/A'}</p>
+              <p style="margin: 5px 0;">Nº barras = ${r.AsExtLarga?.acero ?? 'N/A'}, Separación = ${formatNum(r.AsExtLarga?.Arroba2)} cm</p>
+
+              <div style="font-weight: bold; margin: 10px 0 5px 0;">Zapata Externa (lado corto) — mínimo 0.0018</div>
+              <p style="margin: 5px 0;">${r.AsExtCorta?.formula ?? 'N/A'}</p>
               <p style="margin: 5px 0;">Separación = ${formatNum(r.AsExtCorta?.Arroba2)} cm</p>
-              
-              <div style="font-weight: bold; margin: 10px 0 5px 0;">Parrillas Dobles</div>
-              <p style="margin: 5px 0;">Int: ${r.AsParrillaDobleInterna?.formula || 'N/A'}</p>
-              <p style="margin: 5px 0;">Ext: ${r.AsParrillaDobleExterna?.formula || 'N/A'}</p>
+
+              <div style="font-weight: bold; margin: 10px 0 5px 0;">Parrillas dobles (temperatura)</div>
+              <p style="margin: 5px 0;">Int: ${r.AsParrillaDobleInterna?.formula ?? 'N/A'}</p>
+              <p style="margin: 5px 0;">Ext: ${r.AsParrillaDobleExterna?.formula ?? 'N/A'}</p>
             </div>
+          </div>
+        </div>
+        <div class="section" style="border: 2px solid #2c5aa0; margin-top: 350px;">
+          <h3 class="section-header">🔩 Resumen de hierro (refuerzo)</h3>
+          <div class="section-content">
+            <table class="chart-table" style="margin-top: 8px;">
+              <thead>
+                <tr>
+                  <th>Elemento</th>
+                  <th>Refuerzo</th>
+                  <th>Detalle</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Viga de amarre — Estribos</strong></td>
+                  <td>${r.Hierro ?? 'N/A'}</td>
+                  <td>S<sub>max</sub> = ${formatNum(r.SMax?.resultado)} cm</td>
+                </tr>
+                <tr>
+                  <td><strong>Viga de amarre — Longitudinal</strong></td>
+                  <td>${r.AsViga?.formula ?? 'N/A'}</td>
+                  <td>${r.AsViga?.acero ?? 'N/A'} barras, sep. ${formatNum(r.AsViga?.Arroba2)} cm</td>
+                </tr>
+                <tr>
+                  <td><strong>Zapata interna</strong></td>
+                  <td>${r.AsInt?.formula ?? 'N/A'}</td>
+                  <td>${r.AsInt?.acero ?? 'N/A'} barras, sep. ${formatNum(r.AsInt?.Arroba2)} cm</td>
+                </tr>
+                <tr>
+                  <td><strong>Zapata externa (largo)</strong></td>
+                  <td>${r.AsExtLarga?.formula ?? 'N/A'}</td>
+                  <td>${r.AsExtLarga?.acero ?? 'N/A'} barras, sep. ${formatNum(r.AsExtLarga?.Arroba2)} cm</td>
+                </tr>
+                <tr>
+                  <td><strong>Zapata externa (corto)</strong></td>
+                  <td>${r.AsExtCorta?.formula ?? 'N/A'}</td>
+                  <td>sep. ${formatNum(r.AsExtCorta?.Arroba2)} cm</td>
+                </tr>
+                <tr>
+                  <td><strong>Parrilla doble interna</strong></td>
+                  <td>${r.AsParrillaDobleInterna?.formula ?? 'N/A'}</td>
+                  <td>—</td>
+                </tr>
+                <tr>
+                  <td><strong>Parrilla doble externa</strong></td>
+                  <td>${r.AsParrillaDobleExterna?.formula ?? 'N/A'}</td>
+                  <td>—</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
         <div class="section-result" style="margin-top: 5%;">
@@ -685,7 +762,6 @@ export class ZapataExcentricaVigaAmarrePDFTemplate implements PDFTemplate {
             </ul>
           </div>
         </div>
-
         <!-- Results Summary -->
         <div class="section">
           <h3 class="section-header"> Resumen de Resultados</h3>
@@ -693,15 +769,15 @@ export class ZapataExcentricaVigaAmarrePDFTemplate implements PDFTemplate {
             <div class="input-grid">
               <div class="input-item">
                 <div class="input-label">Zapata Externa (B, L)</div>
-                <div class="input-value">${formatNum(r.B_Ext?.resultado)} m × ${formatNum(r.L_Ext)} m</div>
+                <div class="input-value">${formatNum(r.BfinalExt?.resultado)} m × ${formatNum(r.LfinalExt?.resultado)} m</div>
               </div>
               <div class="input-item">
                 <div class="input-label">Zapata Interna (B, L)</div>
-                <div class="input-value">${formatNum(r.B_Int)} m × ${formatNum(r.L_Int)} m</div>
+                <div class="input-value">${formatNum(r.BfinalInt?.resultado)} m × ${formatNum(r.LfinalInt?.resultado)} m</div>
               </div>
               <div class="input-item">
-                <div class="input-label">Separación Estribos Viga</div>
-                <div class="input-value">${formatNum(r.SMax?.resultado)} cm</div>
+                <div class="input-label">Separación estribos viga</div>
+                <div class="input-value">${formatNum(r.SMax?.resultado)} cm — ${r.Hierro ?? 'N/A'}</div>
               </div>
             </div>
           </div>
