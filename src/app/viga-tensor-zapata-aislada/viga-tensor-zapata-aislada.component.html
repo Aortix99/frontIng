@@ -1,0 +1,115 @@
+<div class="page-wrap">
+  <div class="header">
+    <h1>Viga de amarre o conexión</h1>
+    <p>Coeficientes sísmicos por municipio (NSR-10) y diseño de refuerzo</p>
+  </div>
+
+  <div class="layout">
+    <div class="columna-form-container">
+      <form [formGroup]="form" (ngSubmit)="calcular()">
+        <h3>Ubicación</h3>
+        <div class="form-group">
+          <label for="filtroMun">Filtrar municipio</label>
+          <input
+            id="filtroMun"
+            type="text"
+            class="form-control"
+            [(ngModel)]="filtroMunicipio"
+            [ngModelOptions]="{ standalone: true }"
+            placeholder="Departamento, municipio, código DANE, Aa… (varias palabras)"
+            autocomplete="off"
+          />
+        </div>
+        <div class="form-group">
+          <label for="codMunicipio">Municipio (código DANE)</label>
+          <select
+            id="codMunicipio"
+            formControlName="codMunicipio"
+            class="form-control"
+            [disabled]="cargandoMunicipios || !!errorCatalogo"
+          >
+            <option [ngValue]="null" disabled>— Seleccione —</option>
+            <option
+              *ngFor="let m of municipiosFiltrados"
+              [ngValue]="m.codMunicipio"
+            >
+              {{ etiquetaMunicipio(m) }}
+            </option>
+          </select>
+          <small *ngIf="cargandoMunicipios" class="hint">Cargando catálogo…</small>
+          <small *ngIf="errorCatalogo" class="hint error">{{ errorCatalogo }}</small>
+        </div>
+
+        <h3>Geometría y cargas</h3>
+        <div class="grid-2">
+          <div class="form-group">
+            <label for="b">Ancho de la sección <em>b</em> (m)</label>
+            <input id="b" type="number" formControlName="b" class="form-control" step="0.01" appMathExpression />
+          </div>
+          <div class="form-group">
+            <label for="h">Altura de la sección <em>h</em> (m)</label>
+            <input id="h" type="number" formControlName="h" class="form-control" step="0.01" appMathExpression />
+          </div>
+          <div class="form-group">
+            <label for="cargaMaxima">Carga máxima (unidades del modelo)</label>
+            <input id="cargaMaxima" type="number" formControlName="cargaMaxima" class="form-control" step="0.1" appMathExpression />
+          </div>
+          <div class="form-group">
+            <label for="luzViga">Luz de viga (m)</label>
+            <input id="luzViga" type="number" formControlName="luzViga" class="form-control" step="0.1" appMathExpression />
+          </div>
+        </div>
+
+        <h3>Material</h3>
+        <div class="grid-2">
+          <div class="form-group">
+            <label for="fc"><em>f'c</em> (kgf/cm²)</label>
+            <input id="fc" type="number" formControlName="fc" class="form-control" step="1" appMathExpression />
+          </div>
+          <div class="form-group">
+            <label for="fy"><em>fy</em> (kgf/cm²)</label>
+            <input id="fy" type="number" formControlName="fy" class="form-control" step="1" appMathExpression />
+          </div>
+        </div>
+
+        <h3>Acero longitudinal (barra)</h3>
+        <div class="form-group">
+          <label for="BarraViga">Diámetro de barra</label>
+          <select id="BarraViga" formControlName="BarraViga" class="form-control">
+            <option *ngFor="let op of opcionesBarra" [ngValue]="op">
+              {{ op.Nomen }} — {{ op.area }}
+            </option>
+          </select>
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="btn-submit" [disabled]="form.invalid || cargandoMunicipios">
+            Calcular
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="resultados-container">
+      <div *ngIf="response" class="resultados">
+        <h2>Resultados</h2>
+        <div class="pdf-actions">
+          <app-pdf-report-button
+            [template]="pdfTemplate"
+            [prepareData]="preparePDFDataFn"
+            defaultReportName="Viga de amarre o conexión"
+            buttonText="Generar reporte PDF"
+            buttonClass="btn-submit"
+            [showProgress]="false"
+          ></app-pdf-report-button>
+        </div>
+        <div *ngIf="response.error" class="alert alert-error">
+          <strong>Aviso:</strong> {{ response.message }}
+        </div>
+      </div>
+      <div *ngIf="!response" class="sin-resultados">
+        <p>Complete el formulario y pulse <strong>Calcular</strong>.</p>
+      </div>
+    </div>
+  </div>
+</div>

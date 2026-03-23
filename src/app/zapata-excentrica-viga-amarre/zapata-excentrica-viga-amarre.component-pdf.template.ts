@@ -4,8 +4,13 @@
  */
 
 import { Injectable } from '@angular/core';
-import { PDFTemplate, PDFPageOptions } from '../services/pdf-generator.service';
+import {
+  PDFTemplate,
+  PDFPageOptions,
+  getStandardLetterPdfPageOptions,
+} from '../services/pdf-generator.service';
 import { LOGO_BASE64 } from '../imgBase64/img';
+import { buildPdfReportHeaderHtml, getPdfReportBodyBaseStyles, getPdfReportHeaderStyles } from '../shared/pdf-report/pdf-report-header';
 
 export interface ZapataExcentricaVigaAmarreCalculationData {
   // Datos de entrada
@@ -61,13 +66,23 @@ export interface ZapataExcentricaVigaAmarreCalculationData {
 })
 export class ZapataExcentricaVigaAmarrePDFTemplate implements PDFTemplate {
 
-  generateContent(data: ZapataExcentricaVigaAmarreCalculationData): string {
+  generateHeaderHtml(data: ZapataExcentricaVigaAmarreCalculationData): string {
     const currentDate = new Date().toLocaleDateString('es-CO', {
       year: 'numeric',
       month: 'long',
-      day: 'numeric'
+      day: 'numeric',
     });
+    const projectTitle = data.metadata.projectName || 'Zapata Excéntrica con Viga de Amarre';
+    return buildPdfReportHeaderHtml({
+      logoBase64: LOGO_BASE64,
+      projectName: projectTitle,
+      subtitle: 'Reporte de cálculo estructural para zapata excéntrica con viga de amarre',
+      dateDisplay: currentDate,
+      containerClass: 'pdf-header',
+    });
+  }
 
+  generateContent(data: ZapataExcentricaVigaAmarreCalculationData): string {
     const r = data.response || {};
     const inpt = data.input || {};
 
@@ -84,116 +99,11 @@ export class ZapataExcentricaVigaAmarrePDFTemplate implements PDFTemplate {
       <head>
         <meta charset="UTF-8">
         <style>
-          body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 20px;
-            line-height: 1.6;
-            color: #333;
-            background-color: #ffffff;
-          }
-
-          .pdf-header {
-            width: 100%;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #2c5aa0;
-            padding-bottom: 10px;
-          }
-          .logo-cell {
-            width: 15%;
-            background-color: #f8f9fa;
-            text-align: center;
-            border-right: 1px solid #ddd;
-            padding: 0;
-          }
-
-          .logo-cell img {
-            width: 70%;
-            margin-left: 14px;
-            height: 100%;
-            object-fit: contain;
-            display: block;
-          }
-
-          .logo-placeholder {
-            display: none;
-          }
-
-          .header-table {
-            width: 100%;
-            border-collapse: collapse;
-            table-layout: fixed;
-            margin-bottom: 10px;
-          }
-
-          .header-table td {
-            vertical-align: middle;
-            padding: 8px;
-            border: 1px solid #ddd;
-            height: 60px;
-          }
-
-          .title-cell {
-            width: 70%;
-            text-align: center;
-            background-color: #f8f9fa;
-            border-right: 1px solid #ddd;
-          }
-
-          .info-cell {
-            width: 15%;
-            text-align: center;
-            font-size: 11px;
-            background-color: #f8f9fa;
-          }
-
-          .main-title {
-            font-size: 16px;
-            font-weight: bold;
-            color: #2c5aa0;
-            margin: 0;
-            line-height: 1.3;
-          }
-
-          .subtitle {
-            font-size: 12px;
-            color: #666;
-            margin: 5px 0 0 0;
-            line-height: 1.2;
-          }
-
-          .logo-placeholder {
-            color: #999;
-            font-size: 10px;
-            font-style: italic;
-          }
-
+          ${getPdfReportBodyBaseStyles()}
+          ${getPdfReportHeaderStyles()}
           .section-result {
             border-radius: 8px;
             overflow: hidden;
-          }
-          .page-break {
-            page-break-before: always;
-            break-before: page;
-            display: block;
-            height: 0;
-            margin: 0;
-            padding: 0;
-          }
-          .pdf-header-2 {
-            margin-top: 560px;
-            page-break-before: always;
-            break-before: page;
-          }
-          .pdf-header-3 {
-            margin-top: 300px;
-            page-break-before: always;
-            break-before: page;
-          }
-          .pdf-header-4 {
-            margin-top: 130px;
-            page-break-before: always;
-            break-before: page;
           }
           .section {
             border-radius: 8px;
@@ -383,24 +293,6 @@ export class ZapataExcentricaVigaAmarrePDFTemplate implements PDFTemplate {
         </style>
       </head>
       <body>
-        <div class="pdf-header">
-          <table class="header-table">
-            <tr>
-              <td class="logo-cell">
-                <img src="data:image/png;base64,${LOGO_BASE64}" alt="Logo" />
-              </td>
-              <td class="title-cell">
-                <div class="main-title">${data.metadata.projectName || 'Zapata Excéntrica con Viga de Amarre'}</div>
-                <div class="subtitle">Reporte de cálculo estructural para zapata excéntrica con viga de amarre</div>
-              </td>
-              <td class="info-cell">
-                <div style="font-weight: bold; margin-bottom: 3px;">FECHA:</div>
-                <div style="font-size: 10px;">${currentDate}</div>
-              </td>
-            </tr>
-          </table>
-        </div>
-
         <!-- Input Data Section -->
         <div class="section">
           <h3 class="section-header">📊 Datos de Entrada</h3>
@@ -481,22 +373,6 @@ export class ZapataExcentricaVigaAmarrePDFTemplate implements PDFTemplate {
            <p style="font-weight: bold; margin: 5px 0;">Pu<sub>Int</sub> = ${formatNum(inpt.PuInt)} ≤ ${formatNum(r.presionInt?.resultado)} ✓</p>
           </div>
         </div>
-        <div class="page-break"></div>
-        <div class="pdf-header-2">
-          <table class="header-table">
-            <tr>
-              <td class="logo-cell">
-                <img src="data:image/png;base64,${LOGO_BASE64}" alt="Logo" />
-              </td>
-              <td class="title-cell">
-                <div class="subtitle">Reporte de cálculo estructural para zapata excéntrica con viga de amarre</div>
-              </td>
-              <td class="info-cell">
-                <div style="font-weight: bold; margin-bottom: 3px;">FECHA:</div>
-              </td>
-            </tr>
-          </table>
-        </div>
         <div class="section">
           <h4>Paso 2: Dimensiones y distribución.</h4>
           <div style="font-family: 'Times New Roman', serif; line-height: 1.4; margin-bottom: 15px;">
@@ -536,22 +412,6 @@ export class ZapataExcentricaVigaAmarrePDFTemplate implements PDFTemplate {
             <p style="margin: 5px 0;">A<sub>r</sub> = ${r.Ar?.reemplazo ?? r.Ar?.formula ?? 'N/A'} = ${formatNum(r.Ar?.resultado)} Ton</p>
             <p style="margin: 5px 0;">N<sub>s</sub> = (ΣP₁ + A<sub>r</sub>) / (B<sub>final Ext</sub> · L<sub>final Ext</sub>) = ${formatNum(r.Ns?.resultado)} Ton/m² ≤ Qa ✓</p>
           </div>
-        </div>
-        <div class="page-break"></div>
-        <div class="pdf-header-3">
-          <table class="header-table">
-            <tr>
-              <td class="logo-cell">
-                <img src="data:image/png;base64,${LOGO_BASE64}" alt="Logo" />
-              </td>
-              <td class="title-cell">
-                <div class="subtitle">Reporte de cálculo estructural para zapata excéntrica con viga de amarre</div>
-              </td>
-              <td class="info-cell">
-                <div style="font-weight: bold; margin-bottom: 3px;">FECHA:</div>
-              </td>
-            </tr>
-          </table>
         </div>
                 <div class="paso3">
          <h4 style="margin-bottom: 1px;">Paso 3: Gráfica de Cortante</h4>
@@ -634,22 +494,6 @@ export class ZapataExcentricaVigaAmarrePDFTemplate implements PDFTemplate {
             </div>
           </div>
         </div>
-        <div class="page-break"></div>
-        <div class="pdf-header-4">
-          <table class="header-table">
-            <tr>
-              <td class="logo-cell">
-                <img src="data:image/png;base64,${LOGO_BASE64}" alt="Logo" />
-              </td>
-              <td class="title-cell">
-                <div class="subtitle">Reporte de cálculo estructural para zapata excéntrica con viga de amarre</div>
-              </td>
-              <td class="info-cell">
-                <div style="font-weight: bold; margin-bottom: 3px;">FECHA:</div>
-              </td>
-            </tr>
-          </table>
-        </div>
               <h4 style="margin: 10px 0 5px 0;">Paso 5: Diseño de viga de amarre.</h4>
         <div class="section">
           <div style="margin-top: 10px;">
@@ -682,7 +526,7 @@ export class ZapataExcentricaVigaAmarrePDFTemplate implements PDFTemplate {
               <p style="margin: 5px 0;">Acero: ${r.AsExtLarga?.formula ?? 'N/A'}</p>
               <p style="margin: 5px 0;">Nº barras = ${r.AsExtLarga?.acero ?? 'N/A'}, Separación = ${formatNum(r.AsExtLarga?.Arroba2)} cm</p>
 
-              <div style="font-weight: bold; margin: 10px 0 5px 0;">Zapata Externa (lado corto) — mínimo 0.0018</div>
+              <div style="font-weight: bold; margin: 10px 0 5px 0;">Zapata Externa (lado corto)</div>
               <p style="margin: 5px 0;">${r.AsExtCorta?.formula ?? 'N/A'}</p>
               <p style="margin: 5px 0;">Separación = ${formatNum(r.AsExtCorta?.Arroba2)} cm</p>
 
@@ -705,14 +549,14 @@ export class ZapataExcentricaVigaAmarrePDFTemplate implements PDFTemplate {
               </thead>
               <tbody>
                 <tr>
-                  <td><strong>Viga de amarre — Estribos</strong></td>
+                  <td><strong>Viga de amarre — Estribos - ZC</strong></td>
                   <td>${r.Hierro ?? 'N/A'}</td>
                   <td>S<sub>max</sub> = ${formatNum(r.SMax?.resultado)} cm</td>
                 </tr>
                 <tr>
                   <td><strong>Viga de amarre — Longitudinal</strong></td>
                   <td>${r.AsViga?.formula ?? 'N/A'}</td>
-                  <td>${r.AsViga?.acero ?? 'N/A'} barras, sep. ${formatNum(r.AsViga?.Arroba2)} cm</td>
+                  <td>${r.AsViga?.acero ?? 'N/A'} barras</td>
                 </tr>
                 <tr>
                   <td><strong>Zapata interna</strong></td>
@@ -811,16 +655,6 @@ export class ZapataExcentricaVigaAmarrePDFTemplate implements PDFTemplate {
   }
 
   getPageOptions(): PDFPageOptions {
-    return {
-      orientation: 'portrait',
-      unit: 'mm',
-      format: 'a4',
-      margins: {
-        top: 15,
-        right: 15,
-        bottom: 15,
-        left: 15
-      }
-    };
+    return getStandardLetterPdfPageOptions();
   }
 }

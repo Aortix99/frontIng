@@ -4,8 +4,13 @@
  */
 
 import { Injectable } from '@angular/core';
-import { PDFTemplate, PDFPageOptions } from '../services/pdf-generator.service';
+import {
+  PDFTemplate,
+  PDFPageOptions,
+  getStandardLetterPdfPageOptions,
+} from '../services/pdf-generator.service';
 import { LOGO_BASE64 } from '../imgBase64/img';
+import { buildPdfReportHeaderHtml, getPdfReportBodyBaseStyles, getPdfReportHeaderStyles } from '../shared/pdf-report/pdf-report-header';
 
 export interface ZapataCombinadaCalculationData {
   // Datos de entrada
@@ -57,13 +62,22 @@ export interface ZapataCombinadaCalculationData {
 })
 export class ZapataCuadradaPDFTemplate implements PDFTemplate {
 
-  generateContent(data: ZapataCombinadaCalculationData): string {
+  generateHeaderHtml(data: ZapataCombinadaCalculationData): string {
     const currentDate = new Date().toLocaleDateString('es-CO', {
       year: 'numeric',
       month: 'long',
-      day: 'numeric'
+      day: 'numeric',
     });
+    return buildPdfReportHeaderHtml({
+      logoBase64: LOGO_BASE64,
+      projectName: data.metadata.projectName ?? '',
+      subtitle: 'Reporte de cálculo estructural para zapata combinada',
+      dateDisplay: currentDate,
+      containerClass: 'pdf-header',
+    });
+  }
 
+  generateContent(data: ZapataCombinadaCalculationData): string {
     return `
       <!DOCTYPE html>
       <html>
@@ -71,98 +85,8 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
 
         <meta charset="UTF-8">
         <style>
-          body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 20px;
-            line-height: 1.6;
-            color: #333;
-            background-color: #ffffff;
-          }
-
-          .pdf-header {
-            width: 100%;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #2c5aa0;
-            padding-bottom: 10px;
-          }
-          .logo-cell {
-            width: 15%;
-            background-color: #f8f9fa;
-            text-align: center;
-            border-right: 1px solid #ddd;
-            padding: 0;           /* 🔴 clave */
-          }
-
-          .logo-cell img {
-            width: 70%;
-            margin-left: 14px;
-            height: 100%;
-            object-fit: contain; /* o cover */
-            display: block;
-          }
-
-          .logo-placeholder {
-            display: none;
-          }
-
-          .header-table {
-            width: 100%;
-            border-collapse: collapse;
-            table-layout: fixed;
-            margin-bottom: 10px;
-          }
-
-          .header-table td {
-            vertical-align: middle;
-            padding: 8px;
-            border: 1px solid #ddd;
-            height: 60px;
-          }
-
-          .logo-cell {
-            width: 15%;
-            background-color: #f8f9fa;
-            text-align: center;
-            font-size: 12px;
-            color: #999;
-            border-right: 1px solid #ddd;
-          }
-
-          .title-cell {
-            width: 70%;
-            text-align: center;
-            background-color: #f8f9fa;
-            border-right: 1px solid #ddd;
-          }
-
-          .info-cell {
-            width: 15%;
-            text-align: center;
-            font-size: 11px;
-            background-color: #f8f9fa;
-          }
-
-          .main-title {
-            font-size: 16px;
-            font-weight: bold;
-            color: #2c5aa0;
-            margin: 0;
-            line-height: 1.3;
-          }
-
-          .subtitle {
-            font-size: 12px;
-            color: #666;
-            margin: 5px 0 0 0;
-            line-height: 1.2;
-          }
-
-          .logo-placeholder {
-            color: #999;
-            font-size: 10px;
-            font-style: italic;
-          }
+          ${getPdfReportBodyBaseStyles()}
+          ${getPdfReportHeaderStyles()}
           
           .header {
             text-align: center;
@@ -212,15 +136,6 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
             margin-top: 4%;
             border-radius: 8px;
             overflow: hidden;
-          }
-          .pdf-header-2 {
-            margin-top: 35%;
-          }
-          .pdf-header-3 {
-            margin-top: 19%;
-          }
-          .pdf-header-4 {
-            margin-top: 19%;
           }
           .section {
             border-radius: 8px;
@@ -394,24 +309,6 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
             </style>
       </head>
       <body>
-        <div class="pdf-header">
-          <table class="header-table">
-            <tr>
-              <td class="logo-cell">
-                <img src="data:image/png;base64,${LOGO_BASE64}" alt="Logo" />
-              </td>
-              <td class="title-cell">
-                <div class="main-title">${data.metadata.projectName}</div>
-                <div class="subtitle">Reporte de cálculo estructural para zapata combinada</div>
-              </td>
-              <td class="info-cell">
-                <div style="font-weight: bold; margin-bottom: 3px;">FECHA:</div>
-                <div style="font-size: 10px;">${currentDate}</div>
-              </td>
-            </tr>
-          </table>
-        </div>
-
         <!-- Input Data Section -->
         <div class="section">
           <h3 class="section-header">📊 Datos de Entrada</h3>
@@ -498,21 +395,6 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
            </div>
         </div>
         </div>
-        <div class="pdf-header-2">
-          <table class="header-table">
-            <tr>
-              <td class="logo-cell">
-                <img src="data:image/png;base64,${LOGO_BASE64}" alt="Logo" />
-              </td>
-              <td class="title-cell">
-                <div class="subtitle">Reporte de cálculo estructural para zapata combinada</div>
-              </td>
-              <td class="info-cell">
-                <div style="font-weight: bold; margin-bottom: 3px;">FECHA:</div>
-              </td>
-            </tr>
-          </table>
-        </div>
         <div class= "section">
           <h4>Paso 2: Area requerida.</h4>
           <div style="font-family: 'Times New Roman', serif; line-height: 1.2; margin-bottom: 15px;">
@@ -584,21 +466,6 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
            </div>
          </div>
         </div>
-        <div class="pdf-header-3">
-          <table class="header-table">
-            <tr>
-              <td class="logo-cell">
-                <img src="data:image/png;base64,${LOGO_BASE64}" alt="Logo" />
-              </td>
-              <td class="title-cell">
-                <div class="subtitle">Reporte de cálculo estructural para zapata combinada</div>
-              </td>
-              <td class="info-cell">
-                <div style="font-weight: bold; margin-bottom: 3px;">FECHA:</div>
-              </td>
-            </tr>
-          </table>
-        </div>
         <div class= "paso3">
          <h4 style="margin-bottom: 10px;">Paso 4: Peralte requerido para el cortante por punzonamiento en dos direcciones.</h4>
           <div style="margin-top: 10px;">
@@ -656,21 +523,6 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
               <p style="margin: 5px 0; font-weight: bold;"> d<sub>0</sub> <= d =  ${data.response.response.Validate3.d} <  ${data.input.Hz} OK </p>
               </div>
           </div>
-        </div>
-        <div class="pdf-header-4">
-          <table class="header-table">
-            <tr>
-              <td class="logo-cell">
-                <img src="data:image/png;base64,${LOGO_BASE64}" alt="Logo" />
-              </td>
-              <td class="title-cell">
-                <div class="subtitle">Reporte de cálculo estructural para zapata combinada</div>
-              </td>
-              <td class="info-cell">
-                <div style="font-weight: bold; margin-bottom: 3px;">FECHA:</div>
-              </td>
-            </tr>
-          </table>
         </div>
         <h4 style="margin: 10px 0 5px 0;">Calculo acero doble.</h4>
         <h4 style="margin: 10px 0 5px 0;">Paso 5: Diseño del acero de refuerzo por friccion.</h4>
@@ -784,16 +636,6 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
   }
 
   getPageOptions(): PDFPageOptions {
-    return {
-      orientation: 'portrait',
-      unit: 'mm',
-      format: 'a4',
-      margins: {
-        top: 15,
-        right: 15,
-        bottom: 15,
-        left: 15
-      }
-    };
+    return getStandardLetterPdfPageOptions();
   }
 }

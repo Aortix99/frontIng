@@ -126,10 +126,22 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Obtiene el título de la página actual
+   * Obtiene el título de la página actual (según ruta hija del dashboard)
    * @returns Título de la página
    */
   public getPageTitle(): string {
+    const seg = this.router.url.replace(/^\//, '').split('/').filter(Boolean);
+    const child = seg.length >= 2 ? seg[1] : '';
+    const byRoute: Record<string, string> = {
+      'zapata-cuadrada-aislada': 'Zapata Cuadrada Aislada',
+      'zapata-aislada': 'Zapata Esquinera',
+      'zapata-combinada': 'Zapata Combinada',
+      'zapata-excentrica-viga-amarre': 'Zapata Excéntrica con Viga de Amarre',
+      'viga-tensor-zapata-aislada': 'Viga de amarre o conexión',
+    };
+    if (child && byRoute[child]) {
+      return byRoute[child];
+    }
     return this.pageTitles[this.activeSection] || 'Dashboard';
   }
 

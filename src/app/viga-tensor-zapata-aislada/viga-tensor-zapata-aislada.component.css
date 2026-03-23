@@ -1,0 +1,155 @@
+.page-wrap {
+  padding: 0 8px 32px;
+}
+
+.header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 28px 20px;
+  border-radius: 10px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.header p {
+  margin: 8px 0 0;
+  opacity: 0.92;
+  font-size: 0.95rem;
+}
+
+.layout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.columna-form-container {
+  background: #fff;
+  padding: 24px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  flex: 1 1 320px;
+  max-width: 640px;
+}
+
+.columna-form-container h3 {
+  color: #667eea;
+  font-size: 1.15rem;
+  margin: 16px 0 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #667eea;
+}
+
+.columna-form-container h3:first-of-type {
+  margin-top: 0;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 560px) {
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.92rem;
+}
+
+.form-control {
+  padding: 10px 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.hint {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.hint.error {
+  color: #c0392b;
+}
+
+.actions {
+  margin-top: 20px;
+}
+
+.btn-submit {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-submit:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.resultados-container {
+  flex: 1 1 280px;
+  min-width: 0;
+}
+
+.resultados {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.resultados h2 {
+  margin: 0 0 16px;
+  color: #333;
+  font-size: 1.35rem;
+}
+
+.pdf-actions {
+  margin: 0 0 16px;
+}
+
+.alert-error {
+  background: #fdecea;
+  border: 1px solid #f5c6cb;
+  color: #721c24;
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.sin-resultados {
+  background: #fafafa;
+  padding: 24px;
+  border-radius: 10px;
+  text-align: center;
+  color: #666;
+}

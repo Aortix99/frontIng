@@ -16,6 +16,7 @@ import { AuthGuard, GuestGuard } from './guards/auth.guard';
 import { InicioComponent } from './inicio/inicio.component';
 import { ZapataCuadradaAisladaComponent } from './zapata-cuadrada-aislada/zapata-cuadrada-aislada.component';
 import { ZapataExcentricaVigaAmarreComponent } from './zapata-excentrica-viga-amarre/zapata-excentrica-viga-amarre.component';
+import { VigaTensorZapataAisladaComponent } from './viga-tensor-zapata-aislada/viga-tensor-zapata-aislada.component';
 import { WelcomeComponent } from './components/welcome/welcome.component';
 
 // Importar nuevo componente dashboard
@@ -60,6 +61,10 @@ const routes: Routes = [
       {
         path: 'zapata-excentrica-viga-amarre',
         component: ZapataExcentricaVigaAmarreComponent
+      },
+      {
+        path: 'viga-tensor-zapata-aislada',
+        component: VigaTensorZapataAisladaComponent
       }
     ]
   },
@@ -102,6 +107,15 @@ const routes: Routes = [
     data: { 
       title: 'Zapata Excéntrica con Viga de Amarre',
       description: 'Cálculo de zapatas excéntricas con viga de amarre'
+    }
+  },
+  {
+    path: 'viga-tensor-zapata-aislada',
+    component: VigaTensorZapataAisladaComponent,
+    canActivate: [AuthGuard],
+    data: {
+      title: 'Viga de amarre o conexión',
+      description: 'Diseño viga de amarre o conexión'
     }
   },
   {

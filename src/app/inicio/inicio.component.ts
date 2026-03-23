@@ -8,7 +8,7 @@ import { Chart } from 'chart.js/auto';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import Swal from 'sweetalert2';
 import { ZapataCombinadaCalculationData, ZapataCuadradaPDFTemplate } from './zapata-combinada-pdf.template';
-import { PDFGeneratorService } from '../services/pdf-generator-clean.service';
+import { PDFGeneratorService } from '../services/pdf-generator.service';
 
 
 @Component({
