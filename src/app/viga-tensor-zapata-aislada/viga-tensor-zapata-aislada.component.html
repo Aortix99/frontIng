@@ -36,46 +36,96 @@
               {{ etiquetaMunicipio(m) }}
             </option>
           </select>
-          <small *ngIf="cargandoMunicipios" class="hint">Cargando catálogo…</small>
-          <small *ngIf="errorCatalogo" class="hint error">{{ errorCatalogo }}</small>
+          <small *ngIf="cargandoMunicipios" class="hint"
+            >Cargando catálogo…</small
+          >
+          <small *ngIf="errorCatalogo" class="hint error">{{
+            errorCatalogo
+          }}</small>
         </div>
 
         <h3>Geometría y cargas</h3>
         <div class="grid-2">
           <div class="form-group">
             <label for="b">Ancho de la sección <em>b</em> (m)</label>
-            <input id="b" type="number" formControlName="b" class="form-control" step="0.01" appMathExpression />
+            <input
+              id="b"
+              type="number"
+              formControlName="b"
+              class="form-control"
+              step="0.01"
+              appMathExpression
+            />
           </div>
           <div class="form-group">
             <label for="h">Altura de la sección <em>h</em> (m)</label>
-            <input id="h" type="number" formControlName="h" class="form-control" step="0.01" appMathExpression />
+            <input
+              id="h"
+              type="number"
+              formControlName="h"
+              class="form-control"
+              step="0.01"
+              appMathExpression
+            />
           </div>
           <div class="form-group">
             <label for="cargaMaxima">Carga máxima (unidades del modelo)</label>
-            <input id="cargaMaxima" type="number" formControlName="cargaMaxima" class="form-control" step="0.1" appMathExpression />
+            <input
+              id="cargaMaxima"
+              type="number"
+              formControlName="cargaMaxima"
+              class="form-control"
+              step="0.1"
+              appMathExpression
+            />
           </div>
           <div class="form-group">
             <label for="luzViga">Luz de viga (m)</label>
-            <input id="luzViga" type="number" formControlName="luzViga" class="form-control" step="0.1" appMathExpression />
+            <input
+              id="luzViga"
+              type="number"
+              formControlName="luzViga"
+              class="form-control"
+              step="0.1"
+              appMathExpression
+            />
           </div>
         </div>
 
         <h3>Material</h3>
         <div class="grid-2">
           <div class="form-group">
-            <label for="fc"><em>f'c</em> (kgf/cm²)</label>
-            <input id="fc" type="number" formControlName="fc" class="form-control" step="1" appMathExpression />
+            <label for="fc"><em>f'c</em> mpa</label>
+            <input
+              id="fc"
+              type="number"
+              formControlName="fc"
+              class="form-control"
+              step="1"
+              appMathExpression
+            />
           </div>
           <div class="form-group">
-            <label for="fy"><em>fy</em> (kgf/cm²)</label>
-            <input id="fy" type="number" formControlName="fy" class="form-control" step="1" appMathExpression />
+            <label for="fy"><em>fy</em> mpa</label>
+            <input
+              id="fy"
+              type="number"
+              formControlName="fy"
+              class="form-control"
+              step="1"
+              appMathExpression
+            />
           </div>
         </div>
 
         <h3>Acero longitudinal (barra)</h3>
         <div class="form-group">
           <label for="BarraViga">Diámetro de barra</label>
-          <select id="BarraViga" formControlName="BarraViga" class="form-control">
+          <select
+            id="BarraViga"
+            formControlName="BarraViga"
+            class="form-control"
+          >
             <option *ngFor="let op of opcionesBarra" [ngValue]="op">
               {{ op.Nomen }} — {{ op.area }}
             </option>
@@ -83,7 +133,11 @@
         </div>
 
         <div class="actions">
-          <button type="submit" class="btn-submit" [disabled]="form.invalid || cargandoMunicipios">
+          <button
+            type="submit"
+            class="btn-submit"
+            [disabled]="form.invalid || cargandoMunicipios"
+          >
             Calcular
           </button>
         </div>
@@ -91,6 +145,13 @@
     </div>
 
     <div class="resultados-container">
+      <div style="flex: 0 0 400px; margin-top: 0px">
+        <img
+          src="assets/img/vigaAmarre.png"
+          alt="Logo DEINERSITO"
+          style="width: 100%; height: auto; border-radius: 10px"
+        />
+      </div>
       <div *ngIf="response" class="resultados">
         <h2>Resultados</h2>
         <div class="pdf-actions">

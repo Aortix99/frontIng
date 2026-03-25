@@ -60,6 +60,8 @@ function bloquePasoProcedimiento(
   numPaso: number,
   titulo: string,
   o: { formula?: string; reemplazo?: string; resultado?: number } | null | undefined,
+  unidad?: string,
+  decimalesResultado = 8,
 ): string {
   if (!o || typeof o !== 'object') {
     return '';
@@ -68,17 +70,21 @@ function bloquePasoProcedimiento(
   const rep = o.reemplazo != null ? escapeHtml(String(o.reemplazo)) : '—';
   const r =
     o.resultado != null && typeof o.resultado === 'number'
-      ? numTxt(o.resultado, 8)
+      ? numTxt(o.resultado, decimalesResultado)
       : o.resultado != null
         ? escapeHtml(String(o.resultado))
         : '—';
+  const u =
+    unidad != null && unidad !== ''
+      ? ` <span style="font-size:13px;color:#495057;font-weight:600;">${escapeHtml(unidad)}</span>`
+      : '';
   return `
         <div class="paso-matlab">
           <h4 style="margin-bottom: 10px;">Paso ${numPaso}: ${escapeHtml(titulo)}</h4>
           <div style="font-family: 'Times New Roman', serif; line-height: 1.2; margin-bottom: 15px;">
             <p style="margin: 5px 0;"><strong>${f}</strong></p>
             <p style="margin: 5px 0;">${rep}</p>
-            <p style="margin: 5px 0;">= <strong>${r}</strong></p>
+            <p style="margin: 5px 0;">= <strong>${r}</strong>${u}</p>
           </div>
         </div>`;
 }
@@ -108,23 +114,41 @@ export class VigaTensorZapataAisladaPDFTemplate implements PDFTemplate {
     const err = res?.error === true;
     const rs = res?.registroSismico;
 
+    const tituloDesarrolloNsr = !err
+      ? `<p class="desarrollo-titulo-nsr">C.15.13 Diseño de viga de amarre (NSR-10)</p>`
+      : '';
+
+    const unidadPaso12 =
+      !err &&
+      res?.paso12?.resultado != null &&
+      typeof res.paso12.resultado === 'number'
+        ? `m → E @ ${numTxt(res.paso12.resultado * 100, 0)} cm`
+        : 'm';
+
     const pasos = !err
       ? [
-          bloquePasoProcedimiento(1, 'Carga axial máxima (tabla B.2.3)', res?.axialMaxima),
-          bloquePasoProcedimiento(2, 'Carga última', res?.cargaUltima),
-          bloquePasoProcedimiento(3, 'Área bruta de concreto ag = b × h', res?.ag),
-          bloquePasoProcedimiento(4, 'Acero (ρ × b×100 × h×100)', res?.Acero),
+          bloquePasoProcedimiento(1, 'Carga axial máxima (tabla B.2.3)', res?.axialMaxima, 'tonf'),
+          bloquePasoProcedimiento(2, 'Carga última', res?.cargaUltima, 'tonf'),
+          bloquePasoProcedimiento(3, 'Área bruta de concreto ag = b × h', res?.ag, 'm²'),
+          bloquePasoProcedimiento(4, 'Acero (ρ × b×100 × h×100)', res?.Acero, 'cm²'),
           bloquePasoProcedimiento(
             5,
             'Número efectivo de barras (Acero / área barra)',
             res?.Acero1,
           ),
-          bloquePasoProcedimiento(6, 'Área de acero (Acero1 × BarraViga)', res?.acero2),
-          bloquePasoProcedimiento(7, 'Área total refuerzo (acero2 × 2)', res?.acero3),
-          bloquePasoProcedimiento(8, 'Ast (área de acero longitudinal)', res?.Ast),
-          bloquePasoProcedimiento(9, 'ϕPn máxima (compresión)', res?.PhiPnMaxima),
-          bloquePasoProcedimiento(10, 'ϕPn', res?.PhiPn),
-          bloquePasoProcedimiento(11, 'ϕTu (tracción)', res?.PhiTu),
+          bloquePasoProcedimiento(6, 'Área de acero (Acero1 × BarraViga)', res?.acero2, 'cm²'),
+          bloquePasoProcedimiento(7, 'Área total refuerzo (acero2 × 2)', res?.acero3, 'cm²'),
+          bloquePasoProcedimiento(8, 'Ast (área de acero longitudinal)', res?.Ast, 'm²'),
+          bloquePasoProcedimiento(9, 'ϕPn máxima (compresión)', res?.PhiPnMaxima, 'MN'),
+          bloquePasoProcedimiento(10, 'ϕPn', res?.PhiPn, 'tonf'),
+          bloquePasoProcedimiento(11, 'ϕTu (tracción)', res?.PhiTu, 'tonf'),
+          bloquePasoProcedimiento(
+            12,
+            'Separación de estribos (C.15.13.4)',
+            res?.paso12,
+            unidadPaso12,
+            2,
+          ),
         ].join('')
       : '';
 
@@ -175,27 +199,26 @@ export class VigaTensorZapataAisladaPDFTemplate implements PDFTemplate {
         <div class="section">
           <h3 class="section-header">Resumen de resultados</h3>
           <div class="section-content">
-            ${resumenPaso5Recuadro}
             <div class="input-grid">
               <div class="input-item">
                 <div class="input-label">ρ adoptado</div>
                 <div class="input-value">${res.rho != null ? numTxt(res.rho, 6) : '—'}</div>
               </div>
               <div class="input-item">
-                <div class="input-label">Ast (m²)</div>
-                <div class="input-value">${res.Ast?.resultado != null ? numTxt(res.Ast.resultado, 8) : '—'}</div>
+                <div class="input-label">Separacion de estribos</div>
+                <div class="input-value">${res.paso12?.resultado != null ? `E @ ${numTxt(res.paso12.resultado, 2)} m (${numTxt(res.paso12.resultado * 100, 0)} cm)` : '—'}</div>
               </div>
               <div class="input-item">
                 <div class="input-label">Carga última</div>
                 <div class="input-value">${res.cargaUltima?.resultado != null ? numTxt(res.cargaUltima.resultado, 4) : '—'}</div>
               </div>
               <div class="input-item">
-                <div class="input-label">ϕPn</div>
-                <div class="input-value">${res.PhiPn?.resultado != null ? numTxt(res.PhiPn.resultado, 4) : '—'}</div>
+                <div class="input-label">Acero superior</div>
+                <div class="input-value">${res.Acero1?.resultado != null ? numTxt(res.Acero1.resultado, 4) : '—'}</div>
               </div>
               <div class="input-item">
-                <div class="input-label">ϕTu</div>
-                <div class="input-value">${res.PhiTu?.resultado != null ? numTxt(res.PhiTu.resultado, 4) : '—'}</div>
+                <div class="input-label">Acero inferior</div>
+                <div class="input-value">${res.Acero1?.resultado != null ? numTxt(res.Acero1.resultado, 4) : '—'}</div>
               </div>
             </div>
           </div>
@@ -235,6 +258,13 @@ export class VigaTensorZapataAisladaPDFTemplate implements PDFTemplate {
             border-bottom: 1px solid #dee2e6;
           }
           .section-content { padding: 12px; }
+          .desarrollo-titulo-nsr {
+            margin: 0 0 16px 0;
+            padding: 0;
+            font-size: 15px;
+            font-weight: bold;
+            color: #2c5aa0;
+          }
           /* SpringGreen: detectado al paginar; no se pinta en el PDF (se omite al armar páginas) */
           .pdf-body-slice-break-marker {
             height: 2px;
@@ -403,24 +433,30 @@ export class VigaTensorZapataAisladaPDFTemplate implements PDFTemplate {
               </div>
               <div class="input-item">
                 <div class="input-label">Carga máxima</div>
-                <div class="input-value">${data.input.cargaMaxima}</div>
+                <div class="input-value">${data.input.cargaMaxima} Ton</div>
               </div>
               <div class="input-item">
                 <div class="input-label">Luz de viga (m)</div>
                 <div class="input-value">${data.input.luzViga}</div>
               </div>
               <div class="input-item">
-                <div class="input-label">f'c (kgf/cm²)</div>
+                <div class="input-label">f'c mpa</div>
                 <div class="input-value">${data.input.fc}</div>
               </div>
               <div class="input-item">
-                <div class="input-label">fy (kgf/cm²)</div>
+                <div class="input-label">fy mpa</div>
                 <div class="input-value">${data.input.fy}</div>
               </div>
             </div>
           </div>
         </div>
-
+        <div style="flex: 0 0 400px; margin-top: 0px">
+        <img
+          src="assets/img/vigaAmarre.png"
+          alt="Logo DEINERSITO"
+          style="width: 100%; height: auto; border-radius: 10px"
+        />
+      </div>
         ${
           err
             ? `<div class="alert-box"><strong>Estado del cálculo:</strong> ${escapeHtml(String(res?.message ?? 'No cumple.'))}</div>`
@@ -458,6 +494,7 @@ export class VigaTensorZapataAisladaPDFTemplate implements PDFTemplate {
         <div class="section">
           <h3 class="section-header-plain">Desarrollo del cálculo</h3>
           <div class="section-content">
+            ${tituloDesarrolloNsr}
             ${pasos}
           </div>
         </div>
