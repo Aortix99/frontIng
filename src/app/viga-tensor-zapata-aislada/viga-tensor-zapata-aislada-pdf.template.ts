@@ -274,6 +274,11 @@ export class VigaTensorZapataAisladaPDFTemplate implements PDFTemplate {
             width: 100%;
             background: #00ff7f;
           }
+          /* Evita barra azul sola al final de página y cortes en blanco bajo el título (pdf-generator.service) */
+          .section-sismicos-pdf .section-content {
+            background-color: #e8edf3;
+            padding-top: 8px;
+          }
           .input-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -466,7 +471,9 @@ export class VigaTensorZapataAisladaPDFTemplate implements PDFTemplate {
         ${
           !err && rs
             ? `
-        <div class="section">
+        <!-- Franja #00ff7f: forzar salto de página antes de coeficientes (misma lógica que verificaciones) -->
+        <div class="pdf-body-slice-break-marker" aria-hidden="true"></div>
+        <div class="section section-sismicos-pdf">
           <h3 class="section-header">Coeficientes sísmicos (municipio)</h3>
           <div class="section-content">
             <div class="input-grid">

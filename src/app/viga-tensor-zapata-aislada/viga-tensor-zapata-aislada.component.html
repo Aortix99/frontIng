@@ -69,7 +69,7 @@
             />
           </div>
           <div class="form-group">
-            <label for="cargaMaxima">Carga máxima (unidades del modelo)</label>
+            <label for="cargaMaxima">Carga máxima Ton</label>
             <input
               id="cargaMaxima"
               type="number"
@@ -154,15 +154,11 @@
       </div>
       <div *ngIf="response" class="resultados">
         <h2>Resultados</h2>
-        <div class="pdf-actions">
-          <app-pdf-report-button
-            [template]="pdfTemplate"
-            [prepareData]="preparePDFDataFn"
-            defaultReportName="Viga de amarre o conexión"
-            buttonText="Generar reporte PDF"
-            buttonClass="btn-submit"
-            [showProgress]="false"
-          ></app-pdf-report-button>
+        <div *ngIf="!response.error" class="resultados-hint">
+          <p>
+            Cálculo exitoso. Revise el <strong>resumen y las verificaciones</strong> en la ventana
+            emergente; el PDF se puede descargar desde el mismo cuadro.
+          </p>
         </div>
         <div *ngIf="response.error" class="alert alert-error">
           <strong>Aviso:</strong> {{ response.message }}
@@ -173,4 +169,73 @@
       </div>
     </div>
   </div>
+
+  <app-modal
+    [isOpen]="mostrarModal"
+    [title]="tituloModal"
+    [size]="tamanoModal"
+    (closeModal)="cerrarModal()"
+  >
+    <div class="modal-viga-body">
+      <p class="modal-viga-lead">
+        Cálculo completado correctamente según el modelo y la NSR-10.
+      </p>
+
+      <section class="modal-viga-section">
+        <h4 class="modal-viga-section-title">Resumen de resultados</h4>
+        <div class="modal-viga-grid">
+          <div class="modal-viga-card">
+            <span class="modal-viga-label">ρ adoptado</span>
+            <span class="modal-viga-value">{{ formatNum(response?.rho, 6) }}</span>
+          </div>
+          <div class="modal-viga-card">
+            <span class="modal-viga-label">Separación de estribos</span>
+            <span class="modal-viga-value">{{ separacionEstribosTexto }}</span>
+          </div>
+          <div class="modal-viga-card">
+            <span class="modal-viga-label">Carga última</span>
+            <span class="modal-viga-value">{{ formatNum(response?.cargaUltima?.resultado, 4) }} tonf</span>
+          </div>
+          <div class="modal-viga-card">
+            <span class="modal-viga-label">Acero superior</span>
+            <span class="modal-viga-value">{{ formatNum(response?.Acero1?.resultado, 4) }}</span>
+          </div>
+          <div class="modal-viga-card">
+            <span class="modal-viga-label">Acero inferior</span>
+            <span class="modal-viga-value">{{ formatNum(response?.Acero1?.resultado, 4) }}</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="modal-viga-section">
+        <h4 class="modal-viga-section-title">Verificaciones</h4>
+        <ul class="modal-viga-checks">
+          <li class="modal-viga-check ok">
+            <strong>Compresión:</strong> ϕPn ≥ carga última →
+            {{ formatNum(response?.PhiPn?.resultado, 4) }} ≥
+            {{ formatNum(response?.cargaUltima?.resultado, 4) }}
+            <span class="ok-tag">✓ CUMPLE</span>
+          </li>
+          <li class="modal-viga-check ok">
+            <strong>Tracción:</strong> ϕTu ≥ carga última →
+            {{ formatNum(response?.PhiTu?.resultado, 4) }} ≥
+            {{ formatNum(response?.cargaUltima?.resultado, 4) }}
+            <span class="ok-tag">✓ CUMPLE</span>
+          </li>
+        </ul>
+      </section>
+
+      <div class="modal-viga-pdf-wrap">
+        <app-pdf-report-button
+          [template]="pdfTemplate"
+          [prepareData]="preparePDFDataFn"
+          defaultReportName="Viga de amarre o conexión"
+          buttonText="📄 Descargar PDF"
+          buttonClass="modal-viga-pdf-btn"
+          [buttonStyle]="''"
+          [showProgress]="false"
+        ></app-pdf-report-button>
+      </div>
+    </div>
+  </app-modal>
 </div>

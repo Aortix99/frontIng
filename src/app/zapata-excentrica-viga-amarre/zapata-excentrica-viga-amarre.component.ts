@@ -20,9 +20,9 @@ export class ZapataExcentricaVigaAmarreComponent implements OnInit {
   response: any;
   data: any;
   dataMomento: any;
-  mostrarModal: boolean = false;
-  tituloModal: string = 'Información del Sistema';
-  tamanoModal: 'small' | 'medium' | 'large' = 'medium';
+  mostrarModal = false;
+  tituloModal = 'Resultados — Zapata excéntrica con viga de amarre';
+  tamanoModal: 'small' | 'medium' | 'large' = 'large';
   // función para el botón reusable
   preparePDFDataFn = (name: string) => this.preparePDFData(name);
 
@@ -124,6 +124,7 @@ export class ZapataExcentricaVigaAmarreComponent implements OnInit {
         this.response = datos;
 
         if (datos.error) {
+          this.mostrarModal = false;
           Swal.fire({
             icon: 'error',
             title: 'Error en el cálculo',
@@ -133,21 +134,15 @@ export class ZapataExcentricaVigaAmarreComponent implements OnInit {
           return;
         }
 
-        // Preparar datos para gráficas
+        this.tituloModal = 'Resultados — Zapata excéntrica con viga de amarre';
+        this.mostrarModal = true;
+
         this.prepareChartData(datos);
-        
-        // Crear gráficas con delay para asegurar que el DOM esté listo
+
         setTimeout(() => {
           this.crearGrafico();
           this.crearGraficoMomento();
         }, 100);
-
-        Swal.fire({
-          icon: 'success',
-          title: 'Cálculo completado',
-          text: 'Los cálculos se completaron satisfactoriamente',
-          confirmButtonColor: '#3085d6'
-        });
       },
       error: (error) => {
         console.error('Error en la solicitud:', error);
@@ -379,12 +374,16 @@ export class ZapataExcentricaVigaAmarreComponent implements OnInit {
     }, 100);
   }
 
-  mostrarDetalles(): void {
-    this.mostrarModal = true;
-  }
-
   cerrarModal(): void {
     this.mostrarModal = false;
+  }
+
+  /** Texto numérico para la modal (alineado con el PDF). */
+  formatNum(value: unknown, decimals = 2): string {
+    if (value === null || value === undefined || Number.isNaN(Number(value))) {
+      return '—';
+    }
+    return Number(value).toFixed(decimals);
   }
 
   // Estructura de datos para el PDF

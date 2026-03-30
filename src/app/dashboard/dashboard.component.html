@@ -31,45 +31,62 @@
     <nav class="sidebar-nav">
       <ul class="nav-list">
         <li class="nav-item">
-          <button type="button" class="nav-link active" (click)="navigateToSection('inicio')" title="Inicio">
+          <button type="button" class="nav-link" (click)="navigateToSection('inicio')" title="Inicio" [class.active]="isInicioActive()">
             <span class="nav-icon">🏠</span>
             <span class="nav-text" *ngIf="!sidebarCollapsed">Inicio</span>
           </button>
         </li>
-        
-        <li class="nav-item">
-          <button type="button" class="nav-link" (click)="navigateToSection('zapata-cuadrada-aislada')" title="Zapata Cuadrada Aislada">
+
+        <li class="nav-item nav-group">
+          <button
+            type="button"
+            class="nav-link nav-group-header"
+            (click)="toggleMenuZapatas()"
+            [class.active]="isZapatasGroupActive()"
+            [attr.aria-expanded]="menuZapatasOpen"
+            title="Cálculo de zapatas"
+          >
             <span class="nav-icon">🏗️</span>
-            <span class="nav-text" *ngIf="!sidebarCollapsed">Zapata Cuadrada</span>
+            <span class="nav-text" *ngIf="!sidebarCollapsed">Cálculo de zapatas</span>
+            <span class="nav-chevron" *ngIf="!sidebarCollapsed" aria-hidden="true">{{ menuZapatasOpen ? '▲' : '▼' }}</span>
           </button>
+          <ul class="nav-submenu" *ngIf="menuZapatasOpen && !sidebarCollapsed">
+            <li class="nav-subitem">
+              <button type="button" class="nav-link nav-sublink" (click)="navigateToSection('zapata-cuadrada-aislada')" [class.active]="isLastSegment('zapata-cuadrada-aislada')">Zapata cuadrada aislada</button>
+            </li>
+            <li class="nav-subitem">
+              <button type="button" class="nav-link nav-sublink" (click)="navigateToSection('zapata-aislada')" [class.active]="isLastSegment('zapata-aislada')">Zapata esquinera</button>
+            </li>
+            <li class="nav-subitem">
+              <button type="button" class="nav-link nav-sublink" (click)="navigateToSection('zapata-combinada')" [class.active]="isLastSegment('zapata-combinada')">Zapata combinada</button>
+            </li>
+            <li class="nav-subitem">
+              <button type="button" class="nav-link nav-sublink" (click)="navigateToSection('zapata-excentrica-viga-amarre')" [class.active]="isLastSegment('zapata-excentrica-viga-amarre')">Zapata excéntrica — viga de amarre</button>
+            </li>
+          </ul>
         </li>
 
-        <li class="nav-item">
-          <button type="button" class="nav-link" (click)="navigateToSection('zapata-aislada')" title="Zapata Esquinera">
-            <span class="nav-icon">📐</span>
-            <span class="nav-text" *ngIf="!sidebarCollapsed">Zapata Esquinera</span>
-          </button>
-        </li>
-        
-        <li class="nav-item">
-          <button type="button" class="nav-link" (click)="navigateToSection('zapata-combinada')" title="Zapata Combinada">
-            <span class="nav-icon">🔗</span>
-            <span class="nav-text" *ngIf="!sidebarCollapsed">Zapata Combinada</span>
-          </button>
-        </li>
-
-        <li class="nav-item">
-          <button type="button" class="nav-link" (click)="navigateToSection('zapata-excentrica-viga-amarre')" title="Zapata Excéntrica con Viga de Amarre">
-            <span class="nav-icon">⚙️</span>
-            <span class="nav-text" *ngIf="!sidebarCollapsed">Zapata Excéntrica</span>
-          </button>
-        </li>
-
-        <li class="nav-item">
-          <button type="button" class="nav-link" (click)="navigateToSection('viga-tensor-zapata-aislada')" title="Viga de amarre o conexión">
+        <li class="nav-item nav-group">
+          <button
+            type="button"
+            class="nav-link nav-group-header"
+            (click)="toggleMenuVigas()"
+            [class.active]="isVigasGroupActive()"
+            [attr.aria-expanded]="menuVigasOpen"
+            title="Vigas"
+          >
             <span class="nav-icon">📏</span>
-            <span class="nav-text" *ngIf="!sidebarCollapsed">Viga de amarre</span>
+            <span class="nav-text" *ngIf="!sidebarCollapsed">Vigas</span>
+            <span class="nav-chevron" *ngIf="!sidebarCollapsed" aria-hidden="true">{{ menuVigasOpen ? '▲' : '▼' }}</span>
           </button>
+          <ul class="nav-submenu" *ngIf="menuVigasOpen && !sidebarCollapsed">
+            <li class="nav-subitem">
+              <button type="button" class="nav-link nav-sublink" (click)="navigateToSection('viga-tensor-zapata-aislada')" [class.active]="isLastSegment('viga-tensor-zapata-aislada')">Viga de amarre o conexión</button>
+            </li>
+            <li class="nav-subitem">
+              <button type="button" class="nav-link nav-sublink" (click)="navigateToSection('viga-contrapeso')" [class.active]="isLastSegment('viga-contrapeso')">Viga de contrapeso</button>
+            </li>
+          </ul>
         </li>
       </ul>
     </nav>

@@ -7,8 +7,8 @@
  */
 
 import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { Subject, takeUntil } from 'rxjs';
+import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
+import { Subject, takeUntil, filter } from 'rxjs';
 
 import { AuthService } from '../services/auth.service';
 import { User } from '../models/user.model';
@@ -31,6 +31,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
   public activeSection: DashboardSection = 'dashboard';
   public isMobile = false;
 
+  /** Submenús lateral: zapatas / vigas */
+  public menuZapatasOpen = false;
+  public menuVigasOpen = false;
+
+  private readonly zapataRouteSegments = [
+    'zapata-cuadrada-aislada',
+    'zapata-aislada',
+    'zapata-combinada',
+    'zapata-excentrica-viga-amarre',
+  ] as const;
+  private readonly vigaRouteSegments = ['viga-tensor-zapata-aislada', 'viga-contrapeso'] as const;
+
   // Mapeo de títulos de página
   private readonly pageTitles: Record<DashboardSection, string> = {
     'dashboard': 'Inicio',
@@ -49,6 +61,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     console.log('🎯 DashboardComponent.ngOnInit - Iniciando dashboard');
     this.setupSubscriptions();
+    this.syncMenusFromUrl();
+    this.router.events
+      .pipe(
+        filter((e): e is NavigationEnd => e instanceof NavigationEnd),
+        takeUntil(this.destroy$),
+      )
+      .subscribe(() => this.syncMenusFromUrl());
   }
 
   ngOnDestroy(): void {
@@ -138,6 +157,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       'zapata-combinada': 'Zapata Combinada',
       'zapata-excentrica-viga-amarre': 'Zapata Excéntrica con Viga de Amarre',
       'viga-tensor-zapata-aislada': 'Viga de amarre o conexión',
+      'viga-contrapeso': 'Viga de contrapeso',
     };
     if (child && byRoute[child]) {
       return byRoute[child];
@@ -181,21 +201,103 @@ export class DashboardComponent implements OnInit, OnDestroy {
    */
   public navigateToSection(section: string): void {
     console.log('🔄 Navegando a sección:', section);
-    
-    // Para "inicio", navegamos a la ruta base del dashboard (carga WelcomeComponent)
+
     if (section === 'inicio') {
-      this.router.navigate([''], { relativeTo: this.route }).catch(error => {
-        console.error('❌ Error navegando a inicio:', error);
-      });
+      this.router
+        .navigate([''], { relativeTo: this.route })
+        .then(() => this.afterNavigate())
+        .catch((error) => {
+          console.error('❌ Error navegando a inicio:', error);
+        });
       return;
     }
-    
-    // Para otras secciones, navegar usando rutas relativas
-    this.router.navigate([section], { relativeTo: this.route }).catch(error => {
-      console.error('❌ Error navegando a:', section, error);
-      // Fallback: navegar a inicio
-      this.router.navigate([''], { relativeTo: this.route });
-    });
+
+    this.router
+      .navigate([section], { relativeTo: this.route })
+      .then(() => this.afterNavigate())
+      .catch((error) => {
+        console.error('❌ Error navegando a:', section, error);
+        this.router.navigate([''], { relativeTo: this.route });
+      });
+  }
+
+  private afterNavigate(): void {
+    if (this.isMobile) {
+      this.sidebarCollapsed = true;
+    }
+  }
+
+  public toggleMenuZapatas(): void {
+    if (this.expandSidebarIfCollapsed()) {
+      this.menuZapatasOpen = true;
+      this.menuVigasOpen = false;
+      return;
+    }
+    this.menuZapatasOpen = !this.menuZapatasOpen;
+  }
+
+  public toggleMenuVigas(): void {
+    if (this.expandSidebarIfCollapsed()) {
+      this.menuVigasOpen = true;
+      this.menuZapatasOpen = false;
+      return;
+    }
+    this.menuVigasOpen = !this.menuVigasOpen;
+  }
+
+  private expandSidebarIfCollapsed(): boolean {
+    if (!this.sidebarCollapsed) {
+      return false;
+    }
+    this.sidebarCollapsed = false;
+    return true;
+  }
+
+  /**
+   * Segmento hijo de `dashboard` (p. ej. `viga-tensor-zapata-aislada`).
+   * No usar `url.includes('zapata-aislada')`: en `viga-tensor-zapata-aislada` habría falso positivo.
+   */
+  private getDashboardChildSegment(): string | null {
+    const parts = this.router.url.split('?')[0].split('/').filter(Boolean);
+    const i = parts.indexOf('dashboard');
+    if (i < 0) {
+      return null;
+    }
+    return parts[i + 1] ?? null;
+  }
+
+  /** Último segmento de la URL (ítem activo del submenú). */
+  public isLastSegment(segment: string): boolean {
+    const parts = this.router.url.split('?')[0].split('/').filter(Boolean);
+    return parts.at(-1) === segment;
+  }
+
+  public isInicioActive(): boolean {
+    const u = this.router.url.split('?')[0];
+    return /\/dashboard\/?$/.test(u);
+  }
+
+  public isZapatasGroupActive(): boolean {
+    const child = this.getDashboardChildSegment();
+    return (
+      child != null &&
+      (this.zapataRouteSegments as readonly string[]).includes(child)
+    );
+  }
+
+  public isVigasGroupActive(): boolean {
+    const child = this.getDashboardChildSegment();
+    return (
+      child != null && (this.vigaRouteSegments as readonly string[]).includes(child)
+    );
+  }
+
+  /** En inicio ambos recogidos; en rutas hijas no se abre solo el desplegable (el usuario despliega). */
+  private syncMenusFromUrl(): void {
+    if (this.getDashboardChildSegment() == null) {
+      this.menuZapatasOpen = false;
+      this.menuVigasOpen = false;
+    }
   }
 
   /**

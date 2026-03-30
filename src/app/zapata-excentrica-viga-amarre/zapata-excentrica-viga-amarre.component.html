@@ -185,65 +185,11 @@
           <strong>Error:</strong> {{ response.message }}
         </div>
 
-        <div *ngIf="!response.error" class="resultados-contenido">
-          <!-- Dimensiones de la zapata -->
-          <div class="resultado-grupo">
-            <h3>Dimensiones Finales de las Zapatas</h3>
-            <div class="resultado-item">
-              <span>Zapata Externa - Largo (L):</span>
-              <strong>{{ response.LfinalExt?.resultado | number:'1.2-2' }} m</strong>
-            </div>
-            <div class="resultado-item">
-              <span>Zapata Externa - Ancho (B):</span>
-              <strong>{{ response.BfinalExt?.resultado | number:'1.2-2' }} m</strong>
-            </div>
-            <div class="resultado-item">
-              <span>Zapata Interna - Largo (L):</span>
-              <strong>{{ response.LfinalInt?.resultado | number:'1.2-2' }} m</strong>
-            </div>
-            <div class="resultado-item">
-              <span>Zapata Interna - Ancho (B):</span>
-              <strong>{{ response.BfinalInt?.resultado | number:'1.2-2' }} m</strong>
-            </div>
-          </div>
-
-          <!-- Presiones y reacciones -->
-          <div class="resultado-grupo">
-            <h3>Análisis de Presiones</h3>
-            <div class="resultado-item">
-              <span>Reacción Externa (Re):</span>
-              <strong>{{ response.Re_Servicio?.resultado | number:'1.2-2' }} Ton</strong>
-            </div>
-            <div class="resultado-item">
-              <span>Reacción Interna (Ri):</span>
-              <strong>{{ response.Ri_Servicio?.resultado | number:'1.2-2' }} Ton</strong>
-            </div>
-          </div>
-
-          <!-- Validaciones de corte -->
-          <div class="resultado-grupo">
-            <h3>Validaciones de Cortante</h3>
-            <div class="resultado-item">
-              <span>Cortante en viga (ϕVc):</span>
-              <strong>{{ response.delta_Vc?.resultado | number:'1.2-2' }} Ton</strong>
-            </div>
-            <div class="resultado-item">
-              <span>Cortante requerido (Vu):</span>
-              <strong>{{ response.arrayDataEjeY?.[2] | number:'1.2-2' }} Ton</strong>
-            </div>
-          </div>
-        </div>
-
-        <!-- Botón para mostrar detalles -->
-        <button (click)="mostrarDetalles()" class="btn-detalles" *ngIf="!response.error">
-          Ver Detalles Completos
-        </button>
-
-        <!-- Botones de exportación -->
-        <div style="text-align: center; margin-top: 20px;">
-          <app-pdf-report-button [template]="pdfTemplate" [prepareData]="preparePDFDataFn"
-            defaultReportName="Zapata Excéntrica - Viga de Amarre" buttonText="📄 Generar Reporte PDF"
-            buttonClass="btn btn-success btn-lg" [showProgress]="false"></app-pdf-report-button>
+        <div *ngIf="!response.error" class="resultados-hint">
+          <p>
+            Cálculo exitoso. Revise el <strong>resumen de hierro</strong>, <strong>resultados</strong> y
+            <strong>verificaciones</strong> en la ventana emergente; el PDF se genera desde el mismo cuadro.
+          </p>
         </div>
       </div>
 
@@ -265,18 +211,118 @@
     </div>
   </div>
 
-  <!-- Modal de detalles -->
-  <div *ngIf="mostrarModal" class="modal-overlay" (click)="cerrarModal()" role="dialog" aria-modal="true">
-    <div class="modal-contenido" (click)="$event.stopPropagation()" role="document">
-      <div class="modal-header">
-        <h2>Detalles Completos del Cálculo</h2>
-        <button class="btn-cerrar" (click)="cerrarModal()" type="button">✕</button>
-      </div>
-      <div class="modal-body">
-        <pre>{{ response | json }}</pre>
+  <app-modal
+    [isOpen]="mostrarModal"
+    [title]="tituloModal"
+    [size]="tamanoModal"
+    (closeModal)="cerrarModal()"
+  >
+    <div class="modal-excentrica-body" *ngIf="response && !response.error">
+      <p class="modal-excentrica-lead">Cálculo completado. Revise refuerzo, dimensiones y comprobaciones.</p>
+
+      <section class="modal-excentrica-section">
+        <h4 class="modal-excentrica-section-title">Resumen de hierro (refuerzo)</h4>
+        <div class="modal-excentrica-table-wrap">
+          <table class="modal-excentrica-table">
+            <thead>
+              <tr>
+                <th>Elemento</th>
+                <th>Refuerzo</th>
+                <th>Detalle</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Viga de amarre — Estribos</td>
+                <td>{{ response.Hierro ?? '—' }}</td>
+                <td>S<sub>max</sub> = {{ formatNum(response.SMax?.resultado) }} cm</td>
+              </tr>
+              <tr>
+                <td>Viga de amarre — Longitudinal</td>
+                <td>{{ response.AsViga?.formula ?? '—' }}</td>
+                <td>{{ response.AsViga?.acero ?? '—' }} barras</td>
+              </tr>
+              <tr>
+                <td>Zapata interna</td>
+                <td>{{ response.AsInt?.formula ?? '—' }}</td>
+                <td>{{ response.AsInt?.acero ?? '—' }} barras, sep. {{ formatNum(response.AsInt?.Arroba2) }} cm</td>
+              </tr>
+              <tr>
+                <td>Zapata externa (largo)</td>
+                <td>{{ response.AsExtLarga?.formula ?? '—' }}</td>
+                <td>{{ response.AsExtLarga?.acero ?? '—' }} barras, sep. {{ formatNum(response.AsExtLarga?.Arroba2) }} cm</td>
+              </tr>
+              <tr>
+                <td>Zapata externa (corto)</td>
+                <td>{{ response.AsExtCorta?.formula ?? '—' }}</td>
+                <td>sep. {{ formatNum(response.AsExtCorta?.Arroba2) }} cm</td>
+              </tr>
+              <tr>
+                <td>Parrilla doble interna</td>
+                <td>{{ response.AsParrillaDobleInterna?.formula ?? '—' }}</td>
+                <td>—</td>
+              </tr>
+              <tr>
+                <td>Parrilla doble externa</td>
+                <td>{{ response.AsParrillaDobleExterna?.formula ?? '—' }}</td>
+                <td>—</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="modal-excentrica-section">
+        <h4 class="modal-excentrica-section-title">Resumen de resultados</h4>
+        <div class="modal-excentrica-grid">
+          <div class="modal-excentrica-card">
+            <span class="modal-excentrica-label">Zapata externa (B × L)</span>
+            <span class="modal-excentrica-value"
+              >{{ formatNum(response.BfinalExt?.resultado) }} × {{ formatNum(response.LfinalExt?.resultado) }} m</span
+            >
+          </div>
+          <div class="modal-excentrica-card">
+            <span class="modal-excentrica-label">Zapata interna (B × L)</span>
+            <span class="modal-excentrica-value"
+              >{{ formatNum(response.BfinalInt?.resultado) }} × {{ formatNum(response.LfinalInt?.resultado) }} m</span
+            >
+          </div>
+          <div class="modal-excentrica-card">
+            <span class="modal-excentrica-label">Separación estribos viga</span>
+            <span class="modal-excentrica-value">{{ formatNum(response.SMax?.resultado) }} cm — {{ response.Hierro ?? '—' }}</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="modal-excentrica-section">
+        <h4 class="modal-excentrica-section-title">Verificaciones</h4>
+        <ul class="modal-excentrica-checks">
+          <li class="modal-excentrica-check ok">
+            <strong>Pedestal externo:</strong> {{ formatNum(informations.get('PuExt')?.value, 2) }} ≤
+            {{ formatNum(response.presionExt?.resultado, 2) }}
+            <span class="ok-tag">✓ CUMPLE</span>
+          </li>
+          <li class="modal-excentrica-check ok">
+            <strong>Pedestal interno:</strong> {{ formatNum(informations.get('PuInt')?.value, 2) }} ≤
+            {{ formatNum(response.presionInt?.resultado, 2) }}
+            <span class="ok-tag">✓ CUMPLE</span>
+          </li>
+        </ul>
+      </section>
+
+      <div class="modal-excentrica-pdf-wrap">
+        <app-pdf-report-button
+          [template]="pdfTemplate"
+          [prepareData]="preparePDFDataFn"
+          defaultReportName="Zapata Excéntrica - Viga de Amarre"
+          buttonText="📄 Descargar PDF"
+          buttonClass="modal-excentrica-pdf-btn"
+          [buttonStyle]="''"
+          [showProgress]="false"
+        ></app-pdf-report-button>
       </div>
     </div>
-  </div>
+  </app-modal>
 
 </body>
 

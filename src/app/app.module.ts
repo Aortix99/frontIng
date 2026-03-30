@@ -50,6 +50,7 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { ZapataExcentricaVigaAmarreComponent } from './zapata-excentrica-viga-amarre/zapata-excentrica-viga-amarre.component';
 import { ZapataAisladaComponent } from './zapata-esquinera/zapata-aislada.component';
 import { VigaTensorZapataAisladaComponent } from './viga-tensor-zapata-aislada/viga-tensor-zapata-aislada.component';
+import { VigaContrapesoComponent } from './viga-contrapeso/viga-contrapeso.component';
 
 @NgModule({
   declarations: [
@@ -79,6 +80,7 @@ import { VigaTensorZapataAisladaComponent } from './viga-tensor-zapata-aislada/v
       ZapataExcentricaVigaAmarreComponent,
       ZapataAisladaComponent,
       VigaTensorZapataAisladaComponent,
+      VigaContrapesoComponent,
 
     // Directivas
     MathExpressionDirective

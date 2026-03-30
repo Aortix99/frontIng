@@ -132,10 +132,25 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
             color: #2c5aa0;
           }
           
+          /* SpringGreen: guía de corte para pdf-generator (no se pinta en el PDF final) */
+          .pdf-body-slice-break-marker {
+            height: 2px;
+            margin: 0;
+            padding: 0;
+            border: none;
+            width: 100%;
+            background: #00ff7f;
+          }
           .section-result {
-            margin-top: 4%;
+            margin-top: 24px;
             border-radius: 8px;
             overflow: hidden;
+            border: 1px solid #dee2e6;
+          }
+          /* Evita que el paginador del PDF corte en la franja blanca entre barra azul y tarjetas */
+          .section-result .section-content {
+            background-color: #e8edf3;
+            padding-top: 8px;
           }
           .section {
             border-radius: 8px;
@@ -547,7 +562,9 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
               </div>
           </div>
         </div>
-        <div class="section-result" style="margin-top: 65%;">
+        <!-- Franja #00ff7f: corte PDF antes de verificaciones (pdf-generator.service) -->
+        <div class="pdf-body-slice-break-marker" aria-hidden="true"></div>
+        <div class="section-result">
           <h3 class="section-header">✅ Verificaciones y Validaciones</h3>
           <div class="section-content">
             <ul class="validation-list">

@@ -175,6 +175,26 @@ export class ZapataExcentricaVigaAmarrePDFTemplate implements PDFTemplate {
             margin: 0;
           }
 
+          /* Solo este reporte: guía de corte para pdf-generator.service (franja no visible en PDF final) */
+          .pdf-body-slice-break-marker {
+            height: 2px;
+            margin: 0;
+            padding: 0;
+            border: none;
+            width: 100%;
+            background: #00ff7f;
+          }
+          .section-result-verif-excentrica {
+            margin-top: 16px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #dee2e6;
+          }
+          .section-result-verif-excentrica .section-content {
+            background-color: #e8edf3;
+            padding-top: 8px;
+          }
+
           .validation-item {
             background-color: #d4edda;
             border-radius: 5px;
@@ -587,7 +607,8 @@ export class ZapataExcentricaVigaAmarrePDFTemplate implements PDFTemplate {
             </table>
           </div>
         </div>
-        <div class="section-result" style="margin-top: 5%;">
+        <div class="pdf-body-slice-break-marker" aria-hidden="true"></div>
+        <div class="section-result section-result-verif-excentrica">
           <h3 class="section-header">✅ Verificaciones y Validaciones</h3>
           <div class="section-content">
             <ul class="validation-list">

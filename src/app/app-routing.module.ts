@@ -23,6 +23,7 @@ import { WelcomeComponent } from './components/welcome/welcome.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './auth/login/login.component';
 import { ZapataAisladaComponent } from './zapata-esquinera/zapata-aislada.component';
+import { VigaContrapesoComponent } from './viga-contrapeso/viga-contrapeso.component';
 
 const routes: Routes = [
   // Redirección por defecto
@@ -65,6 +66,10 @@ const routes: Routes = [
       {
         path: 'viga-tensor-zapata-aislada',
         component: VigaTensorZapataAisladaComponent
+      },
+      {
+        path: 'viga-contrapeso',
+        component: VigaContrapesoComponent
       }
     ]
   },
@@ -116,6 +121,15 @@ const routes: Routes = [
     data: {
       title: 'Viga de amarre o conexión',
       description: 'Diseño viga de amarre o conexión'
+    }
+  },
+  {
+    path: 'viga-contrapeso',
+    component: VigaContrapesoComponent,
+    canActivate: [AuthGuard],
+    data: {
+      title: 'Viga de contrapeso',
+      description: 'Cálculo de viga de contrapeso'
     }
   },
   {

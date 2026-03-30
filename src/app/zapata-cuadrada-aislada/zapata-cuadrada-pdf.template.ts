@@ -147,7 +147,26 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
           .section-content {
             padding: 5px;
           }
-          
+
+          /* Zapata cuadrada (esta plantilla): corte PDF antes de Resumen — pdf-generator.service */
+          .pdf-body-slice-break-marker {
+            height: 2px;
+            margin: 0;
+            padding: 0;
+            border: none;
+            width: 100%;
+            background: #00ff7f;
+          }
+          .section-resumen-zapata-cuadrada {
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #dee2e6;
+          }
+          .section-resumen-zapata-cuadrada .section-content {
+            background-color: #e8edf3;
+            padding-top: 8px;
+          }
+
           .input-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -440,8 +459,9 @@ export class ZapataCuadradaPDFTemplate implements PDFTemplate {
           </div>
         </div>
 
-        <!-- Results Summary -->
-        <div class="section">
+        <!-- Results Summary: franja #00ff7f fuerza salto de página antes del bloque (evita título huérfano) -->
+        <div class="pdf-body-slice-break-marker" aria-hidden="true"></div>
+        <div class="section section-resumen-zapata-cuadrada">
           <h3 class="section-header"> Resumen de Resultados</h3>
           <div class="section-content">
             <div class="input-grid">

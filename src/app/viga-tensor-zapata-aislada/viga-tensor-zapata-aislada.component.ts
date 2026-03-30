@@ -35,6 +35,10 @@ export class VigaTensorZapataAisladaComponent implements OnInit {
   response: any = null;
   readonly opcionesBarra = OPCIONES_BARRA_VIGA;
 
+  mostrarModal = false;
+  tituloModal = 'Resultados del cálculo';
+  tamanoModal: 'small' | 'medium' | 'large' = 'medium';
+
   preparePDFDataFn = (name: string) => this.preparePDFData(name);
 
   constructor(
@@ -51,8 +55,8 @@ export class VigaTensorZapataAisladaComponent implements OnInit {
       h: [0.4, [Validators.required, Validators.min(0.01)]],
       cargaMaxima: [50, [Validators.required, Validators.min(0.01)]],
       luzViga: [5, [Validators.required, Validators.min(0.01)]],
-      fc: [210, [Validators.required, Validators.min(1)]],
-      fy: [4200, [Validators.required, Validators.min(1)]],
+      fc: [21, [Validators.required, Validators.min(1)]],
+      fy: [420, [Validators.required, Validators.min(1)]],
     });
 
     this.api.getMunicipios().subscribe({
@@ -155,6 +159,33 @@ export class VigaTensorZapataAisladaComponent implements OnInit {
     return `${m.departamento} — ${m.municipio} (${m.codMunicipio})`;
   }
 
+  cerrarModal(): void {
+    this.mostrarModal = false;
+  }
+
+  /** Formato numérico para el modal (misma lógica que el PDF). */
+  formatNum(value: unknown, decimals = 4): string {
+    if (value === null || value === undefined || Number.isNaN(Number(value))) {
+      return '—';
+    }
+    return Number(value).toFixed(decimals);
+  }
+
+  /**
+   * Mismo criterio que el PDF: el backend envía `paso12.resultado` como string (`.toFixed(2)` en Node).
+   */
+  get separacionEstribosTexto(): string {
+    const raw = this.response?.paso12?.resultado;
+    if (raw === null || raw === undefined || raw === '') {
+      return '—';
+    }
+    const m = Number(raw);
+    if (Number.isNaN(m)) {
+      return '—';
+    }
+    return `E @ ${this.formatNum(m, 2)} m (${this.formatNum(m * 100, 0)} cm)`;
+  }
+
   private preparePDFData(reportName: string): VigaTensorCalculationData {
     const v = this.form.getRawValue();
     const barra = v.BarraViga as { area: number; Nomen: string };
@@ -207,11 +238,15 @@ export class VigaTensorZapataAisladaComponent implements OnInit {
         const data = res as { error?: boolean; message?: string };
         this.response = res;
         if (data.error) {
+          this.mostrarModal = false;
           Swal.fire({
             icon: 'info',
             title: 'Revisar diseño',
             text: data.message ?? 'No cumple con las comprobaciones.',
           });
+        } else {
+          this.tituloModal = 'Resultados del cálculo — Viga de amarre';
+          this.mostrarModal = true;
         }
       },
       error: (err) => {
