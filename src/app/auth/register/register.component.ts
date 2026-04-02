@@ -68,6 +68,15 @@ export class RegisterComponent implements OnInit, OnDestroy {
           Validators.maxLength(255)
         ]
       ],
+      phone: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(10),
+          Validators.maxLength(10),
+          Validators.pattern(/^3\d{9}$/),
+        ],
+      ],
       password: [
         '', 
         [
@@ -159,6 +168,19 @@ export class RegisterComponent implements OnInit, OnDestroy {
       });
   }
 
+  /** Solo números, máximo 10 (celular CO) */
+  public stripPhoneDigits(): void {
+    const c = this.registerForm.get('phone');
+    if (!c) {
+      return;
+    }
+    const digits = String(c.value ?? '').replace(/\D/g, '').slice(0, 10);
+    if (digits !== c.value) {
+      c.setValue(digits, { emitEvent: false });
+      c.updateValueAndValidity();
+    }
+  }
+
   /**
    * Maneja el envío del formulario de registro
    */
@@ -173,9 +195,11 @@ export class RegisterComponent implements OnInit, OnDestroy {
       return;
     }
 
+    const phoneDigits = String(this.registerForm.value.phone ?? '').replace(/\D/g, '');
     const registerData: RegisterRequest = {
       name: this.registerForm.value.name.trim(),
       email: this.registerForm.value.email.trim().toLowerCase(),
+      phone: phoneDigits,
       password: this.registerForm.value.password
     };
 
@@ -195,10 +219,12 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.authService.register(registerData)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (user) => {
-          console.log('✅ Registro exitoso:', user);
-          console.log('🧭 Navigating to dashboard...');
-          this.router.navigate(['/dashboard'], { replaceUrl: true });
+        next: () => {
+          this.authService.clearAuthErrorMessage();
+          void this.router.navigate(['/auth/login'], {
+            replaceUrl: true,
+            queryParams: { registered: '1' },
+          });
         },
         error: (error) => {
           console.error('❌ Error en registro:', error);
@@ -322,6 +348,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   // Getters para facilitar acceso en el template
   public get name() { return this.registerForm.get('name'); }
   public get email() { return this.registerForm.get('email'); }
+  public get phone() { return this.registerForm.get('phone'); }
   public get password() { return this.registerForm.get('password'); }
   public get confirmPassword() { return this.registerForm.get('confirmPassword'); }
   public get acceptTerms() { return this.registerForm.get('acceptTerms'); }
@@ -362,6 +389,13 @@ export class RegisterComponent implements OnInit, OnDestroy {
       if (fieldName === 'name') {
         return 'El nombre solo puede contener letras y espacios';
       }
+      if (fieldName === 'phone') {
+        return 'El celular debe tener 10 dígitos y comenzar con 3';
+      }
+    }
+
+    if (fieldName === 'confirmPassword' && this.registerForm.hasError('passwordMismatch')) {
+      return 'Las contraseñas no coinciden';
     }
 
     if (errors['passwordStrength']) {
@@ -389,6 +423,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     const displayNames: Record<string, string> = {
       'name': 'Nombre',
       'email': 'Email',
+      'phone': 'Celular',
       'password': 'Contraseña',
       'confirmPassword': 'Confirmar contraseña'
     };

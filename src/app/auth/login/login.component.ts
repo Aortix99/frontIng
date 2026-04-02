@@ -26,8 +26,12 @@ export class LoginComponent implements OnInit, OnDestroy {
   public loadingState: LoadingState = 'idle';
   public errorMessage: string = '';
   public showPassword: boolean = false;
+
+  /** Viene de registro exitoso (?registered=1) */
+  public registerSuccessHint = false;
   
-  private returnUrl: string = '/dashboard';
+  /** Público para el enlace Registro (queryParams returnUrl) */
+  public returnUrl: string = '/dashboard';
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -103,7 +107,9 @@ export class LoginComponent implements OnInit, OnDestroy {
    * @private
    */
   private getReturnUrl(): void {
-    this.returnUrl = this.activatedRoute.snapshot.queryParams['returnUrl'] || '/dashboard';
+    const q = this.activatedRoute.snapshot.queryParams;
+    this.returnUrl = q['returnUrl'] || '/dashboard';
+    this.registerSuccessHint = q['registered'] === '1';
   }
 
   /**
@@ -186,15 +192,6 @@ export class LoginComponent implements OnInit, OnDestroy {
    */
   public togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
-  }
-
-  /**
-   * Navega a la página de registro
-   */
-  public goToRegister(): void {
-    this.router.navigate(['/auth/register'], {
-      queryParams: { returnUrl: this.returnUrl }
-    });
   }
 
   /**

@@ -19,7 +19,11 @@
     <!-- Formulario de Login -->
     <div class="login-form-container">
       <h2 class="form-title">Accede a tu cuenta</h2>
-      
+
+      <div class="success-hint" *ngIf="registerSuccessHint" role="status">
+        Cuenta creada. Inicia sesión con tu correo y contraseña.
+      </div>
+   
       <!-- Mensaje de error global -->
       <div class="error-message" *ngIf="hasError" role="alert">
         <i class="error-icon">⚠️</i>
@@ -84,20 +88,6 @@
           </div>
         </div>
 
-        <!-- Checkbox Recordarme -->
-        <!-- <div class="form-group checkbox-group">
-          <label class="checkbox-label">
-            <input
-              type="checkbox"
-              formControlName="rememberMe"
-              class="checkbox-input"
-              [disabled]="isLoading"
-            />
-            <span class="checkbox-custom"></span>
-            <span class="checkbox-text">Recordarme</span>
-          </label>
-        </div> -->
-
         <!-- Botón de Login -->
         <button
           type="submit"
@@ -114,31 +104,16 @@
 
       </form>
 
-      <!-- Enlaces adicionales -->
-      <!-- <div class="form-links">
-        <a 
-          href="#" 
-          class="forgot-password-link"
-          (click)="$event.preventDefault(); goToForgotPassword()"
-        >
-          ¿Olvidaste tu contraseña?
-        </a>
-      </div> -->
-
-      <!-- Separador -->
-      <div class="divider">
-        <span>¿No tienes cuenta?: Comunicanos  (57)3044018165</span>
+      <div class="register-prompt">
+        <p class="register-prompt-text">
+          ¿No tienes cuenta?
+          <a
+            routerLink="/auth/register"
+            [queryParams]="{ returnUrl: returnUrl }"
+            class="register-link-inline"
+          >Registro</a>
+        </p>
       </div>
-
-      <!-- Botón de Registro -->
-      <!-- <button
-        type="button"
-        class="register-button"
-        (click)="goToRegister()"
-        [disabled]="isLoading"
-      >
-        Crear Cuenta
-      </button> -->
 
     </div>
   </div>

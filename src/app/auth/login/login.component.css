@@ -64,6 +64,16 @@
   margin: 0 0 30px 0;
 }
 
+.success-hint {
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  color: #047857;
+  font-size: 0.875rem;
+}
+
 /* Mensaje de error global */
 .error-message {
   background: #fef2f2;
@@ -340,6 +350,29 @@
   opacity: 0.6;
   cursor: not-allowed;
   transform: none;
+}
+
+.register-prompt {
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: 1px solid #e5e7eb;
+  text-align: center;
+}
+
+.register-prompt-text {
+  margin: 0 0 12px;
+  font-size: 0.95rem;
+  color: #4b5563;
+}
+
+.register-link-inline {
+  color: #667eea;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.register-link-inline:hover {
+  text-decoration: underline;
 }
 
 /* Footer */

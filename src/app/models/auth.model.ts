@@ -24,6 +24,8 @@ export interface LoginRequest {
 export interface RegisterRequest {
   readonly name: string;
   readonly email: string;
+  /** Celular CO: 10 dígitos, inicia con 3 */
+  readonly phone: string;
   readonly password: string;
   readonly confirmPassword?: string;
 }

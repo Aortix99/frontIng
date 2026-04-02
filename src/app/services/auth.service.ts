@@ -10,7 +10,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { BehaviorSubject, Observable, throwError, timer } from 'rxjs';
-import { map, catchError, tap, switchMap } from 'rxjs/operators';
+import { map, catchError, tap, switchMap, finalize } from 'rxjs/operators';
 
 import { 
   User, 
@@ -22,7 +22,7 @@ import {
   LoadingState,
   ApiResponse 
 } from '../models/auth.model';
-import { environment } from 'src/environments/environment.prod';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -88,6 +88,7 @@ export class AuthService {
             id: payload.id,
             email: payload.email,
             name: payload.name,
+            phone: payload.phone,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()
           };
@@ -151,22 +152,20 @@ export class AuthService {
   public register(registerData: RegisterRequest): Observable<User> {
     console.log('🌐 AuthService.register called with:', registerData);
     console.log('🔗 API URL:', `${this.CONFIG.apiBaseUrl}/register`);
-    
+
     this.setLoadingState('loading');
-    this.updateAuthState(false, null, null, true);
 
     return this.http.post<AuthResponse>(`${this.CONFIG.apiBaseUrl}/register`, registerData)
       .pipe(
-        tap(response => {
+        map(response => {
           console.log('✅ Register HTTP response:', response);
-          this.handleAuthSuccess(response);
+          return response.data.user;
         }),
-        map(response => response.data.user),
         catchError(error => {
           console.error('❌ Register HTTP error:', error);
           return this.handleAuthError(error);
         }),
-        tap(() => this.setLoadingState('success'))
+        finalize(() => this.setLoadingState('idle'))
       );
   }
 
@@ -278,10 +277,32 @@ export class AuthService {
    */
   private handleAuthError(error: HttpErrorResponse): Observable<never> {
     this.setLoadingState('error');
-    this.updateAuthState(false, null, null, false, error.error?.message || 'Error de autenticación');
-    
+    const msg = this.extractErrorMessage(error);
+    this.updateAuthState(false, null, null, false, msg);
+
     console.error('Error de autenticación:', error);
     return throwError(() => error);
+  }
+
+  /** Mensaje legible desde cuerpos `{ message, errors[] }` del backend */
+  private extractErrorMessage(error: HttpErrorResponse): string {
+    const body = error.error as { message?: string; errors?: Array<string | { message?: string }> } | null;
+    if (!body) {
+      if (error.status === 0) {
+        return 'No se puede conectar al servidor. ¿Está el backend en marcha y la URL correcta en environment?';
+      }
+      return error.message || 'Error de autenticación';
+    }
+    if (Array.isArray(body.errors) && body.errors.length > 0) {
+      const first = body.errors[0];
+      if (typeof first === 'string') {
+        return first;
+      }
+      if (first && typeof first === 'object' && first.message) {
+        return first.message;
+      }
+    }
+    return body.message || 'Error de autenticación';
   }
 
   /**
@@ -302,6 +323,12 @@ export class AuthService {
       isLoading,
       error
     });
+  }
+
+  /** Evita que un error de un intento anterior aparezca en la pantalla de login */
+  public clearAuthErrorMessage(): void {
+    const s = this.authStateSubject.value;
+    this.authStateSubject.next({ ...s, error: null });
   }
 
   /**
